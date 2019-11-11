@@ -1,0 +1,11 @@
+# visual studio code
+.vscode/
+.idea/
+
+# python
+venv/
+__pycache__/
+*.egg-info/
+
+# misc
+.DS_Store
