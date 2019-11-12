@@ -2,7 +2,6 @@ from contextlib import AbstractContextManager
 
 from airflow.hooks.base_hook import BaseHook
 from clickhouse_driver import Client
-from clickhouse_driver.result import IterQueryResult
 
 
 class ClickHouseHook(BaseHook):
@@ -44,12 +43,9 @@ class ClickHouseHook(BaseHook):
         with disconnecting(self.get_conn()) as conn:
             return conn.execute(sql, params=parameters)
 
-    def get_records_iter(self, sql, parameters=None) -> IterQueryResult:
-        with disconnecting(self.get_conn()) as conn:
-            return conn.execute_iter(sql, params=parameters)
-
     def get_first(self, sql, parameters=None):
-        return next(self.get_records_iter(sql, parameters))
+        with disconnecting(self.get_conn()) as conn:
+            return next(conn.execute_iter(sql, params=parameters))
 
     def get_pandas_df(self, sql, parameters=None):
         raise NotImplementedError()
