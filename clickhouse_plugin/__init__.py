@@ -4,7 +4,7 @@ clickhouse_plugin
 """
 
 from airflow.plugins_manager import AirflowPlugin
-from clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
+from .hooks.clickhouse_hook import ClickHouseHook
 
 
 class ClickHousePlugin(AirflowPlugin):
