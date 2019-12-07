@@ -9,7 +9,7 @@ __title__ = 'clickhouse_plugin'
 __description__ = \
     'clickhouse_plugin - ' \
     'Airflow plugin to execute Clickhouse commands and queries'
-__version__ = '0.2.2'
+__version__ = '0.3.0'
 __author__ = 'Viktor Taranenko'
 __author_email__ = 'viktor@samsungnext.com'
 __license__ = 'Apache 2.0'

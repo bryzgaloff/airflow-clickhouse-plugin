@@ -33,10 +33,12 @@ class ClickHouseHook(BaseHook):
         return Client(host, port, database, user, password)
 
     def get_records(self, sql: str, parameters: dict = None) -> List[Tuple]:
+        self.log.info(f'{sql} with {parameters}' if parameters else sql)
         with disconnecting(self.get_conn()) as client:
             return client.execute(sql, params=parameters)
 
     def get_first(self, sql: str, parameters: dict = None) -> Tuple:
+        self.log.info(f'{sql} with {parameters}' if parameters else sql)
         with disconnecting(self.get_conn()) as client:
             return next(client.execute_iter(sql, params=parameters))
 
@@ -48,6 +50,7 @@ class ClickHouseHook(BaseHook):
             sql: str,
             parameters: Union[dict, list, tuple, Generator] = None,
     ) -> Any:
+        self.log.info(f'{sql} with {parameters}' if parameters else sql)
         with disconnecting(self.get_conn()) as conn:
             return conn.execute(sql, params=parameters)
 
