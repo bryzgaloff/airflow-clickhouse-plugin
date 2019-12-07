@@ -47,12 +47,17 @@ class ClickHouseHook(BaseHook):
 
     def run(
             self,
-            sql: str,
+            sql: Union[str, Iterable[str]],
             parameters: Union[dict, list, tuple, Generator] = None,
     ) -> Any:
-        self.log.info(f'{sql} with {parameters}' if parameters else sql)
+        if isinstance(sql, str):
+            sql = (sql,)
         with disconnecting(self.get_conn()) as conn:
-            return conn.execute(sql, params=parameters)
+            last_result = None
+            for s in sql:
+                self.log.info(f'{s} with {parameters}' if parameters else s)
+                last_result = conn.execute(s, params=parameters)
+        return last_result
 
 
 _InnerT = TypeVar('_InnerT')
