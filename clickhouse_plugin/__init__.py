@@ -8,6 +8,6 @@ from .hooks.clickhouse_hook import ClickHouseHook
 
 
 class ClickHousePlugin(AirflowPlugin):
-    name = "clickhouse_plugin"
+    name = 'clickhouse_plugin'
     operators = []
     hooks = [ClickHouseHook]
