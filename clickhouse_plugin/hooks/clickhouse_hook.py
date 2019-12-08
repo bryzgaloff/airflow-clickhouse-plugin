@@ -33,10 +33,12 @@ class ClickHouseHook(BaseHook):
         return Client(host, port, database, user, password)
 
     def get_records(self, sql: str, parameters: dict = None) -> List[Tuple]:
+        self.log.info(f'{sql} with {parameters}' if parameters else sql)
         with disconnecting(self.get_conn()) as client:
             return client.execute(sql, params=parameters)
 
     def get_first(self, sql: str, parameters: dict = None) -> Tuple:
+        self.log.info(f'{sql} with {parameters}' if parameters else sql)
         with disconnecting(self.get_conn()) as client:
             return next(client.execute_iter(sql, params=parameters))
 
@@ -45,11 +47,17 @@ class ClickHouseHook(BaseHook):
 
     def run(
             self,
-            sql: str,
+            sql: Union[str, Iterable[str]],
             parameters: Union[dict, list, tuple, Generator] = None,
     ) -> Any:
+        if isinstance(sql, str):
+            sql = (sql,)
         with disconnecting(self.get_conn()) as conn:
-            return conn.execute(sql, params=parameters)
+            last_result = None
+            for s in sql:
+                self.log.info(f'{s} with {parameters}' if parameters else s)
+                last_result = conn.execute(s, params=parameters)
+        return last_result
 
 
 _InnerT = TypeVar('_InnerT')
