@@ -1,3 +1,4 @@
+from itertools import islice
 from typing import *
 
 from airflow.hooks.base_hook import BaseHook
@@ -33,12 +34,12 @@ class ClickHouseHook(BaseHook):
         return Client(host, port, database, user, password)
 
     def get_records(self, sql: str, parameters: dict = None) -> List[Tuple]:
-        self.log.info(f'{sql} with {parameters}' if parameters else sql)
+        self._log_query(sql, parameters)
         with disconnecting(self.get_conn()) as client:
             return client.execute(sql, params=parameters)
 
     def get_first(self, sql: str, parameters: dict = None) -> Tuple:
-        self.log.info(f'{sql} with {parameters}' if parameters else sql)
+        self._log_query(sql, parameters)
         with disconnecting(self.get_conn()) as client:
             return next(client.execute_iter(sql, params=parameters))
 
@@ -55,9 +56,23 @@ class ClickHouseHook(BaseHook):
         with disconnecting(self.get_conn()) as conn:
             last_result = None
             for s in sql:
-                self.log.info(f'{s} with {parameters}' if parameters else s)
+                self._log_query(s, parameters)
                 last_result = conn.execute(s, params=parameters)
         return last_result
+
+    def _log_query(self, sql: str, parameters: dict) -> None:
+        self.log.info(
+            '%s%s', sql,
+            f' with {self._log_params(parameters)}' if parameters else '',
+        )
+
+    @staticmethod
+    def _log_params(parameters: dict, limit: int = 10) -> str:
+        if len(parameters) <= limit:
+            return str(parameters)
+        head = dict(islice(parameters.items(), limit))
+        head_str = str(head)[:-1]
+        return f'{head_str},… and {len(parameters) - limit} more parameters}}'
 
 
 _InnerT = TypeVar('_InnerT')
