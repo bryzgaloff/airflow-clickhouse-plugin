@@ -2,7 +2,7 @@ from typing import *
 
 from airflow.models import BaseOperator
 
-from clickhouse_plugin.hooks import ClickHouseHook
+from clickhouse_plugin.hooks import clickhouse_hook
 
 
 class ClickHouseOperator(BaseOperator):
@@ -23,7 +23,7 @@ class ClickHouseOperator(BaseOperator):
         self._database = database
 
     def execute(self, context: Dict[str, Any]) -> Any:
-        hook = ClickHouseHook(
+        hook = clickhouse_hook.ClickHouseHook(
             clickhouse_conn_id=self._conn_id,
             database=self._database,
         )
