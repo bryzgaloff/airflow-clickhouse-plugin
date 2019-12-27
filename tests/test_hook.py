@@ -1,14 +1,8 @@
 from unittest import TestCase, mock
 
-from clickhouse_driver import Client
 from clickhouse_driver.errors import ServerException, ErrorCodes
 
-from clickhouse_plugin.hooks import clickhouse_hook
-
-
-class LocalClickHouseHook(clickhouse_hook.ClickHouseHook):
-    def get_conn(self) -> Client:
-        return Client('localhost')
+from .util import LocalClickHouseHook
 
 
 class ClientFromUrlTestCase(TestCase):
