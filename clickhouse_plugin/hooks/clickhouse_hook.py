@@ -91,7 +91,9 @@ _InnerT = TypeVar('_InnerT')
 
 
 class disconnecting(ContextManager, Generic[_InnerT]):
-    """Context to automatically disconnects something at the end of a block.
+    """ Context to automatically disconnect something at the end of a block.
+
+    Similar to contextlib.closing but calls .disconnect() method on exit.
 
     Code like this:
 
