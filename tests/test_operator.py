@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 from clickhouse_plugin import ClickHouseOperator
-from .util import LocalClickHouseHook
+from tests.util import LocalClickHouseHook
 
 
 class ClickHouseOperatorTestCase(unittest.TestCase):

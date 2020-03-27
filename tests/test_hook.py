@@ -2,25 +2,22 @@ from unittest import TestCase, mock
 
 from clickhouse_driver.errors import ServerException, ErrorCodes
 
-from .util import LocalClickHouseHook
+from tests.util import LocalClickHouseHook
 
 
 class ClientFromUrlTestCase(TestCase):
-    def test_simple(self):
-        hook = LocalClickHouseHook()
-        res = hook.run('SHOW DATABASES')
-        print(res)
-
     def test_temp_table(self):
         hook = LocalClickHouseHook()
         temp_table_name = 'test_temp_table'
         result = hook.run((
             f'CREATE TEMPORARY TABLE {temp_table_name} (test_field UInt8)',
-            f'INSERT INTO {temp_table_name} VALUES (1,), (2,), (3,)',
+            f'INSERT INTO {temp_table_name} '
+            f'SELECT number FROM system.numbers WHERE number < 5 LIMIT 5',
             f'SELECT SUM(test_field) FROM {temp_table_name}',
         ))
-        self.assertListEqual([(6,)], result)
+        self.assertListEqual([(10,)], result)
         try:
+            # a new connection is created
             hook.run(f'SELECT * FROM {temp_table_name}')
         except ServerException as err:
             self.assertEqual(ErrorCodes.UNKNOWN_TABLE, err.code)
