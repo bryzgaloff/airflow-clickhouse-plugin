@@ -30,8 +30,10 @@ setup(
     zip_safe=False,
     entry_points={
         'airflow.plugins': [
-            'airflow_clickhouse_plugin '
-            '= airflow_clickhouse_plugin:ClickHousePlugin',
+            'airflow_clickhouse_hook '
+                '= airflow_clickhouse_plugin:ClickHouseHookPlugin',
+            'airflow_clickhouse_operator '
+                '= airflow_clickhouse_plugin:ClickHouseOperatorPlugin',
         ]
     },
     classifiers=[
