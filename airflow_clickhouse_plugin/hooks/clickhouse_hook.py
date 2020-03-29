@@ -19,7 +19,7 @@ class ClickHouseHook(BaseHook):
 
     def get_conn(self) -> Client:
         conn = self.get_connection(self.clickhouse_conn_id)
-        return ClickHouseHook.create_connection(
+        return self.create_connection(
             host=conn.host or 'localhost',
             port=int(conn.port) if conn.port else 9000,
             user=conn.login or 'default',
