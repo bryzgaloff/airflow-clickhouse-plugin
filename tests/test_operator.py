@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from clickhouse_plugin import ClickHouseOperator
+from airflow_clickhouse_plugin import ClickHouseOperator
 from tests.util import LocalClickHouseHook
 
 
@@ -19,7 +19,7 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._hook_patch = mock.patch(
-            'clickhouse_plugin.hooks.clickhouse_hook.ClickHouseHook',
+            'airflow_clickhouse_plugin.hooks.clickhouse_hook.ClickHouseHook',
             new=LocalClickHouseHook,
         )
         cls._hook_patch.__enter__()

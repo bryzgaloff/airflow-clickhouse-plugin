@@ -3,10 +3,10 @@
 import os
 from setuptools import setup, find_packages
 
-# get key package details from clickhouse_plugin/__version__.py
+# get key package details from airflow_clickhouse_plugin/__version__.py
 about = {}
 here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, 'clickhouse_plugin', '__version__.py')) as f:
+with open(os.path.join(here, 'airflow_clickhouse_plugin', '__version__.py')) as f:
     exec(f.read(), about)
 
 # load the README file and use it as the long_description for PyPI
@@ -30,7 +30,8 @@ setup(
     zip_safe=False,
     entry_points={
         'airflow.plugins': [
-            'clickhouse_plugin = clickhouse_plugin:ClickHousePlugin',
+            'airflow_clickhouse_plugin '
+            '= airflow_clickhouse_plugin:ClickHousePlugin',
         ]
     },
     classifiers=[
