@@ -153,6 +153,11 @@ Important note: don't try to insert values using
 
 By default the hook and operator use `connection_id='clickhouse_default'`.
 
+# Contributors
+
+* Anton Bryzgalov, [@bryzgaloff](https://github.com/bryzgaloff)
+* Viktor Taranenko, [@viktortnk](https://github.com/viktortnk)
+
 
 [airflow]: https://airflow.apache.org/
 [ch-driver]: https://github.com/mymarilyn/clickhouse-driver
