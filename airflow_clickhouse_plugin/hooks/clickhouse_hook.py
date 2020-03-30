@@ -19,7 +19,7 @@ class ClickHouseHook(BaseHook):
 
     def get_conn(self) -> Client:
         conn = self.get_connection(self.clickhouse_conn_id)
-        return ClickHouseHook.create_connection(
+        return self.create_connection(
             host=conn.host or 'localhost',
             port=int(conn.port) if conn.port else 9000,
             user=conn.login or 'default',
@@ -91,7 +91,9 @@ _InnerT = TypeVar('_InnerT')
 
 
 class disconnecting(ContextManager, Generic[_InnerT]):
-    """Context to automatically disconnects something at the end of a block.
+    """ Context to automatically disconnect something at the end of a block.
+
+    Similar to contextlib.closing but calls .disconnect() method on exit.
 
     Code like this:
 

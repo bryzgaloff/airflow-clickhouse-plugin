@@ -2,7 +2,7 @@ from typing import *
 
 from airflow.models import BaseOperator
 
-from clickhouse_plugin.hooks import clickhouse_hook
+from airflow_clickhouse_plugin.hooks import clickhouse_hook
 
 
 class ClickHouseOperator(BaseOperator):
