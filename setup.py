@@ -13,6 +13,9 @@ with open(os.path.join(here, 'airflow_clickhouse_plugin', '__version__.py')) as 
 with open(os.path.join(here, 'README.md'), 'r') as f:
     readme = f.read()
 
+with open(os.path.join(here, 'requirements.txt')) as requirements_file:
+    requirements = requirements_file.read().strip().split('\n')
+
 setup(
     name=about['__title__'],
     description=about['__description__'],
@@ -25,7 +28,7 @@ setup(
     packages=find_packages(exclude=('tests',)),
     include_package_data=True,
     python_requires=">=3.7.*",
-    install_requires=['clickhouse-driver', 'apache-airflow'],
+    install_requires=requirements,
     license=about['__license__'],
     zip_safe=False,
     entry_points={
