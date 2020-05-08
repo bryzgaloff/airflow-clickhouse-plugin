@@ -1,6 +1,5 @@
 from unittest import TestCase, mock
 
-import pandas as pd
 from clickhouse_driver.errors import ServerException, ErrorCodes
 
 from tests.util import LocalClickHouseHook
@@ -127,6 +126,8 @@ class HookLogQueryTestCase(TestCase):
 
 class HookGetAsPandasTestCase(TestCase):
     def test_get_pandas_df(self):
+        import pandas as pd
+
         hook = LocalClickHouseHook()
         for sql, expected in (
             (

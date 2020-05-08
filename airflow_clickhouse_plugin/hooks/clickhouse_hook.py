@@ -3,7 +3,6 @@ from typing import *
 
 from airflow.hooks.base_hook import BaseHook
 from clickhouse_driver import Client
-import pandas as pd
 
 
 class ClickHouseHook(BaseHook):
@@ -44,24 +43,18 @@ class ClickHouseHook(BaseHook):
         with disconnecting(self.get_conn()) as client:
             return next(client.execute_iter(sql, params=parameters))
 
-    def get_pandas_df(self, sql: str) -> pd.DataFrame:
-        query_result = self.run(sql, columnar=True, with_column_types=True)
-        df = pd.DataFrame()
-        for index, field in enumerate(query_result[1]):
-            col_name = field[0]
-            try:
-                df[col_name] = query_result[0][index]
-            except IndexError:
-                df[col_name] = ()
+    def get_pandas_df(self, sql: str):
+        import pandas as pd
 
-        return df
+        rows, columns_defs = self.run(sql, with_column_types=True)
+        columns = [column_name for column_name, _ in columns_defs]
+        return pd.DataFrame(rows, columns=columns)
 
     def run(
             self,
             sql: Union[str, Iterable[str]],
             parameters: Union[dict, list, tuple, Generator] = None,
             with_column_types: bool = False,
-            columnar: bool = False,
     ) -> Any:
         if isinstance(sql, str):
             sql = (sql,)
@@ -73,7 +66,6 @@ class ClickHouseHook(BaseHook):
                     s,
                     params=parameters,
                     with_column_types=with_column_types,
-                    columnar=columnar,
                 )
 
         return last_result
