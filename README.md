@@ -156,6 +156,7 @@ By default the hook and operator use `connection_id='clickhouse_default'`.
 
 * Anton Bryzgalov, [@bryzgaloff](https://github.com/bryzgaloff)
 * Viktor Taranenko, [@viktortnk](https://github.com/viktortnk)
+* Danila Ganchar, [@d-ganchar](https://github.com/d-ganchar)
 
 
 [airflow]: https://airflow.apache.org/
