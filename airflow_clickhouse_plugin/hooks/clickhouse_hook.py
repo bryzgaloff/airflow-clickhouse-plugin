@@ -43,13 +43,18 @@ class ClickHouseHook(BaseHook):
         with disconnecting(self.get_conn()) as client:
             return next(client.execute_iter(sql, params=parameters))
 
-    def get_pandas_df(self, *args, **kwargs):
-        raise NotImplementedError
+    def get_pandas_df(self, sql: str):
+        import pandas as pd
+
+        rows, columns_defs = self.run(sql, with_column_types=True)
+        columns = [column_name for column_name, _ in columns_defs]
+        return pd.DataFrame(rows, columns=columns)
 
     def run(
             self,
             sql: Union[str, Iterable[str]],
             parameters: Union[dict, list, tuple, Generator] = None,
+            with_column_types: bool = False,
     ) -> Any:
         if isinstance(sql, str):
             sql = (sql,)
@@ -57,7 +62,12 @@ class ClickHouseHook(BaseHook):
             last_result = None
             for s in sql:
                 self._log_query(s, parameters)
-                last_result = conn.execute(s, params=parameters)
+                last_result = conn.execute(
+                    s,
+                    params=parameters,
+                    with_column_types=with_column_types,
+                )
+
         return last_result
 
     def _log_query(

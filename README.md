@@ -75,7 +75,6 @@ Supports all of the methods of the Airflow [BaseHook][airflow-base-hook]
   * Every `run` call uses a new connection which is closed when finished.
 * `get_conn()`: returns the underlying
     [clickhouse_driver.Client][ch-driver-client] instance.
-* `get_pandas_df` is not implemented.
 
 ## Examples
 
