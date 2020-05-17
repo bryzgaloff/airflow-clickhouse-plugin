@@ -152,6 +152,10 @@ Important note: don't try to insert values using
 
 By default the hook and operator use `connection_id='clickhouse_default'`.
 
+# How to run tests
+
+From the root project directory: `python -m unittest discover -s tests`
+
 # Contributors
 
 * Anton Bryzgalov, [@bryzgaloff](https://github.com/bryzgaloff)
