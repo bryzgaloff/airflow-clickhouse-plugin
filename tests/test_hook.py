@@ -131,11 +131,14 @@ class HookGetAsPandasTestCase(TestCase):
         hook = LocalClickHouseHook()
         for sql, expected in (
             (
-                """
-                SELECT number, concat('result: ', toString(number + number)) AS n_sum
-                 FROM system.numbers
-                WHERE number < 4 LIMIT 3
-                """,
+                '''
+                SELECT
+                    number,
+                    concat('result: ', toString(number + number)) AS n_sum
+                FROM system.numbers
+                WHERE number < 4
+                LIMIT 3
+                ''',
                 pd.DataFrame.from_dict({
                     'number': (0, 1, 2),
                     'n_sum': ('result: 0', 'result: 2', 'result: 4'),
@@ -143,14 +146,24 @@ class HookGetAsPandasTestCase(TestCase):
             ),
             # empty df
             (
-                """
-                SELECT number, concat('result: ', toString(number + number)) AS n_sum
-                 FROM (SELECT number FROM system.numbers WHERE number < 4 LIMIT 3)
+                '''
+                SELECT
+                    number,
+                    concat('result: ', toString(number + number)) AS n_sum
+                FROM (
+                    SELECT number
+                    FROM system.numbers
+                    WHERE number < 4
+                    LIMIT 3
+                )
                 WHERE number > 4
-                """,
+                ''',
                 pd.DataFrame(columns=['number', 'n_sum'])
             )
         ):
             df = hook.get_pandas_df(sql)
             self.assertListEqual(list(df.columns), list(expected.columns))
-            self.assertListEqual(df.to_dict('records'), expected.to_dict('records'))
+            self.assertListEqual(
+                df.to_dict('records'),
+                expected.to_dict('records'),
+            )
