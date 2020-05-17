@@ -75,7 +75,6 @@ Supports all of the methods of the Airflow [BaseHook][airflow-base-hook]
   * Every `run` call uses a new connection which is closed when finished.
 * `get_conn()`: returns the underlying
     [clickhouse_driver.Client][ch-driver-client] instance.
-* `get_pandas_df` is not implemented.
 
 ## Examples
 
@@ -153,10 +152,15 @@ Important note: don't try to insert values using
 
 By default the hook and operator use `connection_id='clickhouse_default'`.
 
+# How to run tests
+
+From the root project directory: `python -m unittest discover -s tests`
+
 # Contributors
 
 * Anton Bryzgalov, [@bryzgaloff](https://github.com/bryzgaloff)
 * Viktor Taranenko, [@viktortnk](https://github.com/viktortnk)
+* Danila Ganchar, [@d-ganchar](https://github.com/d-ganchar)
 
 
 [airflow]: https://airflow.apache.org/

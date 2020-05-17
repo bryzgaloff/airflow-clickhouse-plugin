@@ -27,7 +27,7 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls._hook_patch.__exit__()
+        cls._hook_patch.__exit__(None, None, None)
 
 
 if __name__ == '__main__':
