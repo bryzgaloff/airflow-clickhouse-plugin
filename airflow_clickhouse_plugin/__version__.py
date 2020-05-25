@@ -9,8 +9,8 @@ __title__ = 'airflow-clickhouse-plugin'
 __description__ = \
     'airflow-clickhouse-plugin - ' \
     'Airflow plugin to execute ClickHouse commands and queries'
-__version__ = '0.5.3'
+__version__ = '0.5.4'
+__url__ = 'https://github.com/whisklabs/airflow-clickhouse-plugin'
+__license__ = 'MIT License'
 __author__ = 'Viktor Taranenko'
 __author_email__ = 'viktor@samsungnext.com'
-__license__ = 'MIT License'
-__url__ = 'https://github.com/whisklabs/airflow-clickhouse-plugin'
