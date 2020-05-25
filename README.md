@@ -161,6 +161,7 @@ From the root project directory: `python -m unittest discover -s tests`
 * Anton Bryzgalov, [@bryzgaloff](https://github.com/bryzgaloff)
 * Viktor Taranenko, [@viktortnk](https://github.com/viktortnk)
 * Danila Ganchar, [@d-ganchar](https://github.com/d-ganchar)
+* Mikhail, [@glader](https://github.com/glader)
 
 
 [airflow]: https://airflow.apache.org/
