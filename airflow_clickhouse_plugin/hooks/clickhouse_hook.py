@@ -19,29 +19,23 @@ class ClickHouseHook(BaseHook):
 
     def get_conn(self) -> Client:
         conn = self.get_connection(self.clickhouse_conn_id)
-        extra_connection_kwargs = {}
-        if conn.extra_dejson.get('client_name'):
-            extra_connection_kwargs['client_name'] = conn.extra_dejson['client_name']
-        if conn.extra_dejson.get('connect_timeout'):
-            extra_connection_kwargs['connect_timeout'] = conn.extra_dejson['connect_timeout']
-        if conn.extra_dejson.get('send_receive_timeout'):
-            extra_connection_kwargs['send_receive_timeout'] = conn.extra_dejson['send_receive_timeout']
-        if conn.extra_dejson.get('sync_request_timeout'):
-            extra_connection_kwargs['sync_request_timeout'] = conn.extra_dejson['sync_request_timeout']
-        return self.create_connection(
-            host=conn.host or 'localhost',
-            port=int(conn.port) if conn.port else 9000,
-            user=conn.login or 'default',
-            password=conn.password or '',
-            database=self.database or conn.schema or 'default',
-            **extra_connection_kwargs,
-        )
+        connection_kwargs = conn.extra_dejson.copy()
+        connection_kwargs['host'] = conn.host or 'localhost'
+        if conn.port:
+            connection_kwargs['port'] = int(conn.port)
+        if conn.login:
+            connection_kwargs['user'] = conn.login
+        if conn.password:
+            connection_kwargs['password'] = conn.password
+        if self.database:
+            connection_kwargs['database'] = self.database
+        elif conn.schema:
+            connection_kwargs['database'] = conn.schema
+        return self.create_connection(**connection_kwargs)
 
     @classmethod
-    def create_connection(
-            cls, host: str, port: int, database: str, user: str, password: str, **extra_connection_kwargs
-    ) -> Client:
-        return Client(host, port, database, user, password, **extra_connection_kwargs)
+    def create_connection(cls, **kwargs) -> Client:
+        return Client(**kwargs)
 
     def get_records(self, sql: str, parameters: dict = None) -> List[Tuple]:
         self._log_query(sql, parameters)
