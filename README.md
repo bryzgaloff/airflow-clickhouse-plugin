@@ -82,9 +82,10 @@ Supports all of the methods of the Airflow [BaseHook][airflow-base-hook]
 
 ```python
 from airflow import DAG
-from airflow.operators.clickhouse_plugin import ClickHouseOperator
+from airflow.operators.clickhouse_operator import ClickHouseOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
+
 
 with DAG(
         dag_id='update_income_aggregate',
