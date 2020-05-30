@@ -86,7 +86,6 @@ from airflow.operators.clickhouse_operator import ClickHouseOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 
-
 with DAG(
         dag_id='update_income_aggregate',
         start_date=days_ago(2),
@@ -163,6 +162,7 @@ From the root project directory: `python -m unittest discover -s tests`
 * Viktor Taranenko, [@viktortnk](https://github.com/viktortnk)
 * Danila Ganchar, [@d-ganchar](https://github.com/d-ganchar)
 * Mikhail, [@glader](https://github.com/glader)
+* Alexander Chashnikov, [@ne1r0n](https://github.com/ne1r0n)
 
 
 [airflow]: https://airflow.apache.org/
