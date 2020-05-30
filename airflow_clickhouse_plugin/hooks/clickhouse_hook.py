@@ -21,20 +21,16 @@ class ClickHouseHook(BaseHook):
         conn = self.get_connection(self.clickhouse_conn_id)
         connection_kwargs = conn.extra_dejson.copy()
         if conn.port:
-            connection_kwargs['port'] = int(conn.port)
+            connection_kwargs.update(port=int(conn.port))
         if conn.login:
-            connection_kwargs['user'] = conn.login
+            connection_kwargs.update(user=conn.login)
         if conn.password:
-            connection_kwargs['password'] = conn.password
+            connection_kwargs.update(password=conn.password)
         if self.database:
-            connection_kwargs['database'] = self.database
+            connection_kwargs.update(database=self.database)
         elif conn.schema:
-            connection_kwargs['database'] = conn.schema
-        return self.create_connection(conn.host or 'localhost', **connection_kwargs)
-
-    @classmethod
-    def create_connection(cls, host: str, **kwargs) -> Client:
-        return Client(host, **kwargs)
+            connection_kwargs.update(database=conn.schema)
+        return Client(conn.host or 'localhost', **connection_kwargs)
 
     def get_records(self, sql: str, parameters: dict = None) -> List[Tuple]:
         self._log_query(sql, parameters)
