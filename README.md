@@ -195,6 +195,20 @@ By default the hook and operator use `connection_id='clickhouse_default'`.
 
 # How to run tests
 
+## Unit tests
+
+From the root project directory: `python -m unittest discover -s tests/unit`
+
+## Integration tests
+
+Integration tests require an access to ClickHouse server. Tests use connection
+    URI defined [via environment variable][airflow-conn-env]
+    `AIRFLOW_CONN_CLICKHOUSE_DEFAULT` with `clickhouse://localhost` as default.
+
+Run from the project root: `python -m unittest discover -s tests/integration` 
+
+## All tests
+
 From the root project directory: `python -m unittest discover -s tests`
 
 # Contributors
@@ -219,3 +233,4 @@ From the root project directory: `python -m unittest discover -s tests`
 [ch-driver-connection]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#connection
 [airflow-connection-attrs]: https://airflow.apache.org/docs/1.10.6/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
 [airflow-conn-dejson]: https://airflow.apache.org/docs/1.10.6/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
+[airflow-conn-env]: https://airflow.apache.org/docs/stable/howto/connection/index.html#storing-a-connection-in-environment-variables

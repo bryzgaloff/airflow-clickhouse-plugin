@@ -2,13 +2,14 @@ from unittest.case import TestCase
 
 from clickhouse_driver.errors import ServerException, ErrorCodes
 
-from tests.integration.util import LocalClickHouseHook
+from airflow_clickhouse_plugin import ClickHouseHook
+from tests.integration.util import ClickHouseConnectionEnvVarTestCase
 
 
-class BasicTestCase(TestCase):
+class BasicTestCase(ClickHouseConnectionEnvVarTestCase):
     def test_temp_table(self):
-        hook = LocalClickHouseHook()
         temp_table_name = 'test_temp_table'
+        hook = ClickHouseHook()
         result = hook.run((
             f'CREATE TEMPORARY TABLE {temp_table_name} (test_field UInt8)',
             f'INSERT INTO {temp_table_name} '
@@ -25,11 +26,10 @@ class BasicTestCase(TestCase):
             raise AssertionError('server did not raise an error')
 
 
-class GetAsPandasTestCase(TestCase):
+class GetAsPandasTestCase(ClickHouseConnectionEnvVarTestCase):
     def test_get_pandas_df(self):
         import pandas as pd
 
-        hook = LocalClickHouseHook()
         for sql, expected in (
             (
                 '''
@@ -62,7 +62,7 @@ class GetAsPandasTestCase(TestCase):
                 pd.DataFrame(columns=['number', 'n_sum'])
             )
         ):
-            df = hook.get_pandas_df(sql)
+            df = ClickHouseHook().get_pandas_df(sql)
             self.assertListEqual(list(df.columns), list(expected.columns))
             self.assertListEqual(
                 df.to_dict('records'),

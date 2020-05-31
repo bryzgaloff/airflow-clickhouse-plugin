@@ -1,8 +1,6 @@
 import unittest
-from unittest import mock
 
 from airflow_clickhouse_plugin import ClickHouseOperator
-from tests.integration.util import LocalClickHouseHook
 
 
 class BasicTestCase(unittest.TestCase):
@@ -15,19 +13,6 @@ class BasicTestCase(unittest.TestCase):
         )
         last_result = operator.execute(context=dict())
         self.assertListEqual([(value,)], last_result)
-
-    @classmethod
-    def setUpClass(cls):
-        cls._hook_patch = mock.patch(
-            'airflow_clickhouse_plugin.hooks.clickhouse_hook.ClickHouseHook',
-            new=LocalClickHouseHook,
-        )
-        cls._hook_patch.__enter__()
-    _hook_patch: mock._patch
-
-    @classmethod
-    def tearDownClass(cls):
-        cls._hook_patch.__exit__(None, None, None)
 
 
 if __name__ == '__main__':
