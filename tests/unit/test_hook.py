@@ -3,143 +3,103 @@ from typing import Any, Dict
 from unittest import TestCase, mock
 
 import airflow.models
-import clickhouse_driver.connection
-import clickhouse_driver.defines
-import clickhouse_driver.protocol
+import clickhouse_driver
 
 from airflow_clickhouse_plugin import ClickHouseHook
 
 
 class ClickHouseConnectionParamsTestCase(TestCase):
-    def test_plain_arguments(self):
-        plain_arguments = dict(host='hst', password='pass')
-        self._connection_kwargs.update(plain_arguments)
-        connection = self._connection_from_hook()
-        for key, value in plain_arguments.items():
-            with self.subTest(key):
-                self.assertEqual(value, getattr(connection, key))
+    def test_port(self):
+        port = 8888
+        self._connection_kwargs.update(port=str(port))
+        self._test_client_initiated_with(port=port)
 
-    def test_user(self):
+    def test_login(self):
         login = 'user'
         self._connection_kwargs.update(login=login)
-        self.assertEqual(login, self._connection_from_hook().user)
+        self._test_client_initiated_with(user=login)
+
+    def test_password(self):
+        password = 'password'
+        self._connection_kwargs.update(password=password)
+        self._test_client_initiated_with(password=password)
 
     def test_database(self):
         database = 'test-db-from-init-args'
-        self.assertEqual(
-            database,
-            ClickHouseHook(database=database).get_conn().connection.database,
-        )
+        ClickHouseHook(database=database).get_conn()
+        self._assert_client_initiated_with(database=database)
 
     def test_schema(self):
         schema = 'test-db-from-connection-schema'
         self._connection_kwargs.update(schema=schema)
-        self.assertEqual(schema, self._connection_from_hook().database)
+        self._test_client_initiated_with(database=schema)
 
-    def test_port(self):
-        port = 8888
-        self._connection_kwargs.update(port=str(port))
-        self.assertEqual(port, self._connection_from_hook().port)
+    def test_host(self):
+        host = 'test-host'
+        self._connection_kwargs.update(host=host)
+        self._test_client_initiated_with(host)
 
     def test_host_missing(self):
-        self.assertEqual('localhost', self._connection_from_hook().host)
+        self._test_client_initiated_with('localhost')
 
-    def test_plain_extra_params(self):
+    def test_extra_params(self):
         extra_params = dict(
-            connect_timeout=123,
-            send_receive_timeout=456,
-            sync_request_timeout=789,
+            int_param=123,
+            float_param=0.456,
+            list_param=['abc', True, 12.34],
+            obj_param={'a': 'b', 'c': [1, 2, 3], 'd': {'e': False}},
+            string_param='value',
+            true_param=True,
+            false_param=False,
+            none_param=None,
         )
-        self._connection_kwargs.update(extra=extra_params)
-        connection = self._connection_from_hook()
         for key, value in extra_params.items():
             with self.subTest(key):
-                self.assertEqual(value, getattr(connection, key))
+                self._connection_kwargs.clear()
+                extra_kwarg = {key: value}
+                self._connection_kwargs['extra'] = extra_kwarg
+                self._test_client_initiated_with(**extra_kwarg)
 
-    def test_client_name(self):
-        client_name = 'test-client-name'
-        self._connection_kwargs.update(extra=dict(client_name=client_name))
-        self.assertEqual(
-            f'{clickhouse_driver.defines.DBMS_NAME} {client_name}',
-            self._connection_from_hook().client_name,
-        )
+    def _test_client_initiated_with(self, *args, **kwargs) -> None:
+        self._client_mock.reset_mock()
+        ClickHouseHook().get_conn()  # instantiate connection
+        self._assert_client_initiated_with(*args, **kwargs)
 
-    def test_compression_enabled(self):
-        # to pass successfully requires: pip install clickhouse-driver[lz4]
-        comp_block_size = 123456
-        for compression in (True, 'lz4'):
-            with self.subTest(compression):
-                self._connection_kwargs.update(extra=dict(
-                    compression=compression,
-                    compress_block_size=comp_block_size,
-                ))
-                connection = self._connection_from_hook()
-                self.assertEqual(
-                    clickhouse_driver.protocol.Compression.ENABLED,
-                    connection.compression,
-                )
-                self.assertEqual(comp_block_size, connection.compress_block_size)
+    def _assert_client_initiated_with(self, *args, **kwargs) -> None:
+        if not args:
+            args = ('localhost',)  # host argument defaults to localhost
+        args = (clickhouse_driver.Client,) + args
+        self._client_mock.assert_called_once_with(*args, **kwargs)
 
-    def test_compression_disabled(self):
-        self._connection_kwargs.update(extra=dict(compression=False))
-        self.assertEqual(
-            clickhouse_driver.protocol.Compression.DISABLED,
-            self._connection_from_hook().compression,
-        )
-
-    def test_secure(self):
-        for secure in (False, True):
-            with self.subTest(secure):
-                self._connection_kwargs.update(extra=dict(secure=secure))
-                self.assertEqual(
-                    secure,
-                    self._connection_from_hook().secure_socket,
-                )
-
-    def test_verify(self):
-        for verify in (False, True):
-            with self.subTest(verify):
-                self._connection_kwargs.update(extra=dict(verify=verify))
-                self.assertEqual(
-                    verify,
-                    self._connection_from_hook().verify_cert,
-                )
-
-    def test_ssl_options(self):
-        ssl_options = dict(ssl_version='0.0', ca_certs='/a/b', ciphers='c')
-        self._connection_kwargs.update(extra=ssl_options)
-        for option, value in ssl_options.items():
-            with self.subTest(option):
-                self.assertEqual(
-                    value,
-                    self._connection_from_hook().ssl_options[option],
-                )
-
-    @staticmethod
-    def _connection_from_hook() -> clickhouse_driver.connection.Connection:
-        return ClickHouseHook().get_conn().connection
-
-    _connection_kwargs: Dict[str, Any]
-    _mocked_hook: mock._patch
+    _connection_kwargs: Dict[str, Any] = {}
+    _patched_hook_connection: mock._patch
+    _patched_client: mock._patch
+    _client_mock: mock.Mock
 
     @classmethod
     def setUpClass(cls):
-        cls._mocked_hook = mock.patch(
+        cls._patched_hook_connection = mock.patch(
             'airflow_clickhouse_plugin.ClickHouseHook.get_connection',
             lambda self, conn_id: airflow.models.Connection(**dict(
                 cls._connection_kwargs,
                 extra=json.dumps(cls._connection_kwargs['extra']),
             ) if 'extra' in cls._connection_kwargs else cls._connection_kwargs),
         )
-        cls._mocked_hook.__enter__()
-
-    @classmethod
-    def setUp(cls):
-        cls._connection_kwargs = {}
+        cls._patched_hook_connection.__enter__()
 
     @classmethod
     def tearDownClass(cls) -> None:
-        cls._mocked_hook.__exit__(None, None, None)
+        cls._patched_hook_connection.__exit__(None, None, None)
+
+    def setUp(self):
+        self._connection_kwargs.clear()
+        self._client_mock = mock.Mock()
+        self._patched_client = \
+            mock.patch('clickhouse_driver.Client.__new__', self._client_mock)
+        self._patched_client.__enter__()
+
+    def tearDown(self):
+        self._patched_client.__exit__(None, None, None)
 
 
 class HookLogQueryTestCase(TestCase):
