@@ -1,4 +1,4 @@
-from unittest.case import TestCase
+import unittest
 
 from clickhouse_driver.errors import ServerException, ErrorCodes
 
@@ -18,7 +18,7 @@ class BasicTestCase(ClickHouseConnectionEnvVarTestCase):
         ))
         self.assertListEqual([(10,)], result)
         try:
-            # a new connection is created
+            # a new connection is created and temp table is absent
             hook.run(f'SELECT * FROM {temp_table_name}')
         except ServerException as err:
             self.assertEqual(ErrorCodes.UNKNOWN_TABLE, err.code)
@@ -26,28 +26,40 @@ class BasicTestCase(ClickHouseConnectionEnvVarTestCase):
             raise AssertionError('server did not raise an error')
 
 
-class GetAsPandasTestCase(ClickHouseConnectionEnvVarTestCase):
-    def test_get_pandas_df(self):
+class GetAsPandasDfTestCase(ClickHouseConnectionEnvVarTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        global pd
         import pandas as pd
 
-        for sql, expected in (
-            (
-                '''
+    def _test(self, sql: str, expected_df):
+        actual_df = ClickHouseHook().get_pandas_df(sql)
+        self.assertListEqual(list(actual_df.columns), list(expected_df.columns))
+        self.assertListEqual(
+            actual_df.to_dict('records'),
+            expected_df.to_dict('records'),
+        )
+
+    def test(self):
+        self._test(
+            '''
                 SELECT
                     number,
-                    concat('result: ', toString(number + number)) AS n_sum
+                    concat('result: ', toString(number + number)) AS nSum
                 FROM system.numbers
                 WHERE number < 4
                 LIMIT 3
-                ''',
-                pd.DataFrame.from_dict({
-                    'number': (0, 1, 2),
-                    'n_sum': ('result: 0', 'result: 2', 'result: 4'),
-                })
-            ),
-            # empty df
-            (
-                '''
+            ''',
+            pd.DataFrame.from_dict(dict(
+                number=(0, 1, 2),
+                nSum=('result: 0', 'result: 2', 'result: 4'),
+            ))
+        )
+
+    def test_empty_df(self):
+        self._test(
+            '''
                 SELECT
                     number,
                     concat('result: ', toString(number + number)) AS n_sum
@@ -58,13 +70,10 @@ class GetAsPandasTestCase(ClickHouseConnectionEnvVarTestCase):
                     LIMIT 3
                 )
                 WHERE number > 4
-                ''',
-                pd.DataFrame(columns=['number', 'n_sum'])
-            )
-        ):
-            df = ClickHouseHook().get_pandas_df(sql)
-            self.assertListEqual(list(df.columns), list(expected.columns))
-            self.assertListEqual(
-                df.to_dict('records'),
-                expected.to_dict('records'),
-            )
+            ''',
+            pd.DataFrame(columns=['number', 'n_sum']),
+        )
+
+
+if __name__ == '__main__':
+    unittest.main()
