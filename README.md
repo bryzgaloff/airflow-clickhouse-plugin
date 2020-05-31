@@ -59,7 +59,8 @@ Supports all of the methods of the Airflow [BaseHook][airflow-base-hook]
     as a list of tuples. Materializes all the records in memory.
 * `get_first(sql: str, parameters: dict=None)`: returns the first row of the
     result. Does not load the whole dataset into memory because of using
-    [execute_iter][ch-driver-execute-iter].
+    [execute_iter][ch-driver-execute-iter]. If the dataset is empty then returns
+    `None` following [fetchone][python-dbapi2-fetchone] semantics.
 * `run(sql, parameters)`: runs a single query (specified argument of type `str`)
     or multiple queries (if iterable of `str`). `parameters` can have any form
     supported by [execute][ch-driver-execute] method of clickhouse-driver.
@@ -234,3 +235,4 @@ From the root project directory: `python -m unittest discover -s tests`
 [airflow-connection-attrs]: https://airflow.apache.org/docs/1.10.6/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
 [airflow-conn-dejson]: https://airflow.apache.org/docs/1.10.6/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
 [airflow-conn-env]: https://airflow.apache.org/docs/stable/howto/connection/index.html#storing-a-connection-in-environment-variables
+[python-dbapi2-fetchone]: https://www.python.org/dev/peps/pep-0249/#fetchone

@@ -37,10 +37,13 @@ class ClickHouseHook(BaseHook):
         with disconnecting(self.get_conn()) as client:
             return client.execute(sql, params=parameters)
 
-    def get_first(self, sql: str, parameters: dict = None) -> Tuple:
+    def get_first(self, sql: str, parameters: dict = None) -> Optional[Tuple]:
         self._log_query(sql, parameters)
         with disconnecting(self.get_conn()) as client:
-            return next(client.execute_iter(sql, params=parameters))
+            try:
+                return next(client.execute_iter(sql, params=parameters))
+            except StopIteration:
+                return None
 
     def get_pandas_df(self, sql: str):
         import pandas as pd
