@@ -2,16 +2,16 @@ import unittest
 from unittest import mock
 
 from airflow_clickhouse_plugin import ClickHouseOperator
-from tests.util import LocalClickHouseHook
+from tests.integration.util import LocalClickHouseHook
 
 
-class ClickHouseOperatorTestCase(unittest.TestCase):
+class BasicTestCase(unittest.TestCase):
     def test_operator(self):
         value = 1
         operator = ClickHouseOperator(
             task_id='test',
-            sql=('SELECT %(value)s', 'SELECT %(value)s'),
-            parameters={'value': value},
+            sql=('SELECT %(val0)s', 'SELECT %(val1)s'),
+            parameters={'val0': value + 1, 'val1': value},
         )
         last_result = operator.execute(context=dict())
         self.assertListEqual([(value,)], last_result)
