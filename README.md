@@ -11,6 +11,9 @@ Provides `ClickHouseHook` and `ClickHouseOperator` for [Apache Airflow][airflow]
 4. Executed queries are logged in a pretty form.
 5. Uses effective native ClickHouse TCP protocol thanks to 
     [clickhouse-driver][ch-driver-docs]. Does not support HTTP protocol.
+6. Supports extra ClickHouse [connection parameters][ch-driver-connection] such
+    as various timeouts, `compression`, `secure`, etc through Airflow
+    [Connection.extra][airflow-conn-extra] property.
 
 # Installation
 
@@ -28,13 +31,8 @@ To import `ClickHouseOperator` use:
 Supported kwargs:
 * `sql`: templated query (if argument is a single `str`) or queries (if iterable
     of `str`'s).
-* `clickhouse_conn_id`: connection id. Connection schema (all properties are 
-    optional, defaults correspond to the default ClickHouse configuration):
-  * `host`, default: `localhost`;
-  * `port`, default: `9000` (default native ClickHouse protocol port);
-  * `database`, default: `default`;
-  * `user`, default: `default`;
-  * `password`, default: `''` (empty).
+* `clickhouse_conn_id`: connection id. Connection schema is described
+    [below](#clickhouse-connection-schema).
 * `parameters`: passed to clickhouse-driver [execute method][ch-driver-execute].
   * If multiple queries are provided via `sql` then the parameters are passed to
       _all_ of them.
@@ -51,7 +49,8 @@ To import `ClickHouseHook` use:
     `from airflow.hooks.clickhouse_hook import ClickHouseHook`
 
 Supported kwargs of constructor (`__init__` method):
-* `clickhouse_conn_id`: connection id. See connection schema above.
+* `clickhouse_conn_id`: connection id. Connection schema is described
+    [below](#clickhouse-connection-schema).
 * `database`: if present, overrides database defined by connection.
 
 Supports all of the methods of the Airflow [BaseHook][airflow-base-hook]
@@ -76,13 +75,55 @@ Supports all of the methods of the Airflow [BaseHook][airflow-base-hook]
 * `get_conn()`: returns the underlying
     [clickhouse_driver.Client][ch-driver-client] instance.
 
+## ClickHouse Connection schema
+
+[clickhouse_driver.Client][ch-driver-client] is initiated with attributes stored
+    in Airflow [Connection attributes][airflow-connection-attrs]. The mapping of
+    the attributes is listed below:
+  
+| Airflow Connection attribute | `Client.__init__` argument |
+| --- | --- |
+| `host` | `host` |
+| `port` | `port` |
+| `schema` | `database` |
+| `login` | `user` |
+| `password` | `password` |
+
+If you pass `database` argument to `ClickHouseOperator` or `ClickHouseHook`
+    explicitly then it is passed to the `Client` instead of the `schema`
+    attribute of the Airflow connection.
+
+### Extra arguments
+
+You may also pass [additional arguments][ch-driver-connection], such as
+    timeouts, `compression`, `secure`, etc through
+    [Connection.extra][airflow-conn-extra] attribute. The attribute should
+    contain a JSON object which will be [deserialized][airflow-conn-dejson] and
+    all of its properties will be passed as-is to the `Client`.
+
+For example, if Airflow connection contains `extra={"secure":true}` then
+    the `Client.__init__` will receive `secure=True` keyword argument in
+    addition to other non-empty connection attributes.
+
+### Default values
+
+If the Airflow connection attribute is not set then it is not passed to the
+    `Client` at all. In that case the default value of the corresponding
+    [clickhouse_driver.Connection][ch-driver-connection] argument is used (e.g.
+    `user` defaults to `'default'`).
+
+This means that Airflow ClickHouse Plugin does not itself define any default
+    values for the ClickHouse connection. You may fully rely on default values
+    of the `clickhouse-driver` version you use. The only exception is `host`: if
+    the attribute of Airflow connection is not set then `'localhost'` is used.
+
 ## Examples
 
 ### ClickHouseOperator
 
 ```python
 from airflow import DAG
-from airflow.operators.clickhouse_plugin import ClickHouseOperator
+from airflow.operators.clickhouse_operator import ClickHouseOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 
@@ -162,6 +203,7 @@ From the root project directory: `python -m unittest discover -s tests`
 * Viktor Taranenko, [@viktortnk](https://github.com/viktortnk)
 * Danila Ganchar, [@d-ganchar](https://github.com/d-ganchar)
 * Mikhail, [@glader](https://github.com/glader)
+* Alexander Chashnikov, [@ne1r0n](https://github.com/ne1r0n)
 
 
 [airflow]: https://airflow.apache.org/
@@ -173,3 +215,7 @@ From the root project directory: `python -m unittest discover -s tests`
 [ch-driver-execute-iter]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#streaming-results
 [ch-driver-insert]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#inserting-data
 [ch-driver-client]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#client
+[airflow-conn-extra]: https://airflow.apache.org/docs/stable/_api/airflow/models/connection/index.html#airflow.models.connection.Connection.extra
+[ch-driver-connection]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#connection
+[airflow-connection-attrs]: https://airflow.apache.org/docs/1.10.6/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
+[airflow-conn-dejson]: https://airflow.apache.org/docs/1.10.6/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
