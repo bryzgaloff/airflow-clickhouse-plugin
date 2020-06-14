@@ -17,7 +17,6 @@ class ClickHouseSqlSensor(SqlSensor):
         success: Callable[[Any], bool] = None,
         failure: Callable[[Any], bool] = None,
         fail_on_empty: bool = False,
-        allow_null: bool = True,
         *args,
         **kwargs,
     ):
@@ -32,33 +31,33 @@ class ClickHouseSqlSensor(SqlSensor):
             **kwargs,
         )
         self._database = database
-        self.allow_null = allow_null
 
     def _get_hook(self) -> ClickHouseHook:
-        return ClickHouseHook(clickhouse_conn_id=self.conn_id, database=self._database)
+        return ClickHouseHook(
+            clickhouse_conn_id=self.conn_id,
+            database=self._database,
+        )
 
     def poke(self, context: Optional[Dict[str, Any]]) -> bool:
-        """
-        Since Airflow 1.10.7 SqlSensor uses _get_hook to get database hook.
-        """
         if hasattr(super(), '_get_hook'):
+            # .poke in Airflow≥1.10.7 will call overridden _get_hook method
             return super().poke(context)
         else:
-            return self.__poke_backport()
+            # hook used by .poke in Airflow≤1.10.6 can not be overridden
+            return self.__poke_clickhouse()
 
-    def __poke_backport(self) -> bool:
-        """
-        https://github.com/apache/airflow/blob/1.10.10/airflow/sensors/sql_sensor.py#L86
-        """
-
+    def __poke_clickhouse(self) -> bool:
+        # github.com/apache/airflow/blob/1.10.6/airflow/sensors/sql_sensor.py#L71
         hook = self._get_hook()
-
-        self.log.info('Poking: %s (with parameters %s)', self.sql, self.parameters)
+        self.log.info(
+            'Poking: %s (with parameters %s)',
+            self.sql, self.parameters,
+        )
         records = hook.get_records(self.sql, self.parameters)
         if not records:
             if self.fail_on_empty:
                 raise AirflowException(
-                    'No rows returned, raising as per fail_on_empty flag'
+                    'No rows returned, raising as per fail_on_empty flag',
                 )
             else:
                 return False
@@ -67,25 +66,20 @@ class ClickHouseSqlSensor(SqlSensor):
             if callable(self.failure):
                 if self.failure(first_cell):
                     raise AirflowException(
-                        'Failure criteria met. self.failure({}) returned True'.format(
-                            first_cell
-                        )
+                        'Failure criteria met. self.failure({}) returned True'
+                            .format(first_cell),
                     )
             else:
                 raise AirflowException(
-                    'self.failure is present, but not callable -> {}'.format(
-                        self.success
-                    )
+                    'self.failure is present, but not callable -> {}'
+                        .format(self.success),
                 )
         if self.success is not None:
             if callable(self.success):
                 return self.success(first_cell)
             else:
                 raise AirflowException(
-                    'self.success is present, but not callable -> {}'.format(
-                        self.success
-                    )
+                    'self.success is present, but not callable -> {}'
+                        .format(self.success),
                 )
-        if self.allow_null:
-            return first_cell is None or bool(first_cell)
-        return bool(first_cell)
+        return str(first_cell) not in ('0', '')
