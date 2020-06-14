@@ -1,4 +1,4 @@
-from typing import Dict, Callable, Any
+from typing import Dict, Callable, Any, Optional
 
 from airflow.exceptions import AirflowException
 from airflow.sensors.sql_sensor import SqlSensor
@@ -6,15 +6,18 @@ from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 
 class ClickHouseSqlSensor(SqlSensor):
+    _DEFAULT_CONN_ID = 'clickhouse_default'
+
     def __init__(
         self,
         sql: str = None,
-        clickhouse_conn_id: str = 'clickhouse_default',
+        clickhouse_conn_id: str = _DEFAULT_CONN_ID,
         parameters: Dict[str, Any] = None,
         database: str = None,
         success: Callable[[Any], bool] = None,
         failure: Callable[[Any], bool] = None,
         fail_on_empty: bool = False,
+        allow_null: bool = True,
         *args,
         **kwargs,
     ):
@@ -29,13 +32,26 @@ class ClickHouseSqlSensor(SqlSensor):
             **kwargs,
         )
         self._database = database
+        self.allow_null = allow_null
 
-    def poke(self, context):
+    def _get_hook(self) -> ClickHouseHook:
+        return ClickHouseHook(clickhouse_conn_id=self.conn_id, database=self._database)
+
+    def poke(self, context: Optional[Dict[str, Any]]) -> bool:
+        """
+        Since Airflow 1.10.7 SqlSensor uses _get_hook to get database hook.
+        """
+        if hasattr(super(), '_get_hook'):
+            return super().poke(context)
+        else:
+            return self.__poke_backport()
+
+    def __poke_backport(self) -> bool:
         """
         https://github.com/apache/airflow/blob/1.10.10/airflow/sensors/sql_sensor.py#L86
         """
 
-        hook = ClickHouseHook(clickhouse_conn_id=self.conn_id, database=self._database,)
+        hook = self._get_hook()
 
         self.log.info('Poking: %s (with parameters %s)', self.sql, self.parameters)
         records = hook.get_records(self.sql, self.parameters)
@@ -70,4 +86,6 @@ class ClickHouseSqlSensor(SqlSensor):
                         self.success
                     )
                 )
+        if self.allow_null:
+            return first_cell is None or bool(first_cell)
         return bool(first_cell)

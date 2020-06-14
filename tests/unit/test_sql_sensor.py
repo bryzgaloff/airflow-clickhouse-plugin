@@ -17,8 +17,9 @@ class ClickHouseSqlSensorTestCase(unittest.TestCase):
         mock_get_records.return_value = []
         self.assertFalse(op.poke(None))
 
+        # this behavior was changed in future versions
         mock_get_records.return_value = [[None]]
-        self.assertFalse(op.poke(None))
+        self.assertTrue(op.poke(None))
 
         mock_get_records.return_value = [['None']]
         self.assertTrue(op.poke(None))
