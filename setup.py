@@ -37,6 +37,8 @@ setup(
                 '= airflow_clickhouse_plugin:ClickHouseHookPlugin',
             'airflow_clickhouse_operator '
                 '= airflow_clickhouse_plugin:ClickHouseOperatorPlugin',
+            'airflow_clickhouse_sql_sensor '
+                '= airflow_clickhouse_plugin:ClickHouseSqlSensorPlugin',
         ]
     },
     classifiers=[
