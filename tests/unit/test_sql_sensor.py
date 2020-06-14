@@ -6,149 +6,104 @@ from airflow_clickhouse_plugin import ClickHouseSqlSensor
 
 
 class ClickHouseSqlSensorTestCase(unittest.TestCase):
-    @mock.patch(
-        'airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor.ClickHouseHook'
-    )
-    def test_clickhouse_sql_sensor_poke(self, mock_hook):
-        op = ClickHouseSqlSensor(task_id='sql_sensor_check', sql='SELECT 1',)
+    def test_clickhouse_sql_sensor_poke(self):
+        op = ClickHouseSqlSensor(task_id='_', sql='',)
+        for return_value, expected_result in (
+                ([], False),
+                ([[None]], True),
+                ([['None']], True),
+                ([[0.0]], True),
+                ([[0]], False),
+                ([['0']], False),
+                ([['1']], True),
+        ):
+            with self.subTest(return_value):
+                self._get_records_mock.return_value = return_value
+                self.assertEqual(expected_result, op.poke(context=None))
 
-        mock_get_records = mock_hook().get_records
+    def test_clickhouse_sql_sensor_poke_fail_on_empty(self):
+        op = ClickHouseSqlSensor(task_id='_', sql='', fail_on_empty=True)
+        self._get_records_mock.return_value = []
+        with self.assertRaises(AirflowException):
+            op.poke(context=None)
 
-        mock_get_records.return_value = []
-        self.assertFalse(op.poke(None))
+    def test_clickhouse_sql_sensor_poke_success(self):
+        op = ClickHouseSqlSensor(task_id='_', sql='', success=[1].__contains__)
+        for return_value, expected_result in (
+                ([], False),
+                ([[1]], True),
+                ([['1']], False),
+        ):
+            with self.subTest(return_value):
+                self._get_records_mock.return_value = return_value
+                self.assertEqual(expected_result, op.poke(context=None))
 
-        mock_get_records.return_value = [[None]]
-        self.assertTrue(op.poke(None))
+    def test_clickhouse_sql_sensor_poke_failure(self):
+        op = ClickHouseSqlSensor(task_id='_', sql='', failure=[1].__contains__)
 
-        mock_get_records.return_value = [['None']]
-        self.assertTrue(op.poke(None))
+        self._get_records_mock.return_value = []
+        with self.subTest(self._get_records_mock.return_value):
+            self.assertFalse(op.poke(None))
 
-        mock_get_records.return_value = [[0.0]]
-        self.assertTrue(op.poke(None))
+        self._get_records_mock.return_value = [[1]]
+        with self.subTest(self._get_records_mock.return_value):
+            with self.assertRaises(AirflowException):
+                op.poke(context=None)
 
-        mock_get_records.return_value = [[0]]
-        self.assertFalse(op.poke(None))
-
-        mock_get_records.return_value = [['0']]
-        self.assertFalse(op.poke(None))
-
-        mock_get_records.return_value = [['1']]
-        self.assertTrue(op.poke(None))
-
-    @mock.patch(
-        'airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor.ClickHouseHook'
-    )
-    def test_clickhouse_sql_sensor_poke_fail_on_empty(self, mock_hook):
+    def test_clickhouse_sql_sensor_poke_failure_success(self):
         op = ClickHouseSqlSensor(
-            task_id='sql_sensor_check', sql='SELECT 1', fail_on_empty=True,
+            task_id='_', sql='',
+            failure=[1].__contains__, success=[2].__contains__,
         )
+        for return_value, expected_result in (
+                ([], False),
+                ([[2]], True),
+        ):
+            with self.subTest(return_value):
+                self._get_records_mock.return_value = return_value
+                self.assertEqual(expected_result, op.poke(context=None))
+        self._get_records_mock.return_value = [[1]]
+        with self.subTest(self._get_records_mock.return_value):
+            with self.assertRaises(AirflowException):
+                op.poke(context=None)
 
-        mock_get_records = mock_hook().get_records
+    def test_clickhouse_sql_sensor_poke_failure_success_same(self):
+        fn = [2].__contains__
+        op = ClickHouseSqlSensor(task_id='_', sql='', failure=fn, success=fn)
 
-        mock_get_records.return_value = []
-        self.assertRaises(AirflowException, op.poke, None)
+        self._get_records_mock.return_value = []
+        with self.subTest(self._get_records_mock.return_value):
+            self.assertFalse(op.poke(None))
 
-    @mock.patch(
-        'airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor.ClickHouseHook'
-    )
-    def test_clickhouse_sql_sensor_poke_success(self, mock_hook):
-        op = ClickHouseSqlSensor(
-            task_id='sql_sensor_check', sql='SELECT 1', success=lambda x: x in [1],
-        )
+        self._get_records_mock.return_value = [[2]]
+        with self.subTest(self._get_records_mock.return_value):
+            with self.assertRaises(AirflowException):
+                op.poke(context=None)
 
-        mock_get_records = mock_hook().get_records
+    def test_clickhouse_sql_sensor_poke_invalid_failure(self):
+        op = ClickHouseSqlSensor(task_id='_', sql='', failure=[1])
+        self._get_records_mock.return_value = [[1]]
+        with self.assertRaises(AirflowException):
+            op.poke(context=None)
 
-        mock_get_records.return_value = []
-        self.assertFalse(op.poke(None))
+    def test_clickhouse_sql_sensor_poke_invalid_success(self):
+        op = ClickHouseSqlSensor(task_id='_', sql='', success=[1])
+        self._get_records_mock.return_value = [[1]]
+        with self.assertRaises(AirflowException):
+            op.poke(context=None)
 
-        mock_get_records.return_value = [[1]]
-        self.assertTrue(op.poke(None))
+    _get_records_patch: mock._patch
+    _get_records_mock: mock.MagicMock
 
-        mock_get_records.return_value = [['1']]
-        self.assertFalse(op.poke(None))
+    @classmethod
+    def setUpClass(cls):
+        cls._get_records_patch = \
+            mock.patch('airflow_clickhouse_plugin.ClickHouseHook.get_records')
+        cls._get_records_mock = cls._get_records_patch.__enter__()
 
-    @mock.patch(
-        'airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor.ClickHouseHook'
-    )
-    def test_clickhouse_sql_sensor_poke_failure(self, mock_hook):
-        op = ClickHouseSqlSensor(
-            task_id='sql_sensor_check', sql='SELECT 1', failure=lambda x: x in [1],
-        )
-
-        mock_get_records = mock_hook().get_records
-
-        mock_get_records.return_value = []
-        self.assertFalse(op.poke(None))
-
-        mock_get_records.return_value = [[1]]
-        self.assertRaises(AirflowException, op.poke, None)
-
-    @mock.patch(
-        'airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor.ClickHouseHook'
-    )
-    def test_clickhouse_sql_sensor_poke_failure_success(self, mock_hook):
-        op = ClickHouseSqlSensor(
-            task_id='sql_sensor_check',
-            sql='SELECT 1',
-            failure=lambda x: x in [1],
-            success=lambda x: x in [2],
-        )
-
-        mock_get_records = mock_hook().get_records
-
-        mock_get_records.return_value = []
-        self.assertFalse(op.poke(None))
-
-        mock_get_records.return_value = [[1]]
-        self.assertRaises(AirflowException, op.poke, None)
-
-        mock_get_records.return_value = [[2]]
-        self.assertTrue(op.poke(None))
-
-    @mock.patch(
-        'airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor.ClickHouseHook'
-    )
-    def test_clickhouse_sql_sensor_poke_failure_success_same(self, mock_hook):
-        op = ClickHouseSqlSensor(
-            task_id='sql_sensor_check',
-            sql='SELECT 1',
-            failure=lambda x: x in [1],
-            success=lambda x: x in [1],
-        )
-
-        mock_get_records = mock_hook().get_records
-
-        mock_get_records.return_value = []
-        self.assertFalse(op.poke(None))
-
-        mock_get_records.return_value = [[1]]
-        self.assertRaises(AirflowException, op.poke, None)
-
-    @mock.patch(
-        'airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor.ClickHouseHook'
-    )
-    def test_clickhouse_sql_sensor_poke_invalid_failure(self, mock_hook):
-        op = ClickHouseSqlSensor(
-            task_id='sql_sensor_check', sql='SELECT 1', failure=[1],
-        )
-
-        mock_get_records = mock_hook().get_records
-
-        mock_get_records.return_value = [[1]]
-        self.assertRaises(AirflowException, op.poke, None)
-
-    @mock.patch(
-        'airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor.ClickHouseHook'
-    )
-    def test_clickhouse_sql_sensor_poke_invalid_success(self, mock_hook):
-        op = ClickHouseSqlSensor(
-            task_id='sql_sensor_check', sql='SELECT 1', success=[1],
-        )
-
-        mock_get_records = mock_hook().get_records
-
-        mock_get_records.return_value = [[1]]
-        self.assertRaises(AirflowException, op.poke, None)
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls._get_records_patch.__exit__(None, None, None)
 
 
 if __name__ == '__main__':
