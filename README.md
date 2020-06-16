@@ -15,9 +15,14 @@ Provides `ClickHouseHook` and `ClickHouseOperator` for [Apache Airflow][airflow]
     as various timeouts, `compression`, `secure`, etc through Airflow
     [Connection.extra][airflow-conn-extra] property.
 
-# Installation
+# Installation and dependencies
 
 `pip install -U airflow-clickhouse-plugin`
+
+Requires `apache-airflow` and `clickhouse-driver`. Primarily supports Airflow
+    1.10.6 since it is the latest version
+    [supported by Google Cloud Composer][cloud-composer-versions]: later
+    versions are expected to work properly but may be not fully tested.
 
 # Usage
 
@@ -236,3 +241,4 @@ From the root project directory: `python -m unittest discover -s tests`
 [airflow-conn-dejson]: https://airflow.apache.org/docs/1.10.6/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
 [airflow-conn-env]: https://airflow.apache.org/docs/stable/howto/connection/index.html#storing-a-connection-in-environment-variables
 [python-dbapi2-fetchone]: https://www.python.org/dev/peps/pep-0249/#fetchone
+[cloud-composer-versions]: https://cloud.google.com/composer/docs/concepts/versioning/composer-versions#supported_versions
