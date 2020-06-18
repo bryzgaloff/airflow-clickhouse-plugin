@@ -7,11 +7,12 @@ from airflow_clickhouse_plugin.hooks import clickhouse_hook
 
 class ClickHouseOperator(BaseOperator):
     template_fields = ('_sql',)
+    _DEFAULT_CONN_ID = 'clickhouse_default'
 
     def __init__(
             self,
             sql: Union[str, Iterable[str]],
-            clickhouse_conn_id: str = 'clickhouse_default',
+            clickhouse_conn_id: str = _DEFAULT_CONN_ID,
             parameters: Dict[str, Any] = None,
             database=None,
             *args, **kwargs,
