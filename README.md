@@ -1,7 +1,7 @@
 # Airflow ClickHouse Plugin
 
-Provides `ClickHouseHook` and `ClickHouseOperator` for [Apache Airflow][airflow] 
-    based on [mymarilyn/clickhouse-driver][ch-driver].
+Provides `ClickHouseOperator`, `ClickHouseHook` and `ClickHouseSqlSensor` for
+    [Apache Airflow][airflow] based on [mymarilyn/clickhouse-driver][ch-driver].
 
 # Features
 
@@ -48,6 +48,8 @@ Supported kwargs:
 
 The result of the _last_ query is pushed to XCom.
 
+See [example](#clickhouseoperator-example) below.
+
 ## ClickHouseHook Reference
 
 To import `ClickHouseHook` use:
@@ -80,6 +82,16 @@ Supports all of the methods of the Airflow [BaseHook][airflow-base-hook]
   * Every `run` call uses a new connection which is closed when finished.
 * `get_conn()`: returns the underlying
     [clickhouse_driver.Client][ch-driver-client] instance.
+
+See [example](#clickhousehook-example) below.
+
+## ClickHouseSqlSensor Reference
+
+Sensor fully inherits from [Airflow SQLSensor][airflow-sql-sensor] and therefore
+    fully implements its interface using `ClickHouseHook` to fetch the SQL
+    execution result and supports templating of `sql` argument.
+
+See [example](#clickhousesqlsensor-example) below.
 
 ## ClickHouse Connection schema
 
@@ -125,7 +137,7 @@ This means that Airflow ClickHouse Plugin does not itself define any default
 
 ## Examples
 
-### ClickHouseOperator
+### ClickHouseOperator Example
 
 ```python
 from airflow import DAG
@@ -162,7 +174,7 @@ with DAG(
     )
 ```
 
-### ClickHouseHook
+### ClickHouseHook Example
 
 ```python
 from airflow import DAG
@@ -194,6 +206,34 @@ Important note: don't try to insert values using
     clickhouse-driver [requires][ch-driver-insert] values for `INSERT` query to
     be provided via `parameters` due to specifics of the native ClickHouse
     protocol.
+
+### ClickHouseSqlSensor Example
+
+```python
+from airflow import DAG
+from airflow.sensors.clickhouse_sql_sensor import ClickHouseSqlSensor
+from airflow.operators.clickhouse_operator import ClickHouseOperator
+from airflow.utils.dates import days_ago
+
+
+with DAG(
+        dag_id='listen_warnings',
+        start_date=days_ago(2),
+) as dag:
+    dag >> ClickHouseSqlSensor(
+        task_id='poke_events_count',
+        database='monitor',
+        sql="SELECT count() FROM warnings WHERE eventDate = '{{ ds }}'",
+        success=lambda cnt: cnt > 10000,
+    ) >> ClickHouseOperator(
+        task_id='create_alert',
+        database='alerts',
+        sql='''
+            INSERT INTO events SELECT eventDate, count()
+            FROM monitor.warnings WHERE eventDate = '{{ ds }}'
+        ''',
+    )
+```
 
 # Default connection
 
@@ -242,3 +282,4 @@ From the root project directory: `python -m unittest discover -s tests`
 [airflow-conn-env]: https://airflow.apache.org/docs/stable/howto/connection/index.html#storing-a-connection-in-environment-variables
 [python-dbapi2-fetchone]: https://www.python.org/dev/peps/pep-0249/#fetchone
 [cloud-composer-versions]: https://cloud.google.com/composer/docs/concepts/versioning/composer-versions#supported_versions
+[airflow-sql-sensor]: https://airflow.apache.org/docs/stable/_api/airflow/sensors/sql_sensor/index.html#airflow.sensors.sql_sensor.SqlSensor
