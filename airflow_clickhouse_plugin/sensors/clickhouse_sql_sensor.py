@@ -6,12 +6,12 @@ from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 
 class ClickHouseSqlSensor(SqlSensor):
-    _DEFAULT_CONN_ID = 'clickhouse_default'
+    DEFAULT_CONN_ID = ClickHouseHook.DEFAULT_CONN_ID
 
     def __init__(
         self,
         sql: str = None,
-        clickhouse_conn_id: str = _DEFAULT_CONN_ID,
+        clickhouse_conn_id: str = DEFAULT_CONN_ID,
         parameters: Dict[str, Any] = None,
         database: str = None,
         success: Callable[[Any], bool] = None,

@@ -2,17 +2,17 @@ from typing import *
 
 from airflow.models import BaseOperator
 
-from airflow_clickhouse_plugin.hooks import clickhouse_hook
+from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 
 class ClickHouseOperator(BaseOperator):
     template_fields = ('_sql',)
-    _DEFAULT_CONN_ID = 'clickhouse_default'
+    DEFAULT_CONN_ID = ClickHouseHook.DEFAULT_CONN_ID
 
     def __init__(
             self,
             sql: Union[str, Iterable[str]],
-            clickhouse_conn_id: str = _DEFAULT_CONN_ID,
+            clickhouse_conn_id: str = DEFAULT_CONN_ID,
             parameters: Dict[str, Any] = None,
             database=None,
             *args, **kwargs,
@@ -24,7 +24,7 @@ class ClickHouseOperator(BaseOperator):
         self._database = database
 
     def execute(self, context: Dict[str, Any]) -> Any:
-        hook = clickhouse_hook.ClickHouseHook(
+        hook = ClickHouseHook(
             clickhouse_conn_id=self._conn_id,
             database=self._database,
         )

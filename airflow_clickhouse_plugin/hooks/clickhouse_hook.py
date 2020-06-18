@@ -6,11 +6,11 @@ from clickhouse_driver import Client
 
 
 class ClickHouseHook(BaseHook):
-    _DEFAULT_CONN_ID = 'clickhouse_default'
+    DEFAULT_CONN_ID = 'clickhouse_default'
 
     def __init__(
             self,
-            clickhouse_conn_id: str = _DEFAULT_CONN_ID,
+            clickhouse_conn_id: str = DEFAULT_CONN_ID,
             database: str = None,
     ):
         super().__init__(source=None)
