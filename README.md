@@ -157,15 +157,19 @@ with DAG(
         task_id='update_income_aggregate',
         database='default',
         sql=(
-            "INSERT INTO aggregate "
-                "SELECT eventDt, sum(price * qty) AS income FROM sales "
-                "WHERE eventDt = '{{ ds }}' GROUP BY eventDt",
-            "OPTIMIZE TABLE aggregate ON CLUSTER {{ var.value.cluster_name }} "
-                "PARTITION toDate('{{ execution_date.format('%Y-%m-01') }}')",
-            "SELECT sum(income) FROM aggregate "
-                "WHERE eventDt BETWEEN "
-                "'{{ execution_date.start_of('month').to_date_string() }}'"
-                "AND '{{ execution_date.end_of('month').to_date_string() }}'",
+            '''
+                INSERT INTO aggregate
+                SELECT eventDt, sum(price * qty) AS income FROM sales
+                WHERE eventDt = '{{ ds }}' GROUP BY eventDt
+            ''', '''
+                OPTIMIZE TABLE aggregate ON CLUSTER {{ var.value.cluster_name }}
+                PARTITION toDate('{{ execution_date.format('%Y-%m-01') }}')
+            ''', '''
+                SELECT sum(income) FROM aggregate
+                WHERE eventDt BETWEEN
+                    '{{ execution_date.start_of('month').to_date_string() }}'
+                    AND '{{ execution_date.end_of('month').to_date_string() }}'
+            ''',
             # result of the last query is pushed to XCom
         ),
         clickhouse_conn_id='clickhouse_test',
