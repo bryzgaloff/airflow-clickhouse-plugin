@@ -13,8 +13,8 @@ class ClickHouseOperator(BaseOperator):
             self,
             sql: Union[str, Iterable[str]],
             clickhouse_conn_id: str = DEFAULT_CONN_ID,
-            parameters: Dict[str, Any] = None,
-            database=None,
+            parameters: Optional[Dict[str, Any]] = None,
+            database: Optional[str] = None,
             *args, **kwargs,
     ):
         super().__init__(*args, **kwargs)

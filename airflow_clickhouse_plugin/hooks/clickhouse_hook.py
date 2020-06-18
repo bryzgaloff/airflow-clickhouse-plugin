@@ -11,7 +11,7 @@ class ClickHouseHook(BaseHook):
     def __init__(
             self,
             clickhouse_conn_id: str = DEFAULT_CONN_ID,
-            database: str = None,
+            database: Optional[str] = None,
     ):
         super().__init__(source=None)
         self.clickhouse_conn_id = clickhouse_conn_id
@@ -32,12 +32,12 @@ class ClickHouseHook(BaseHook):
             connection_kwargs.update(database=conn.schema)
         return Client(conn.host or 'localhost', **connection_kwargs)
 
-    def get_records(self, sql: str, parameters: dict = None) -> List[Tuple]:
+    def get_records(self, sql: str, parameters: Optional[dict] = None) -> List[Tuple]:
         self._log_query(sql, parameters)
         with disconnecting(self.get_conn()) as client:
             return client.execute(sql, params=parameters)
 
-    def get_first(self, sql: str, parameters: dict = None) -> Optional[Tuple]:
+    def get_first(self, sql: str, parameters: Optional[dict] = None) -> Optional[Tuple]:
         self._log_query(sql, parameters)
         with disconnecting(self.get_conn()) as client:
             try:
@@ -47,7 +47,6 @@ class ClickHouseHook(BaseHook):
 
     def get_pandas_df(self, sql: str):
         import pandas as pd
-
         rows, columns_defs = self.run(sql, with_column_types=True)
         columns = [column_name for column_name, _ in columns_defs]
         return pd.DataFrame(rows, columns=columns)
@@ -55,7 +54,7 @@ class ClickHouseHook(BaseHook):
     def run(
             self,
             sql: Union[str, Iterable[str]],
-            parameters: Union[dict, list, tuple, Generator] = None,
+            parameters: Union[None, dict, list, tuple, Generator] = None,
             with_column_types: bool = False,
     ) -> Any:
         if isinstance(sql, str):
@@ -75,7 +74,7 @@ class ClickHouseHook(BaseHook):
     def _log_query(
             self,
             sql: str,
-            parameters: Union[dict, list, tuple, Generator],
+            parameters: Union[None, dict, list, tuple, Generator],
     ) -> None:
         self.log.info(
             '%s%s', sql,
