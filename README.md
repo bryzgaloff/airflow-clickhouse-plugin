@@ -135,6 +135,10 @@ This means that Airflow ClickHouse Plugin does not itself define any default
     of the `clickhouse-driver` version you use. The only exception is `host`: if
     the attribute of Airflow connection is not set then `'localhost'` is used.
 
+### Default connection
+
+By default the plugin uses `connection_id='clickhouse_default'`.
+
 ## Examples
 
 ### ClickHouseOperator Example
@@ -234,10 +238,6 @@ with DAG(
         ''',
     )
 ```
-
-# Default connection
-
-By default the hook and operator use `connection_id='clickhouse_default'`.
 
 # How to run tests
 
