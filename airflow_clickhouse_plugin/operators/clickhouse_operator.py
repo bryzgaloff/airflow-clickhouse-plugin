@@ -1,18 +1,21 @@
 from typing import *
 
 from airflow.models import BaseOperator
+from airflow.utils.decorators import apply_defaults
 
 from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 
 class ClickHouseOperator(BaseOperator):
     template_fields = ('_sql',)
-    DEFAULT_CONN_ID = ClickHouseHook.DEFAULT_CONN_ID
+    conn_name_attr = 'clickhouse_conn_id'
+    default_conn_name = ClickHouseHook.default_conn_name
 
+    @apply_defaults
     def __init__(
             self,
             sql: Union[str, Iterable[str]],
-            clickhouse_conn_id: str = DEFAULT_CONN_ID,
+            clickhouse_conn_id: str = default_conn_name,
             parameters: Optional[Dict[str, Any]] = None,
             database: Optional[str] = None,
             *args, **kwargs,

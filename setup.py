@@ -27,20 +27,10 @@ setup(
     python_requires=">=3.6.*",
     install_requires=[
         'clickhouse-driver~=0.1.2',
-        'apache-airflow~=1.10.6',
+        'apache-airflow>=2.0.0',
     ],
     license=about['__license__'],
     zip_safe=False,
-    entry_points={
-        'airflow.plugins': [
-            'airflow_clickhouse_hook '
-                '= airflow_clickhouse_plugin:ClickHouseHookPlugin',
-            'airflow_clickhouse_operator '
-                '= airflow_clickhouse_plugin:ClickHouseOperatorPlugin',
-            'airflow_clickhouse_sql_sensor '
-                '= airflow_clickhouse_plugin:ClickHouseSqlSensorPlugin',
-        ]
-    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Plugins',

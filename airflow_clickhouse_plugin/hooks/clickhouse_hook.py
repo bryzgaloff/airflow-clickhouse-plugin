@@ -1,24 +1,27 @@
 from itertools import islice
 from typing import *
 
-from airflow.hooks.base_hook import BaseHook
+from airflow.hooks.dbapi import DbApiHook
 from clickhouse_driver import Client
 
 
-class ClickHouseHook(BaseHook):
-    DEFAULT_CONN_ID = 'clickhouse_default'
+class ClickHouseHook(DbApiHook):
+    conn_name_attr = 'clickhouse_conn_id'
+    default_conn_name = 'clickhouse_default'
 
     def __init__(
             self,
-            clickhouse_conn_id: str = DEFAULT_CONN_ID,
             database: Optional[str] = None,
+            *args,
+            **kwargs
     ):
-        super().__init__(source=None)
-        self.clickhouse_conn_id = clickhouse_conn_id
+        super().__init__(*args, **kwargs)
         self.database = database
 
     def get_conn(self) -> Client:
-        conn = self.get_connection(self.clickhouse_conn_id)
+        conn = self.get_connection(
+            getattr(self, self.conn_name_attr)
+        )
         connection_kwargs = conn.extra_dejson.copy()
         if conn.port:
             connection_kwargs.update(port=int(conn.port))
