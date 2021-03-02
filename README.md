@@ -20,9 +20,7 @@ Provides `ClickHouseOperator`, `ClickHouseHook` and `ClickHouseSqlSensor` for
 `pip install -U airflow-clickhouse-plugin`
 
 Requires `apache-airflow` and `clickhouse-driver`. Primarily supports Airflow
-    1.10.6 since it is the latest version
-    [supported by Google Cloud Composer][cloud-composer-versions]: later
-    versions are expected to work properly but may be not fully tested.
+    2.x.
 
 # Usage
 
@@ -60,7 +58,7 @@ Supported kwargs of constructor (`__init__` method):
     [below](#clickhouse-connection-schema).
 * `database`: if present, overrides database defined by connection.
 
-Supports all of the methods of the Airflow [BaseHook][airflow-base-hook]
+Supports all of the methods of the Airflow [DbApiHook][airflow-dbapihook]
     including:
 * `get_records(sql: str, parameters: dict=None)`: returns result of the query
     as a list of tuples. Materializes all the records in memory.
@@ -145,7 +143,7 @@ By default the plugin uses `connection_id='clickhouse_default'`.
 
 ```python
 from airflow import DAG
-from airflow.operators.clickhouse_operator import ClickHouseOperator
+from airflow_clickhouse_plugin.operators.clickhouse_operator import ClickHouseOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
 
@@ -186,7 +184,7 @@ with DAG(
 
 ```python
 from airflow import DAG
-from airflow.hooks.clickhouse_hook import ClickHouseHook
+from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 from airflow.hooks.mysql_hook import MySqlHook
 from airflow.operators.python_operator import PythonOperator
 from airflow.utils.dates import days_ago
@@ -219,8 +217,8 @@ Important note: don't try to insert values using
 
 ```python
 from airflow import DAG
-from airflow.sensors.clickhouse_sql_sensor import ClickHouseSqlSensor
-from airflow.operators.clickhouse_operator import ClickHouseOperator
+from airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor import ClickHouseSqlSensor
+from airflow_clickhouse_plugin.operators.clickhouse_operator import ClickHouseOperator
 from airflow.utils.dates import days_ago
 
 
@@ -268,6 +266,7 @@ From the root project directory: `python -m unittest discover -s tests`
 * Danila Ganchar, [@d-ganchar](https://github.com/d-ganchar)
 * Mikhail, [@glader](https://github.com/glader)
 * Alexander Chashnikov, [@ne1r0n](https://github.com/ne1r0n)
+* Simone Brundu, [@saimon46](https://github.com/saimon46)
 
 
 [airflow]: https://airflow.apache.org/
@@ -275,15 +274,15 @@ From the root project directory: `python -m unittest discover -s tests`
 [ch-driver-docs]: https://clickhouse-driver.readthedocs.io/en/latest/
 [ch-driver-execute]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#selecting-data
 [airflow-base-op]: https://airflow.apache.org/docs/stable/_api/airflow/models/baseoperator/index.html
-[airflow-base-hook]: https://airflow.apache.org/docs/stable/_api/airflow/hooks/base_hook/index.html
+[airflow-dbapihook]: https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/hooks/dbapi/index.html
 [ch-driver-execute-iter]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#streaming-results
 [ch-driver-insert]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#inserting-data
 [ch-driver-client]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#client
 [airflow-conn-extra]: https://airflow.apache.org/docs/stable/_api/airflow/models/connection/index.html#airflow.models.connection.Connection.extra
 [ch-driver-connection]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#connection
-[airflow-connection-attrs]: https://airflow.apache.org/docs/1.10.6/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
-[airflow-conn-dejson]: https://airflow.apache.org/docs/1.10.6/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
+[airflow-connection-attrs]: https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
+[airflow-conn-dejson]: https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
 [airflow-conn-env]: https://airflow.apache.org/docs/stable/howto/connection/index.html#storing-a-connection-in-environment-variables
 [python-dbapi2-fetchone]: https://www.python.org/dev/peps/pep-0249/#fetchone
 [cloud-composer-versions]: https://cloud.google.com/composer/docs/concepts/versioning/composer-versions#supported_versions
-[airflow-sql-sensor]: https://airflow.apache.org/docs/stable/_api/airflow/sensors/sql_sensor/index.html#airflow.sensors.sql_sensor.SqlSensor
+[airflow-sql-sensor]: https://airflow.apache.org/docs/stable/_api/airflow/sensors/sql/index.html
