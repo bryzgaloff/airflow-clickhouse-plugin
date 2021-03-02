@@ -20,7 +20,8 @@ Provides `ClickHouseOperator`, `ClickHouseHook` and `ClickHouseSqlSensor` for
 `pip install -U airflow-clickhouse-plugin`
 
 Requires `apache-airflow` and `clickhouse-driver`. Primarily supports Airflow
-    2.x. Use the version 0.5.7.post1 to be compatible with Airflow 1.10.6 ~ 1.10.14.
+    2.0.1. We cannot guarantee later versions are fully compatible. Use the 
+    version 0.5.7.post1 to be compatible with Airflow 1.10.6 ~ 1.10.14.
 
 # Usage
 
@@ -280,8 +281,8 @@ From the root project directory: `python -m unittest discover -s tests`
 [ch-driver-client]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#client
 [airflow-conn-extra]: https://airflow.apache.org/docs/stable/_api/airflow/models/connection/index.html#airflow.models.connection.Connection.extra
 [ch-driver-connection]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#connection
-[airflow-connection-attrs]: https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
-[airflow-conn-dejson]: https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
+[airflow-connection-attrs]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
+[airflow-conn-dejson]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
 [airflow-conn-env]: https://airflow.apache.org/docs/stable/howto/connection/index.html#storing-a-connection-in-environment-variables
 [python-dbapi2-fetchone]: https://www.python.org/dev/peps/pep-0249/#fetchone
 [cloud-composer-versions]: https://cloud.google.com/composer/docs/concepts/versioning/composer-versions#supported_versions

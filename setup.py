@@ -26,8 +26,8 @@ setup(
     include_package_data=True,
     python_requires=">=3.6.*",
     install_requires=[
-        'clickhouse-driver~=0.1.2',
-        'apache-airflow>=2.0.0',
+        'clickhouse-driver~=0.1.3',
+        'apache-airflow~=2.0.1',
     ],
     license=about['__license__'],
     zip_safe=False,

@@ -8,7 +8,6 @@ from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 class ClickHouseOperator(BaseOperator):
     template_fields = ('_sql',)
-    conn_name_attr = 'clickhouse_conn_id'
     default_conn_name = ClickHouseHook.default_conn_name
 
     @apply_defaults
@@ -18,7 +17,8 @@ class ClickHouseOperator(BaseOperator):
             clickhouse_conn_id: str = default_conn_name,
             parameters: Optional[Dict[str, Any]] = None,
             database: Optional[str] = None,
-            *args, **kwargs,
+            *args,
+            **kwargs
     ):
         super().__init__(*args, **kwargs)
         self._sql = sql

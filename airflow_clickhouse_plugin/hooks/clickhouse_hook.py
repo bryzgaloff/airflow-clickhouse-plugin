@@ -11,17 +11,17 @@ class ClickHouseHook(DbApiHook):
 
     def __init__(
             self,
+            clickhouse_conn_id: str = default_conn_name,
             database: Optional[str] = None,
             *args,
             **kwargs
     ):
         super().__init__(*args, **kwargs)
+        self.clickhouse_conn_id = clickhouse_conn_id
         self.database = database
 
     def get_conn(self) -> Client:
-        conn = self.get_connection(
-            getattr(self, self.conn_name_attr)
-        )
+        conn = self.get_connection(self.clickhouse_conn_id)
         connection_kwargs = conn.extra_dejson.copy()
         if conn.port:
             connection_kwargs.update(port=int(conn.port))
