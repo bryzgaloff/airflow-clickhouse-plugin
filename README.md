@@ -30,7 +30,7 @@ See [examples](#examples) below.
 ## ClickHouseOperator Reference
 
 To import `ClickHouseOperator` use:
-    `from airflow.operators.clickhouse_operator import ClickHouseOperator`
+    `from airflow_clickhouse_plugin.operators.clickhouse_operator import ClickHouseOperator`
 
 Supported kwargs:
 * `sql`: templated query (if argument is a single `str`) or queries (if iterable
@@ -52,14 +52,14 @@ See [example](#clickhouseoperator-example) below.
 ## ClickHouseHook Reference
 
 To import `ClickHouseHook` use:
-    `from airflow.hooks.clickhouse_hook import ClickHouseHook`
+    `from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook`
 
 Supported kwargs of constructor (`__init__` method):
 * `clickhouse_conn_id`: connection id. Connection schema is described
     [below](#clickhouse-connection-schema).
 * `database`: if present, overrides database defined by connection.
 
-Supports all of the methods of the Airflow [DbApiHook][airflow-dbapihook]
+Supports all of the methods of the Airflow [BaseHook][airflow-basehook]
     including:
 * `get_records(sql: str, parameters: dict=None)`: returns result of the query
     as a list of tuples. Materializes all the records in memory.
@@ -274,16 +274,16 @@ From the root project directory: `python -m unittest discover -s tests`
 [ch-driver]: https://github.com/mymarilyn/clickhouse-driver
 [ch-driver-docs]: https://clickhouse-driver.readthedocs.io/en/latest/
 [ch-driver-execute]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#selecting-data
-[airflow-base-op]: https://airflow.apache.org/docs/stable/_api/airflow/models/baseoperator/index.html
-[airflow-dbapihook]: https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/hooks/dbapi/index.html
+[airflow-base-op]: https://airflow.apache.org/docs/2.0.1/_api/airflow/models/baseoperator/index.html
+[airflow-basehook]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/hooks/base/index.html#airflow.hooks.base.BaseHook
 [ch-driver-execute-iter]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#streaming-results
 [ch-driver-insert]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#inserting-data
 [ch-driver-client]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#client
-[airflow-conn-extra]: https://airflow.apache.org/docs/stable/_api/airflow/models/connection/index.html#airflow.models.connection.Connection.extra
+[airflow-conn-extra]: https://airflow.apache.org/docs/2.0.1/_api/airflow/models/connection/index.html#airflow.models.connection.Connection.extra
 [ch-driver-connection]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#connection
 [airflow-connection-attrs]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
 [airflow-conn-dejson]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
-[airflow-conn-env]: https://airflow.apache.org/docs/stable/howto/connection/index.html#storing-a-connection-in-environment-variables
+[airflow-conn-env]: https://airflow.apache.org/docs/apache-airflow/2.0.1/howto/connection.html#storing-a-connection-in-environment-variables
 [python-dbapi2-fetchone]: https://www.python.org/dev/peps/pep-0249/#fetchone
 [cloud-composer-versions]: https://cloud.google.com/composer/docs/concepts/versioning/composer-versions#supported_versions
-[airflow-sql-sensor]: https://airflow.apache.org/docs/stable/_api/airflow/sensors/sql/index.html
+[airflow-sql-sensor]: https://airflow.apache.org/docs/2.0.1/_api/airflow/sensors/sql/index.html

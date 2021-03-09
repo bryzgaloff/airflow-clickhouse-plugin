@@ -1,11 +1,11 @@
 from itertools import islice
 from typing import *
 
-from airflow.hooks.dbapi import DbApiHook
+from airflow.hooks.base import BaseHook
 from clickhouse_driver import Client
 
 
-class ClickHouseHook(DbApiHook):
+class ClickHouseHook(BaseHook):
     conn_name_attr = 'clickhouse_conn_id'
     default_conn_name = 'clickhouse_default'
 
@@ -13,10 +13,7 @@ class ClickHouseHook(DbApiHook):
             self,
             clickhouse_conn_id: str = default_conn_name,
             database: Optional[str] = None,
-            *args,
-            **kwargs
     ):
-        super().__init__(*args, **kwargs)
         self.clickhouse_conn_id = clickhouse_conn_id
         self.database = database
 

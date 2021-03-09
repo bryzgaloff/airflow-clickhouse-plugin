@@ -18,7 +18,7 @@ class ClickHouseOperator(BaseOperator):
             parameters: Optional[Dict[str, Any]] = None,
             database: Optional[str] = None,
             *args,
-            **kwargs
+            **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self._sql = sql

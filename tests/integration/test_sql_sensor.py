@@ -11,7 +11,7 @@ class BasicTestCase(unittest.TestCase):
         self.assertTrue(
             ClickHouseSqlSensor(task_id='_', sql='SELECT 1').poke(None),
         )
-        self.assertTrue(
+        self.assertFalse(
             ClickHouseSqlSensor(task_id='_', sql='SELECT NULL').poke(None),
         )
         self.assertFalse(

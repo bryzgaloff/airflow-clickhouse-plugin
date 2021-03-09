@@ -1,6 +1,5 @@
 from typing import Dict, Callable, Any, Optional
 
-from airflow.exceptions import AirflowException
 from airflow.sensors.sql_sensor import SqlSensor
 from airflow.utils.decorators import apply_defaults
 from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
@@ -39,6 +38,3 @@ class ClickHouseSqlSensor(SqlSensor):
             clickhouse_conn_id=self.conn_id,
             database=self._database,
         )
-
-    def poke(self, context: Optional[Dict[str, Any]]) -> bool:
-        return super().poke(context)
