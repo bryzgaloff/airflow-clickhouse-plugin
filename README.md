@@ -20,8 +20,10 @@ Provides `ClickHouseOperator`, `ClickHouseHook` and `ClickHouseSqlSensor` for
 `pip install -U airflow-clickhouse-plugin`
 
 Requires `apache-airflow` and `clickhouse-driver`. Primarily supports Airflow
-    2.0.1. We cannot guarantee later versions are fully compatible. Use the 
-    version 0.5.7.post1 to be compatible with Airflow 1.10.6 ~ 1.10.14.
+	2.0.1. Later versions are expected to work properly but may be not fully
+	tested. Use plugin versions below 0.6.0 to preserve compatibility with
+	Airflow 1.10.6 (this version has long-term
+	[support on Google Cloud Composer][cloud-composer-versions]).
 
 # Usage
 
