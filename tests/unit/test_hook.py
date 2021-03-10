@@ -5,7 +5,7 @@ from unittest import TestCase, mock
 import airflow.models
 import clickhouse_driver
 
-from airflow_clickhouse_plugin import ClickHouseHook
+from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 
 class ClickHouseConnectionParamsTestCase(TestCase):
@@ -79,7 +79,7 @@ class ClickHouseConnectionParamsTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         cls._patched_hook_connection = mock.patch(
-            'airflow_clickhouse_plugin.ClickHouseHook.get_connection',
+            'airflow_clickhouse_plugin.hooks.clickhouse_hook.ClickHouseHook.get_connection',
             lambda self, conn_id: airflow.models.Connection(**dict(
                 cls._connection_kwargs,
                 extra=json.dumps(cls._connection_kwargs['extra']),

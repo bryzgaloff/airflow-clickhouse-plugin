@@ -1,8 +1,8 @@
 import unittest
 from unittest import mock
 
-from airflow_clickhouse_plugin.hooks import ClickHouseHook
-from airflow_clickhouse_plugin.operators import ClickHouseOperator
+from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
+from airflow_clickhouse_plugin.operators.clickhouse_operator import ClickHouseOperator
 
 
 class ClickHouseOperatorTestCase(unittest.TestCase):
@@ -35,7 +35,7 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
         op = ClickHouseOperator(task_id='_', sql=sql)
         op.execute(context=dict())
         clickhouse_hook_mock.assert_called_once_with(
-            clickhouse_conn_id=ClickHouseHook.DEFAULT_CONN_ID,
+            clickhouse_conn_id=ClickHouseHook.default_conn_name,
             database=None,
         )
         clickhouse_hook_mock().run.assert_called_once_with(sql, None)

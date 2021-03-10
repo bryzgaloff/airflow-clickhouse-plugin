@@ -1,19 +1,19 @@
 from itertools import islice
 from typing import *
 
-from airflow.hooks.base_hook import BaseHook
+from airflow.hooks.base import BaseHook
 from clickhouse_driver import Client
 
 
 class ClickHouseHook(BaseHook):
-    DEFAULT_CONN_ID = 'clickhouse_default'
+    conn_name_attr = 'clickhouse_conn_id'
+    default_conn_name = 'clickhouse_default'
 
     def __init__(
             self,
-            clickhouse_conn_id: str = DEFAULT_CONN_ID,
+            clickhouse_conn_id: str = default_conn_name,
             database: Optional[str] = None,
     ):
-        super().__init__(source=None)
         self.clickhouse_conn_id = clickhouse_conn_id
         self.database = database
 
