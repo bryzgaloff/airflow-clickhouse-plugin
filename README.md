@@ -9,8 +9,8 @@ Provides `ClickHouseOperator`, `ClickHouseHook` and `ClickHouseSqlSensor` for
 2. Can run multiple SQL queries per single `ClickHouseOperator`.
 3. Result of the last query of `ClickHouseOperator` instance is pushed to XCom.
 4. Executed queries are logged in a pretty form.
-5. Uses effective native ClickHouse TCP protocol thanks to 
-    [clickhouse-driver][ch-driver-docs]. Does not support HTTP protocol.
+5. Uses efficient native ClickHouse TCP protocol thanks to 
+    [clickhouse-driver][ch-driver-docs]. **Does not support HTTP protocol.**
 6. Supports extra ClickHouse [connection parameters][ch-driver-connection] such
     as various timeouts, `compression`, `secure`, etc through Airflow
     [Connection.extra][airflow-conn-extra] property.
@@ -19,15 +19,16 @@ Provides `ClickHouseOperator`, `ClickHouseHook` and `ClickHouseSqlSensor` for
 
 `pip install -U airflow-clickhouse-plugin`
 
-Requires `apache-airflow` and `clickhouse-driver`. Primarily supports Airflow
-	2.0.1. Later versions are expected to work properly but may be not fully
-	tested. Use plugin versions below 0.6.0 to preserve compatibility with
-	Airflow 1.10.6 (this version has long-term
-	[support on Google Cloud Composer][cloud-composer-versions]).
+Requires `apache-airflow` and `clickhouse-driver` (installed automatically by
+    `pip`). Primarily supports Airflow 2.0.1. Later versions are expected to
+    work properly but may be not fully tested. Use plugin versions below 0.6.0
+    (e.g. 0.5.7.post1) to preserve compatibility with Airflow 1.10.6 (this
+    version has long-term [support on Google Cloud Composer]
+    [cloud-composer-versions]).
 
 # Usage
 
-See [examples](#examples) below.
+To see examples [scroll down](#examples).
 
 ## ClickHouseOperator Reference
 
@@ -61,14 +62,13 @@ Supported kwargs of constructor (`__init__` method):
     [below](#clickhouse-connection-schema).
 * `database`: if present, overrides database defined by connection.
 
-Supports all of the methods of the Airflow [BaseHook][airflow-basehook]
-    including:
+Supports all the methods of the Airflow [BaseHook][airflow-base-hook] including:
 * `get_records(sql: str, parameters: dict=None)`: returns result of the query
     as a list of tuples. Materializes all the records in memory.
 * `get_first(sql: str, parameters: dict=None)`: returns the first row of the
     result. Does not load the whole dataset into memory because of using
     [execute_iter][ch-driver-execute-iter]. If the dataset is empty then returns
-    `None` following [fetchone][python-dbapi2-fetchone] semantics.
+    `None` following [fetchone][python-db-api-2-fetchone] semantics.
 * `run(sql, parameters)`: runs a single query (specified argument of type `str`)
     or multiple queries (if iterable of `str`). `parameters` can have any form
     supported by [execute][ch-driver-execute] method of clickhouse-driver.
@@ -133,12 +133,13 @@ If the Airflow connection attribute is not set then it is not passed to the
 
 This means that Airflow ClickHouse Plugin does not itself define any default
     values for the ClickHouse connection. You may fully rely on default values
-    of the `clickhouse-driver` version you use. The only exception is `host`: if
-    the attribute of Airflow connection is not set then `'localhost'` is used.
+    of the [clickhouse-driver][ch-driver] version you use. The only exception is
+    `host`: if the attribute of Airflow connection is not set then `'localhost'`
+    is used.
 
 ### Default connection
 
-By default the plugin uses `connection_id='clickhouse_default'`.
+By default, the plugin uses `connection_id='clickhouse_default'`.
 
 ## Examples
 
@@ -252,7 +253,7 @@ From the root project directory: `python -m unittest discover -s tests/unit`
 
 ## Integration tests
 
-Integration tests require an access to ClickHouse server. Tests use connection
+Integration tests require access to ClickHouse server. Tests use connection
     URI defined [via environment variable][airflow-conn-env]
     `AIRFLOW_CONN_CLICKHOUSE_DEFAULT` with `clickhouse://localhost` as default.
 
@@ -261,6 +262,31 @@ Run from the project root: `python -m unittest discover -s tests/integration`
 ## All tests
 
 From the root project directory: `python -m unittest discover -s tests`
+
+### Github Actions
+
+[Github Action][github-action-src] is set up for this project.
+
+### Run tests using Docker
+
+Run ClickHouse server inside Docker:
+
+```bash
+docker exec -it $(docker run --rm -d yandex/clickhouse-server) bash
+```
+
+The above command will open `bash` inside the container.
+
+Install dependencies into container and run tests (execute inside container):
+
+```bash
+apt-get update
+apt-get install -y python3.8 python3-pip git
+git clone https://github.com/whisklabs/airflow-clickhouse-plugin.git
+cd airflow-clickhouse-plugin
+python3.8 -m pip install -r requirements.txt
+python3.8 -m unittest discover -s tests
+```
 
 # Contributors
 
@@ -277,7 +303,7 @@ From the root project directory: `python -m unittest discover -s tests`
 [ch-driver-docs]: https://clickhouse-driver.readthedocs.io/en/latest/
 [ch-driver-execute]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#selecting-data
 [airflow-base-op]: https://airflow.apache.org/docs/2.0.1/_api/airflow/models/baseoperator/index.html
-[airflow-basehook]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/hooks/base/index.html#airflow.hooks.base.BaseHook
+[airflow-base-hook]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/hooks/base/index.html#airflow.hooks.base.BaseHook
 [ch-driver-execute-iter]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#streaming-results
 [ch-driver-insert]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#inserting-data
 [ch-driver-client]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#client
@@ -286,6 +312,7 @@ From the root project directory: `python -m unittest discover -s tests`
 [airflow-connection-attrs]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
 [airflow-conn-dejson]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
 [airflow-conn-env]: https://airflow.apache.org/docs/apache-airflow/2.0.1/howto/connection.html#storing-a-connection-in-environment-variables
-[python-dbapi2-fetchone]: https://www.python.org/dev/peps/pep-0249/#fetchone
+[python-db-api-2-fetchone]: https://www.python.org/dev/peps/pep-0249/#fetchone
 [cloud-composer-versions]: https://cloud.google.com/composer/docs/concepts/versioning/composer-versions#supported_versions
 [airflow-sql-sensor]: https://airflow.apache.org/docs/2.0.1/_api/airflow/sensors/sql/index.html
+[github-action-src]: https://github.com/whisklabs/airflow-clickhouse-plugin/tree/master/.github/workflows
