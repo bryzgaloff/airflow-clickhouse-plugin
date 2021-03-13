@@ -110,8 +110,8 @@ class ClickHouseSqlSensorTestCase(unittest.TestCase):
 
 
 class ClickHouseLegacySqlSensorTestCase(unittest.TestCase):
-    @mock.patch('airflow.sensors.sql_sensor.SqlSensor.poke')
-    @mock.patch('airflow.sensors.sql_sensor.SqlSensor._get_hook', create=True)
+    @mock.patch('airflow.sensors.sql.SqlSensor.poke')
+    @mock.patch('airflow.sensors.sql.SqlSensor._get_hook', create=True)
     def test_get_hook_defined(
             self,
             _: mock.MagicMock,  # force creation of _get_hook
