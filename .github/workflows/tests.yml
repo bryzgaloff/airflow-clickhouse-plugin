@@ -31,10 +31,15 @@ jobs:
   integration-tests:
 
     runs-on: ubuntu-latest
-    container: yandex/clickhouse-server
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8]
+
+    services:
+      clickhouse:
+        image: yandex/clickhouse-server
+        ports:
+          - 9000/tcp
 
     steps:
     - uses: actions/checkout@v2
@@ -47,5 +52,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt
     - name: Run unit tests
+      env:
+        AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
       run: |
         python -m unittest discover -s tests/integration
