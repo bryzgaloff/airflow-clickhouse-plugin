@@ -10,7 +10,6 @@ class ClickHouseOperator(BaseOperator):
     template_fields = ('_sql',)
     default_conn_name = ClickHouseHook.default_conn_name
 
-    @apply_defaults
     def __init__(
             self,
             sql: Union[str, Iterable[str]],

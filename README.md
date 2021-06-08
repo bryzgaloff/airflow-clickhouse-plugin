@@ -20,7 +20,7 @@ Provides `ClickHouseOperator`, `ClickHouseHook` and `ClickHouseSqlSensor` for
 `pip install -U airflow-clickhouse-plugin`
 
 Requires `apache-airflow` and `clickhouse-driver` (installed automatically by
-    `pip`). Primarily supports Airflow 2.0.1. Later versions are expected to
+    `pip`). Primarily supports Airflow 2.1.0. Later versions are expected to
     work properly but may be not fully tested. Use plugin versions below 0.6.0
     (e.g. 0.5.7.post1) to preserve compatibility with Airflow 1.10.6 (this
     version has long-term [support on Google Cloud Composer]
@@ -302,17 +302,17 @@ python3.8 -m unittest discover -s tests
 [ch-driver]: https://github.com/mymarilyn/clickhouse-driver
 [ch-driver-docs]: https://clickhouse-driver.readthedocs.io/en/latest/
 [ch-driver-execute]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#selecting-data
-[airflow-base-op]: https://airflow.apache.org/docs/2.0.1/_api/airflow/models/baseoperator/index.html
-[airflow-base-hook]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/hooks/base/index.html#airflow.hooks.base.BaseHook
+[airflow-base-op]: https://airflow.apache.org/docs/2.1.0/_api/airflow/models/baseoperator/index.html
+[airflow-base-hook]: https://airflow.apache.org/docs/apache-airflow/2.1.0/_api/airflow/hooks/base/index.html#airflow.hooks.base.BaseHook
 [ch-driver-execute-iter]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#streaming-results
 [ch-driver-insert]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#inserting-data
 [ch-driver-client]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#client
-[airflow-conn-extra]: https://airflow.apache.org/docs/2.0.1/_api/airflow/models/connection/index.html#airflow.models.connection.Connection.extra
+[airflow-conn-extra]: https://airflow.apache.org/docs/2.1.0/_api/airflow/models/connection/index.html#airflow.models.connection.Connection.extra
 [ch-driver-connection]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#connection
-[airflow-connection-attrs]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
-[airflow-conn-dejson]: https://airflow.apache.org/docs/apache-airflow/2.0.1/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
-[airflow-conn-env]: https://airflow.apache.org/docs/apache-airflow/2.0.1/howto/connection.html#storing-a-connection-in-environment-variables
+[airflow-connection-attrs]: https://airflow.apache.org/docs/apache-airflow/2.1.0/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
+[airflow-conn-dejson]: https://airflow.apache.org/docs/apache-airflow/2.1.0/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
+[airflow-conn-env]: https://airflow.apache.org/docs/apache-airflow/2.1.0/howto/connection.html#storing-a-connection-in-environment-variables
 [python-db-api-2-fetchone]: https://www.python.org/dev/peps/pep-0249/#fetchone
 [cloud-composer-versions]: https://cloud.google.com/composer/docs/concepts/versioning/composer-versions#supported_versions
-[airflow-sql-sensor]: https://airflow.apache.org/docs/2.0.1/_api/airflow/sensors/sql/index.html
+[airflow-sql-sensor]: https://airflow.apache.org/docs/2.1.0/_api/airflow/sensors/sql/index.html
 [github-action-src]: https://github.com/whisklabs/airflow-clickhouse-plugin/tree/master/.github/workflows
