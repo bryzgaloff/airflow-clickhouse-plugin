@@ -23,8 +23,8 @@ Requires `apache-airflow` and `clickhouse-driver` (installed automatically by
     `pip`). Primarily supports Airflow 2.1.0. Later versions are expected to
     work properly but may be not fully tested. Use plugin versions below 0.6.0
     (e.g. 0.5.7.post1) to preserve compatibility with Airflow 1.10.6 (this
-    version has long-term [support on Google Cloud Composer]
-    [cloud-composer-versions]).
+    version has long-term
+    [support on Google Cloud Composer][cloud-composer-versions]).
 
 # Usage
 
