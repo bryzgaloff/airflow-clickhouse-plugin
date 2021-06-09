@@ -8,7 +8,6 @@ from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 class ClickHouseSqlSensor(SqlSensor):
     default_conn_name = ClickHouseHook.default_conn_name
 
-    @apply_defaults
     def __init__(
         self,
         sql: str = None,
