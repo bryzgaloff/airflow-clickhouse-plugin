@@ -27,6 +27,9 @@ setup(
     include_package_data=True,
     python_requires=">=3.6.*",
     install_requires=install_requires,
+    extras_require={
+        'pandas': ['pandas~=1.2.4'],
+    },
     license=about.__license__,
     zip_safe=False,
     classifiers=[
