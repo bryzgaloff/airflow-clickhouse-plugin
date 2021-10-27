@@ -28,7 +28,7 @@ setup(
     python_requires=">=3.6.*",
     install_requires=install_requires,
     extras_require={
-        'pandas': ['pandas~=1.2.4'],
+        'pandas': ['pandas~=1.1.0'],
     },
     license=about.__license__,
     zip_safe=False,
