@@ -26,6 +26,20 @@ Requires `apache-airflow` and `clickhouse-driver` (installed automatically by
     version has long-term
     [support on Google Cloud Composer][cloud-composer-versions]).
 
+## Note on pandas dependency
+
+Starting from Airflow 2.2 `pandas` is now an [extra requirement][pandas-extra].
+    To install `airflow-clickhouse-plugin` with `pandas` support, use
+    `pip install airflow-clickhouse-plugin[pandas]`.
+
+**Important**: this works only with `pip` 21+. So to handle `pandas` dependency
+    properly  you may need to first upgrade `pip` using `pip install -U pip`.
+
+If you are not able to upgrade `pip` to 21+, install dependency directly using
+    `pip install apache-airflow[pandas]==` (specifying current Airflow version).
+    Simple one-liner:
+    `pip install "apache-airflow[pandas]==$(pip freeze | grep apache-airflow== | cut -d'=' -f3)"`.
+
 # Usage
 
 To see examples [scroll down](#examples).
@@ -317,3 +331,4 @@ python3.8 -m unittest discover -s tests
 [cloud-composer-versions]: https://cloud.google.com/composer/docs/concepts/versioning/composer-versions#supported_versions
 [airflow-sql-sensor]: https://airflow.apache.org/docs/2.1.0/_api/airflow/sensors/sql/index.html
 [github-action-src]: https://github.com/whisklabs/airflow-clickhouse-plugin/tree/master/.github/workflows
+[pandas-extra]: https://github.com/apache/airflow/commit/2c26b15a8087cb8a81eb19fedbc768bd6da92df7#diff-60f61ab7a8d1910d86d9fda2261620314edcae5894d5aaa236b821c7256badd7
