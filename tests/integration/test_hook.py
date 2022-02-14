@@ -40,14 +40,10 @@ class BasicInsertTestCase(ClickHouseConnectionEnvVarTestCase):
     def setUp(self):
         self._hook = ClickHouseHook()
         self._temp_table_name = f'test_temp_table_for_insert'
-        self._hook.run(
-            f'CREATE TABLE {self._temp_table_name} (test_field UInt8) ENGINE MergeTree() ORDER BY test_field',
-        )
+        self._hook.run(f'CREATE TABLE {self._temp_table_name} (test_field UInt8) ENGINE MergeTree() ORDER BY test_field')
 
     def test_simple_insert(self):
-        result = self._hook.run(
-            f'INSERT INTO {self._temp_table_name} (test_field) VALUES', [(3,)],
-        )
+        result = self._hook.run(f'INSERT INTO {self._temp_table_name} (test_field) VALUES', [(3,)])
         self.assertEqual(1, result)
 
         select_result = self._hook.run(f'SELECT test_field FROM {self._temp_table_name} WHERE test_field = 3')
@@ -56,10 +52,7 @@ class BasicInsertTestCase(ClickHouseConnectionEnvVarTestCase):
     def test_simple_insert_without_types_check(self):
         from clickhouse_driver import errors
         with self.assertRaises(errors.TypeMismatchError) as e:
-            self._hook.run(
-                f'INSERT INTO {self._temp_table_name} (test_field) VALUES',
-                [(-1,)]
-            )
+            self._hook.run(f'INSERT INTO {self._temp_table_name} (test_field) VALUES', [(-1,)])
         self.assertNotIn('Expected UInt8', str(e.exception))
 
     def test_simple_insert_with_types_check(self):
@@ -74,9 +67,7 @@ class BasicInsertTestCase(ClickHouseConnectionEnvVarTestCase):
         self.assertIn('Expected UInt8', str(e.exception))
 
     def tearDown(self) -> None:
-        self._hook.run(
-            f'DROP TABLE IF EXISTS {self._temp_table_name}',
-        )
+        self._hook.run(f'DROP TABLE IF EXISTS {self._temp_table_name}')
 
 
 class GetAsPandasDfTestCase(ClickHouseConnectionEnvVarTestCase):
