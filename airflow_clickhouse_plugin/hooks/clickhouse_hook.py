@@ -56,6 +56,7 @@ class ClickHouseHook(BaseHook):
             sql: Union[str, Iterable[str]],
             parameters: Union[None, dict, list, tuple, Generator] = None,
             with_column_types: bool = False,
+            types_check: bool = False,
     ) -> Any:
         if isinstance(sql, str):
             sql = (sql,)
@@ -67,6 +68,7 @@ class ClickHouseHook(BaseHook):
                     s,
                     params=parameters,
                     with_column_types=with_column_types,
+                    types_check=types_check,
                 )
 
         return last_result
