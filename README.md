@@ -311,6 +311,7 @@ python3.8 -m unittest discover -s tests
 * Alexander Chashnikov, [@ne1r0n](https://github.com/ne1r0n)
 * Simone Brundu, [@saimon46](https://github.com/saimon46)
 * [@gkarg](https://github.com/gkarg)
+* Stanislav Morozov, [@r3b-fish](https://github.com/r3b-fish)
 
 
 [airflow]: https://airflow.apache.org/
