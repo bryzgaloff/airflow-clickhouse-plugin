@@ -8,6 +8,8 @@ from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 class ClickHouseOperator(BaseOperator):
     template_fields = ('_sql',)
+    template_ext: Sequence[str] = ('.sql',)
+    template_fields_renderers = {"query": "sql"}
     default_conn_name = ClickHouseHook.default_conn_name
 
     def __init__(
