@@ -28,7 +28,7 @@ setup(
     python_requires=">=3.6.*",
     install_requires=install_requires,
     extras_require={
-        'pandas': ['apache-airflow[pandas]>=2.0.0,<2.3.0'],
+        'pandas': ['apache-airflow[pandas]>=2.0.0,<2.4.0'],
     },
     license=about.__license__,
     zip_safe=False,
@@ -36,6 +36,8 @@ setup(
         'Development Status :: 4 - Beta',
         'Environment :: Plugins',
         'Intended Audience :: Developers',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.6',

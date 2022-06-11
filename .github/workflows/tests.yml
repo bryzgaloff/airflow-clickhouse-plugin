@@ -33,7 +33,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        airflow-version: ["2.1.4", "2.2.5", "2.3.0"]
+        include:
+          - python-version: "3.6"
+            airflow-version: "2.2.5"
 
     services:
       clickhouse:
@@ -50,7 +54,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt
+        python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
         python -m pip install .[pandas]
     - name: Run tests on ClickHouse server
       env:
