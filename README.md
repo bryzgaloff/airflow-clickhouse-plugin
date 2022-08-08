@@ -42,7 +42,7 @@ If you are not able to upgrade `pip` to 21+, install dependency directly using
 
 # Usage
 
-To see examples [scroll down](#examples).
+To see examples [scroll down](#examples). To run them, [create an Airflow connection to ClickHouse](#how-to-create-an-airflow-connection-to-clickhouse).
 
 ## ClickHouseOperator Reference
 
@@ -108,9 +108,25 @@ Sensor fully inherits from [Airflow SQLSensor][airflow-sql-sensor] and therefore
 
 See [example](#clickhousesqlsensor-example) below.
 
-## ClickHouse Connection schema
+## How to create an Airflow connection to ClickHouse
 
-[clickhouse_driver.Client][ch-driver-client] is initiated with attributes stored
+As a `type` of a new connection, choose **SQLite**. `host` should be set to
+    ClickHouse host's IP or domain name.
+
+There is **no** special ClickHouse connection type yet, so we use SQLite as
+    the closest one.
+
+The rest of the connection details may be skipped as they
+    [have defaults](#default-values) defined by `clickhouse-driver`. If
+    you use non-default values, set them according to the
+    [connection schema](#clickhouse-connection-schema).
+
+If you use a secure connection to ClickHouse (this requires additional
+    configurations on ClickHouse side), set `extra` to `{"secure":true}`.
+
+### ClickHouse Connection schema
+
+[clickhouse_driver.Client][ch-driver-client] is initialized with attributes stored
     in Airflow [Connection attributes][airflow-connection-attrs]. The mapping of
     the attributes is listed below:
   
@@ -121,10 +137,10 @@ See [example](#clickhousesqlsensor-example) below.
 | `schema` | `database` |
 | `login` | `user` |
 | `password` | `password` |
+| `extra` | `**kwargs` |
 
-If you pass `database` argument to `ClickHouseOperator` or `ClickHouseHook`
-    explicitly then it is passed to the `Client` instead of the `schema`
-    attribute of the Airflow connection.
+`database` argument of `ClickHouseOperator` or `ClickHouseHook` overrides
+    `schema` attribute of the Airflow connection.
 
 ### Extra arguments
 
