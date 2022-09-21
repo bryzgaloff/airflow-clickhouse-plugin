@@ -28,7 +28,7 @@ setup(
     python_requires=">=3.6.*",
     install_requires=install_requires,
     extras_require={
-        'pandas': ['apache-airflow[pandas]>=2.0.0,<2.4.0'],
+        'pandas': ['apache-airflow[pandas]>=2.0.0,<2.5.0'],
     },
     license=about.__license__,
     zip_safe=False,
