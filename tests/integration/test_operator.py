@@ -1,9 +1,10 @@
 import unittest
 
 from airflow_clickhouse_plugin.operators.clickhouse_operator import ClickHouseOperator
+from tests.integration.util import ClickHouseConnectionEnvVarTestCase
 
 
-class BasicTestCase(unittest.TestCase):
+class BasicTestCase(ClickHouseConnectionEnvVarTestCase):
     def test_operator(self):
         value = 1
         operator = ClickHouseOperator(

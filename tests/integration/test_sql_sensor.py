@@ -1,9 +1,10 @@
 import unittest
 
 from airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor import ClickHouseSqlSensor
+from tests.integration.util import ClickHouseConnectionEnvVarTestCase
 
 
-class BasicTestCase(unittest.TestCase):
+class BasicTestCase(ClickHouseConnectionEnvVarTestCase):
     def test_sql_sensor(self):
         self.assertFalse(
             ClickHouseSqlSensor(task_id='_', sql='SELECT 0').poke(None),
