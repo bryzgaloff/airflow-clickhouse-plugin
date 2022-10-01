@@ -13,5 +13,8 @@ tasks:
       sudo apt-get install -y clickhouse-server clickhouse-client
     command: sudo clickhouse start
 
-
-
+vscode:
+  extensions:
+    - ms-python.python
+    - ms-python.vscode-pylance
+    - redhat.vscode-yaml
