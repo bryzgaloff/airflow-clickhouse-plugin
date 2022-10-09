@@ -1,5 +1,6 @@
 from itertools import islice
-from typing import *
+from typing import (Optional, Union, Iterable, Generator,
+                    TypeVar, List, Tuple, Any, Generic, ContextManager)
 
 from airflow.hooks.base import BaseHook
 from clickhouse_driver import Client
@@ -14,6 +15,7 @@ class ClickHouseHook(BaseHook):
             clickhouse_conn_id: str = default_conn_name,
             database: Optional[str] = None,
     ):
+        # pylint: disable=super-init-not-called
         self.clickhouse_conn_id = clickhouse_conn_id
         self.database = database
 
@@ -46,7 +48,7 @@ class ClickHouseHook(BaseHook):
                 return None
 
     def get_pandas_df(self, sql: str):
-        import pandas as pd
+        import pandas as pd # pylint: disable=import-outside-toplevel
         rows, columns_defs = self.run(sql, with_column_types=True)
         columns = [column_name for column_name, _ in columns_defs]
         return pd.DataFrame(rows, columns=columns)
@@ -62,7 +64,7 @@ class ClickHouseHook(BaseHook):
             sql = (sql,)
         with disconnecting(self.get_conn()) as conn:
             last_result = None
-            for s in sql:
+            for s in sql: # pylint: disable=invalid-name
                 self._log_query(s, parameters)
                 last_result = conn.execute(
                     s,
@@ -103,7 +105,7 @@ class ClickHouseHook(BaseHook):
 _InnerT = TypeVar('_InnerT')
 
 
-class disconnecting(ContextManager, Generic[_InnerT]):
+class disconnecting(ContextManager, Generic[_InnerT]): # pylint: disable=invalid-name
     """ Context to automatically disconnect something at the end of a block.
 
     Similar to contextlib.closing but calls .disconnect() method on exit.
