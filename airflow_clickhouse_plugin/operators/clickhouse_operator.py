@@ -1,7 +1,6 @@
-from typing import *
+from typing import Optional, Iterable, Dict, Any, Union
 
 from airflow.models import BaseOperator
-from airflow.utils.decorators import apply_defaults
 
 from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 

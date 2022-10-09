@@ -1,7 +1,10 @@
 from typing import Dict, Callable, Any, Optional
 
-from airflow.providers.common.sql.sensors.sql import SqlSensor
-from airflow.utils.decorators import apply_defaults
+try:
+    from airflow.providers.common.sql.sensors.sql import SqlSensor
+except ImportError:
+    from airflow.sensors import SqlSensor
+
 from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 

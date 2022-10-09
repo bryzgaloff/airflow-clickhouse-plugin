@@ -1,7 +1,8 @@
 import unittest
 from unittest import mock
-
+from packaging.version import Version
 from airflow.exceptions import AirflowException
+from airflow.version import version as airflow_version
 
 from airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor import ClickHouseSqlSensor
 
@@ -100,7 +101,7 @@ class ClickHouseSqlSensorTestCase(unittest.TestCase):
     def setUpClass(cls):
         cls._get_records_patch = mock.patch(
             'airflow_clickhouse_plugin.hooks.clickhouse_hook'
-                '.ClickHouseHook.get_records',
+            '.ClickHouseHook.get_records',
         )
         cls._get_records_mock = cls._get_records_patch.__enter__()
 
@@ -109,9 +110,16 @@ class ClickHouseSqlSensorTestCase(unittest.TestCase):
         cls._get_records_patch.__exit__(None, None, None)
 
 
+def _get_sql_module_path():
+    if Version(airflow_version) < Version('2.4'):
+        return 'airflow'
+    return 'airflow.providers.common.sql'
+
+
 class ClickHouseLegacySqlSensorTestCase(unittest.TestCase):
-    @mock.patch('airflow.providers.common.sql.sensors.sql.SqlSensor.poke')
-    @mock.patch('airflow.providers.common.sql.sensors.sql.SqlSensor._get_hook', create=True)
+
+    @mock.patch(f"{_get_sql_module_path()}.sensors.sql.SqlSensor.poke")
+    @mock.patch(f"{_get_sql_module_path()}.sensors.sql.SqlSensor._get_hook", create=True)
     def test_get_hook_defined(
             self,
             _: mock.MagicMock,  # force creation of _get_hook
