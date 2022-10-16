@@ -175,6 +175,18 @@ For example, if Airflow connection contains `extra={"secure":true}` then
     the `Client.__init__` will receive `secure=True` keyword argument in
     addition to other non-empty connection attributes.
 
+#### Compression
+
+You should install several packages to support compression. For example, for lz4:
+
+```
+pip3 install clickhouse-cityhash lz4
+```
+
+Then you should pass compression parameter `extra={"compression":"lz4"}`
+
+You can get additional information from [official documentation for clickhouse-driver](https://clickhouse-driver.readthedocs.io/en/latest/installation.html#installation-pypi)
+
 ### Default values
 
 If the Airflow connection attribute is not set then it is not passed to the
@@ -300,7 +312,7 @@ with DAG(
 
 ## Unit tests
 
-From the root project directory: `python -m unittest discover -s tests/unit`
+From the root project directory: `make unit`
 
 ## Integration tests
 
@@ -308,11 +320,17 @@ Integration tests require access to ClickHouse server. Tests use connection
     URI defined [via environment variable][airflow-conn-env]
     `AIRFLOW_CONN_CLICKHOUSE_DEFAULT` with `clickhouse://localhost` as default.
 
-Run from the project root: `python -m unittest discover -s tests/integration` 
+You can start clickhouse server locally with the following command:
+
+```bash
+make run-clickhouse
+```
+
+And then run from the project root: `make integration`
 
 ## All tests
 
-From the root project directory: `python -m unittest discover -s tests`
+From the root project directory: `make tests`
 
 ### Github Actions
 
@@ -323,7 +341,7 @@ From the root project directory: `python -m unittest discover -s tests`
 Run ClickHouse server inside Docker:
 
 ```bash
-docker exec -it $(docker run --rm -d yandex/clickhouse-server) bash
+docker exec -it $(docker run --rm -d clickhouse/clickhouse-server) bash
 ```
 
 The above command will open `bash` inside the container.
@@ -332,11 +350,10 @@ Install dependencies into container and run tests (execute inside container):
 
 ```bash
 apt-get update
-apt-get install -y python3.8 python3-pip git
+apt-get install -y python3.10 python3-pip git make
 git clone https://github.com/whisklabs/airflow-clickhouse-plugin.git
 cd airflow-clickhouse-plugin
-python3.8 -m pip install -r requirements.txt
-python3.8 -m unittest discover -s tests
+make tests
 ```
 
 # Contributors
