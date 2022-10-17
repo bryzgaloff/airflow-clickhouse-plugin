@@ -185,7 +185,7 @@ pip3 install clickhouse-cityhash lz4
 
 Then you should pass compression parameter `extra={"compression":"lz4"}`
 
-You can get additional information from [official documentation for clickhouse-driver](https://clickhouse-driver.readthedocs.io/en/latest/installation.html#installation-pypi)
+You can get additional information from [official documentation of clickhouse-driver](https://clickhouse-driver.readthedocs.io/en/latest/installation.html#installation-pypi)
 
 ### Default values
 
