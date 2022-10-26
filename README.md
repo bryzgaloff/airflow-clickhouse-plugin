@@ -1,7 +1,13 @@
 # Airflow ClickHouse Plugin
 
+![PyPI - Downloads](https://img.shields.io/pypi/dm/airflow-clickhouse-plugin)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/bryzgaloff/airflow-clickhouse-plugin/Run%20tests)
+![GitHub contributors](https://img.shields.io/github/contributors/bryzgaloff/airflow-clickhouse-plugin?color=blue)
+
 Provides `ClickHouseOperator`, `ClickHouseHook` and `ClickHouseSqlSensor` for
     [Apache Airflow][airflow] based on [mymarilyn/clickhouse-driver][ch-driver].
+
+Top-1% downloads [on PyPI](https://pypi.org/project/airflow-clickhouse-plugin/).
 
 # Features
 
@@ -320,8 +326,8 @@ python3.8 -m unittest discover -s tests
 
 # Contributors
 
-* Anton Bryzgalov, [@bryzgaloff](https://github.com/bryzgaloff)
-* Viktor Taranenko, [@viktortnk](https://github.com/viktortnk)
+* Created by Anton Bryzgalov, [@bryzgaloff](https://github.com/bryzgaloff), originally at [Whisk, Samsung](https://github.com/whisklabs)
+* Inspired by Viktor Taranenko, [@viktortnk](https://github.com/viktortnk) (Whisk, Samsung)
 * Danila Ganchar, [@d-ganchar](https://github.com/d-ganchar)
 * Mikhail, [@glader](https://github.com/glader)
 * Alexander Chashnikov, [@ne1r0n](https://github.com/ne1r0n)
