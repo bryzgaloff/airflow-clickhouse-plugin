@@ -46,6 +46,19 @@ If you are not able to upgrade `pip` to 21+, install dependency directly using
     Simple one-liner:
     `pip install "apache-airflow[pandas]==$(pip freeze | grep apache-airflow== | cut -d'=' -f3)"`.
 
+## Python and Airflow matrix version
+
+Approximately matrix version is
+
+| airflow-clickhouse-plugin version       | Airflow version | Python version                                     |
+|-----------------------------------------|-----------------|----------------------------------------------------|
+| 0.8.2                                   | >=2.0.0,<2.4.0  | ~=3.7                                              |
+| 0.8.0, 0.8.1                            | >=2.0.0,<2.3.0  | ~=3.6                                              |
+| 0.7.0                                   | >=2.0.0,<2.2.0  | ~=3.6                                              |
+| 0.6.0                                   | ~=2.0.1         | ~=3.6                                              |
+| 0.5.4, 0.5.5, 0.5.6, 0.5.7, 0.5.7.post1 | ~=1.10.6        | >=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.* |
+| 0.5.0, 0.5.1, 0.5.2, 0.5.3              | ==1.10.6        | >=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.* |
+
 # Usage
 
 To see examples [scroll down](#examples). To run them, [create an Airflow connection to ClickHouse](#how-to-create-an-airflow-connection-to-clickhouse).
