@@ -13,8 +13,9 @@ $(VENV)/bin/activate: requirements.txt
 venv: $(VENV)/bin/activate
 
 clean:
-	rm -rf $(VENV) __pycache__
-	find . -type f -name '*.pyc' -delete
+	rm -rf $(VENV)
+	find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf
+
 
 run-clickhouse:
 	@docker run -p 9000:9000 --ulimit nofile=262144:262144 -it clickhouse/clickhouse-server
