@@ -186,7 +186,7 @@ pip3 install clickhouse-cityhash lz4
 Then you should include `compression` parameter in airflow connection uri: `extra={"compression":"lz4"}`.  You can get 
 additional information about extra options from [official documentation of clickhouse-driver](https://clickhouse-driver.readthedocs.io/en/latest/installation.html#installation-pypi)
 
-Connection URI looks like in the example below:
+Connection URI should look like in the example below:
 
 `clickhouse://login:password@host:port/?compression=lz4`
 
@@ -338,17 +338,49 @@ Integration tests require access to ClickHouse server. Tests use connection
     URI defined [via environment variable][airflow-conn-env]
     `AIRFLOW_CONN_CLICKHOUSE_DEFAULT` with `clickhouse://localhost` as default.
 
-You can start clickhouse server locally with the following command:
+You can run ClickHouse server in a local Docker container using the following command:
+
+Using `make`:
 
 ```bash
 make run-clickhouse
 ```
 
-And then run from the project root: `make integration`
+Using `shell`:
+
+```bash
+@docker run -p 9000:9000 --ulimit nofile=262144:262144 -it clickhouse/clickhouse-server
+```
+
+And then run from the project root:
+
+Using `make`:
+
+```bash
+make integration
+```
+
+Using `python`:
+
+```bash
+python3 -m unittest discover -s tests/integration
+```
 
 ## All tests
 
-From the root project directory: `make tests`
+From the root project directory:
+
+Using `make`:
+
+```bash
+make tests
+```
+
+Using `python`:
+
+```bash
+python3 -m unittest discover -s tests
+```
 
 ### Github Actions
 
