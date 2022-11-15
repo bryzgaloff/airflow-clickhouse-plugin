@@ -1,6 +1,9 @@
 # visual studio code
 .vscode/
+
+# JetBrains IDEs
 .idea/
+.fleet/
 
 # python
 venv/
