@@ -179,13 +179,19 @@ For example, if Airflow connection contains `extra={"secure":true}` then
 
 You should install several packages to support compression. For example, for lz4:
 
-```
+```bash
 pip3 install clickhouse-cityhash lz4
 ```
 
-Then you should pass compression parameter `extra={"compression":"lz4"}`
+Then you should include `compression` parameter in airflow connection uri: `extra={"compression":"lz4"}`.  You can get 
+additional information about extra options from [official documentation of clickhouse-driver](https://clickhouse-driver.readthedocs.io/en/latest/installation.html#installation-pypi)
 
-You can get additional information from [official documentation of clickhouse-driver](https://clickhouse-driver.readthedocs.io/en/latest/installation.html#installation-pypi)
+Connection URI looks like in the example below:
+
+`clickhouse://login:password@host:port/?compression=lz4`
+
+see [official documentation](https://airflow.apache.org/docs/apache-airflow/stable/howto/connection.html) to 
+get more info about connections in Airflow.
 
 ### Default values
 
@@ -312,7 +318,19 @@ with DAG(
 
 ## Unit tests
 
-From the root project directory: `make unit`
+From the root project directory
+
+Using `make`:
+
+```bash
+make unit
+```
+
+Using `python`:
+
+```bash
+python -m unittest discover -s tests
+```
 
 ## Integration tests
 
@@ -340,13 +358,34 @@ From the root project directory: `make tests`
 
 Run ClickHouse server inside Docker:
 
+Using `shell`:
+
 ```bash
 docker exec -it $(docker run --rm -d clickhouse/clickhouse-server) bash
+```
+
+Using `make`:
+
+```bash
+make run-clickhouse-dind
 ```
 
 The above command will open `bash` inside the container.
 
 Install dependencies into container and run tests (execute inside container):
+
+Using `python`:
+
+```bash
+apt-get update
+apt-get install -y python3.10 python3-pip git make
+git clone https://github.com/whisklabs/airflow-clickhouse-plugin.git
+cd airflow-clickhouse-plugin
+python3.10 -m pip install -r requirements.txt
+python3.10 -m unittest discover -s tests
+```
+
+Using `make`:
 
 ```bash
 apt-get update
