@@ -22,7 +22,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-        airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4"]
+        airflow-version: ["2.0.2", "2.2.5", "2.3.4", "2.4.3"]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
-        airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4"]
+        airflow-version: ["2.0.2", "2.2.5", "2.3.4", "2.4.3"]
     services:
       clickhouse:
         image: yandex/clickhouse-server
