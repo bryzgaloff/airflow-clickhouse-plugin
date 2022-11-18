@@ -25,12 +25,26 @@ Top-1% downloads [on PyPI](https://pypi.org/project/airflow-clickhouse-plugin/).
 
 `pip install -U airflow-clickhouse-plugin`
 
-Requires `apache-airflow` and `clickhouse-driver` (installed automatically by
-    `pip`). Primarily supports Airflow 2.0–2.3. Later versions are expected
-    to work properly but may be not fully tested. Use plugin versions below
-    0.6.0 (e.g. 0.5.7.post1) to preserve compatibility with Airflow 1.10.6 (this
-    version has long-term
-    [support on Google Cloud Composer][cloud-composer-versions]).
+Dependencies: `apache-airflow` and `clickhouse-driver`.
+
+## Python and Airflow versions support
+
+Different versions of the plugin support different combinations of Python and
+    Airflow versions. We _primarily_ support **Airflow 2.0+ and Python 3.7+**.
+    If you need to use the plugin with older Python-Airflow combinations, pick a
+    suitable plugin version:
+
+| airflow-clickhouse-plugin version | Airflow version | Python version     |
+|-----------------------------------|-----------------|--------------------|
+| 0.8.2                             | \>=2.0.0,<2.4.0 | ~=3.7              |
+| 0.8.0,0.8.1                       | \>=2.0.0,<2.3.0 | ~=3.6              |
+| 0.7.0                             | \>=2.0.0,<2.2.0 | ~=3.6              |
+| 0.6.0                             | ~=2.0.1         | ~=3.6              |
+| \>=0.5.4,<0.6.0                   | ~=1.10.6        | \>=2.7 or >=3.5.\* |
+| \>=0.5.0,<0.5.4                   | ==1.10.6        | \>=2.7 or >=3.5.\* |
+
+`~=` means compatible release, see [PEP 440][pep-440-compatible-releases] for an
+    explanation.
 
 ## Note on pandas dependency
 
@@ -45,19 +59,6 @@ If you are not able to upgrade `pip` to 21+, install dependency directly using
     `pip install apache-airflow[pandas]==` (specifying current Airflow version).
     Simple one-liner:
     `pip install "apache-airflow[pandas]==$(pip freeze | grep apache-airflow== | cut -d'=' -f3)"`.
-
-## Python and Airflow matrix version
-
-Approximately matrix version is
-
-| airflow-clickhouse-plugin version | Airflow version | Python version     |
-|-----------------------------------|-----------------|--------------------|
-|               0.8.2               | \>=2.0.0,<2.4.0 |        ~=3.7       |
-| 0.8.0, 0.8.1                      | \>=2.0.0,<2.3.0 | ~=3.6              |
-| 0.7.0                             | \>=2.0.0,<2.2.0 | ~=3.6              |
-| 0.6.0                             | ~=2.0.1         | ~=3.6              |
-| \>=0.5.4,<0.6.0                   | ~=1.10.6        | \>=2.7 or >=3.5.\* |
-| \>=0.5.0,<0.5.4                   | ==1.10.6        | \>=2.7 or >=3.5.\* |
 
 # Usage
 
@@ -314,7 +315,7 @@ From the root project directory: `python -m unittest discover -s tests`
 
 ### Github Actions
 
-[Github Action][github-action-src] is set up for this project.
+[GitHub Action][github-action-src] is set up for this project.
 
 ### Run tests using Docker
 
@@ -368,3 +369,4 @@ python3.8 -m unittest discover -s tests
 [airflow-sql-sensor]: https://airflow.apache.org/docs/2.1.0/_api/airflow/sensors/sql/index.html
 [github-action-src]: https://github.com/whisklabs/airflow-clickhouse-plugin/tree/master/.github/workflows
 [pandas-extra]: https://github.com/apache/airflow/commit/2c26b15a8087cb8a81eb19fedbc768bd6da92df7#diff-60f61ab7a8d1910d86d9fda2261620314edcae5894d5aaa236b821c7256badd7
+[pep-440-compatible-releases]: https://peps.python.org/pep-0440/#compatible-release
