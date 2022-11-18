@@ -70,53 +70,55 @@ class BasicInsertTestCase(ClickHouseConnectionEnvVarTestCase):
         self._hook.run(f'DROP TABLE IF EXISTS {self._temp_table_name}')
 
 
-class GetAsPandasDfTestCase(ClickHouseConnectionEnvVarTestCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        global pd
-        import pandas as pd
+try:
+    import pandas as pd
+except ImportError:
+    pass
+else:
+    class GetAsPandasDfTestCase(ClickHouseConnectionEnvVarTestCase):
+        def _test(self, sql: str, expected_df):
+            actual_df = ClickHouseHook().get_pandas_df(sql)
+            self.assertListEqual(
+                list(actual_df.columns),
+                list(expected_df.columns),
+            )
+            self.assertListEqual(
+                actual_df.to_dict('records'),
+                expected_df.to_dict('records'),
+            )
 
-    def _test(self, sql: str, expected_df):
-        actual_df = ClickHouseHook().get_pandas_df(sql)
-        self.assertListEqual(list(actual_df.columns), list(expected_df.columns))
-        self.assertListEqual(
-            actual_df.to_dict('records'),
-            expected_df.to_dict('records'),
-        )
-
-    def test(self):
-        self._test(
-            '''
-                SELECT
-                    number,
-                    concat('result: ', toString(number + number)) AS nSum
-                FROM system.numbers
-                WHERE number < 4
-                LIMIT 3
-            ''',
-            pd.DataFrame.from_dict(dict(
-                number=(0, 1, 2),
-                nSum=('result: 0', 'result: 2', 'result: 4'),
-            ))
-        )
-
-    def test_empty_df(self):
-        self._test(
-            '''
-                SELECT
-                    number,
-                    concat('result: ', toString(number + number)) AS n_sum
-                FROM (
-                    SELECT number
+        def test(self):
+            self._test(
+                '''
+                    SELECT
+                        number,
+                        concat('result: ', toString(number + number)) AS nSum
                     FROM system.numbers
                     WHERE number < 4
                     LIMIT 3
-                )
-                WHERE number > 4
-            ''',
-            pd.DataFrame(columns=['number', 'n_sum']),
-        )
+                ''',
+                pd.DataFrame.from_dict(dict(
+                    number=(0, 1, 2),
+                    nSum=('result: 0', 'result: 2', 'result: 4'),
+                ))
+            )
+
+        def test_empty_df(self):
+            self._test(
+                '''
+                    SELECT
+                        number,
+                        concat('result: ', toString(number + number)) AS n_sum
+                    FROM (
+                        SELECT number
+                        FROM system.numbers
+                        WHERE number < 4
+                        LIMIT 3
+                    )
+                    WHERE number > 4
+                ''',
+                pd.DataFrame(columns=['number', 'n_sum']),
+            )
 
 
 if __name__ == '__main__':
