@@ -34,15 +34,15 @@ Different versions of the plugin support different combinations of Python and
     If you need to use the plugin with older Python-Airflow combinations, pick a
     suitable plugin version:
 
-| airflow-clickhouse-plugin version | Airflow version | Python version     |
-|-----------------------------------|-----------------|--------------------|
-| 0.9.0                             | \>=2.0.0,<2.5.0 | ~=3.7              |
-| 0.8.2                             | \>=2.0.0,<2.4.0 | ~=3.7              |
-| 0.8.0,0.8.1                       | \>=2.0.0,<2.3.0 | ~=3.6              |
-| 0.7.0                             | \>=2.0.0,<2.2.0 | ~=3.6              |
-| 0.6.0                             | ~=2.0.1         | ~=3.6              |
-| \>=0.5.4,<0.6.0                   | ~=1.10.6        | \>=2.7 or >=3.5.\* |
-| \>=0.5.0,<0.5.4                   | ==1.10.6        | \>=2.7 or >=3.5.\* |
+| airflow-clickhouse-plugin version | Airflow version         | Python version     |
+|-----------------------------------|-------------------------|--------------------|
+| 0.9.0                             | ~=2.0.0,\>=2.2.0,<2.5.0 | ~=3.7              |
+| 0.8.2                             | \>=2.0.0,<2.4.0         | ~=3.7              |
+| 0.8.0,0.8.1                       | \>=2.0.0,<2.3.0         | ~=3.6              |
+| 0.7.0                             | \>=2.0.0,<2.2.0         | ~=3.6              |
+| 0.6.0                             | ~=2.0.1                 | ~=3.6              |
+| \>=0.5.4,<0.6.0                   | ~=1.10.6                | \>=2.7 or >=3.5.\* |
+| \>=0.5.0,<0.5.4                   | ==1.10.6                | \>=2.7 or >=3.5.\* |
 
 `~=` means compatible release, see [PEP 440][pep-440-compatible-releases] for an
     explanation.
