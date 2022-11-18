@@ -175,6 +175,24 @@ For example, if Airflow connection contains `extra={"secure":true}` then
     the `Client.__init__` will receive `secure=True` keyword argument in
     addition to other non-empty connection attributes.
 
+#### Compression
+
+You should install several packages to support compression. For example, for lz4:
+
+```bash
+pip3 install clickhouse-cityhash lz4
+```
+
+Then you should include `compression` parameter in airflow connection uri: `extra={"compression":"lz4"}`.  You can get 
+additional information about extra options from [official documentation of clickhouse-driver](https://clickhouse-driver.readthedocs.io/en/latest/installation.html#installation-pypi)
+
+Connection URI should look like in the example below:
+
+`clickhouse://login:password@host:port/?compression=lz4`
+
+See [official documentation](https://airflow.apache.org/docs/apache-airflow/stable/howto/connection.html) to 
+get more info about connections in Airflow.
+
 ### Default values
 
 If the Airflow connection attribute is not set then it is not passed to the
@@ -300,7 +318,19 @@ with DAG(
 
 ## Unit tests
 
-From the root project directory: `python -m unittest discover -s tests/unit`
+From the root project directory
+
+Using `make`:
+
+```bash
+make unit
+```
+
+Using `python`:
+
+```bash
+python -m unittest discover -s tests
+```
 
 ## Integration tests
 
@@ -308,11 +338,49 @@ Integration tests require access to ClickHouse server. Tests use connection
     URI defined [via environment variable][airflow-conn-env]
     `AIRFLOW_CONN_CLICKHOUSE_DEFAULT` with `clickhouse://localhost` as default.
 
-Run from the project root: `python -m unittest discover -s tests/integration` 
+You can run ClickHouse server in a local Docker container using the following command:
+
+Using `make`:
+
+```bash
+make run-clickhouse
+```
+
+Using `shell`:
+
+```bash
+docker run -p 9000:9000 --ulimit nofile=262144:262144 -it clickhouse/clickhouse-server
+```
+
+And then run from the project root:
+
+Using `make`:
+
+```bash
+make integration
+```
+
+Using `python`:
+
+```bash
+python3 -m unittest discover -s tests/integration
+```
 
 ## All tests
 
-From the root project directory: `python -m unittest discover -s tests`
+From the root project directory:
+
+Using `make`:
+
+```bash
+make tests
+```
+
+Using `python`:
+
+```bash
+python3 -m unittest discover -s tests
+```
 
 ### Github Actions
 
@@ -322,21 +390,41 @@ From the root project directory: `python -m unittest discover -s tests`
 
 Run ClickHouse server inside Docker:
 
+Using `shell`:
+
 ```bash
-docker exec -it $(docker run --rm -d yandex/clickhouse-server) bash
+docker exec -it $(docker run --rm -d clickhouse/clickhouse-server) bash
+```
+
+Using `make`:
+
+```bash
+make run-clickhouse-dind
 ```
 
 The above command will open `bash` inside the container.
 
 Install dependencies into container and run tests (execute inside container):
 
+Using `python`:
+
 ```bash
 apt-get update
-apt-get install -y python3.8 python3-pip git
+apt-get install -y python3.10 python3-pip git make
 git clone https://github.com/whisklabs/airflow-clickhouse-plugin.git
 cd airflow-clickhouse-plugin
-python3.8 -m pip install -r requirements.txt
-python3.8 -m unittest discover -s tests
+python3.10 -m pip install -r requirements.txt
+python3.10 -m unittest discover -s tests
+```
+
+Using `make`:
+
+```bash
+apt-get update
+apt-get install -y python3.10 python3-pip git make
+git clone https://github.com/whisklabs/airflow-clickhouse-plugin.git
+cd airflow-clickhouse-plugin
+make tests
 ```
 
 # Contributors

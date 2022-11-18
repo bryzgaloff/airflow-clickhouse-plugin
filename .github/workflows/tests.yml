@@ -8,6 +8,7 @@ on:
       - "tests/**"
       - ".github/workflows/tests.yml"
       - "requirements.txt"
+      - "Makefile"
   pull_request:
     branches: [ "master" ]
     paths:
@@ -15,6 +16,7 @@ on:
       - "tests/**"
       - ".github/workflows/tests.yml"
       - "requirements.txt"
+      - "Makefile"
 
 jobs:
   unit-tests:
@@ -35,7 +37,7 @@ jobs:
         python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
     - name: Run unit tests
       run: |
-        python -m unittest discover -s tests/unit
+        make unit
   integration-tests:
     runs-on: ubuntu-latest
     strategy:
@@ -61,4 +63,4 @@ jobs:
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
       run: |
-        python -m unittest discover -s tests/integration
+        make integration
