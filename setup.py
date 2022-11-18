@@ -25,10 +25,10 @@ setup(
     url=about.__url__,
     packages=find_packages(exclude=('tests', 'tests.*')),
     include_package_data=True,
-    python_requires=">=3.6.*",
+    python_requires=">=3.7.*",
     install_requires=install_requires,
     extras_require={
-        'pandas': ['apache-airflow[pandas]>=2.0.0,<2.4.0'],
+        'pandas': ['apache-airflow[pandas]>=2.0.0,<2.5.0'],
     },
     license=about.__license__,
     zip_safe=False,
@@ -40,7 +40,6 @@ setup(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.6',
     ],
     keywords=['clickhouse', 'airflow'],
 )
