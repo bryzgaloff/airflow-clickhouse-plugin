@@ -2,19 +2,27 @@ name: Run tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [ "master" ]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - ".github/workflows/tests.yml"
+      - "requirements.txt"
   pull_request:
-    branches: [ master ]
+    branches: [ "master" ]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - ".github/workflows/tests.yml"
+      - "requirements.txt"
 
 jobs:
   unit-tests:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3"]
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -29,21 +37,17 @@ jobs:
     - name: Run unit tests
       run: |
         python -m unittest discover -s tests/unit
-
   integration-tests:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3"]
-
     services:
       clickhouse:
         image: yandex/clickhouse-server
         ports:
           - 9000/tcp
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
