@@ -342,12 +342,17 @@ python3.8 -m unittest discover -s tests
 
 * Created by Anton Bryzgalov, [@bryzgaloff](https://github.com/bryzgaloff), originally at [Whisk, Samsung](https://github.com/whisklabs)
 * Inspired by Viktor Taranenko, [@viktortnk](https://github.com/viktortnk) (Whisk, Samsung)
+
+Community contributors:
+
 * Danila Ganchar, [@d-ganchar](https://github.com/d-ganchar)
 * Mikhail, [@glader](https://github.com/glader)
 * Alexander Chashnikov, [@ne1r0n](https://github.com/ne1r0n)
 * Simone Brundu, [@saimon46](https://github.com/saimon46)
 * [@gkarg](https://github.com/gkarg)
 * Stanislav Morozov, [@r3b-fish](https://github.com/r3b-fish)
+* Sergey Bychkov, [@SergeyBychkov](https://github.com/SergeyBychkov)
+* [@was-av](https://github.com/was-av)
 
 
 [airflow]: https://airflow.apache.org/
