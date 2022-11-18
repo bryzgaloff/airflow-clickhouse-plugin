@@ -8,6 +8,7 @@ on:
       - "tests/**"
       - ".github/workflows/tests.yml"
       - "requirements.txt"
+      - "Makefile"
   pull_request:
     branches: [ "master" ]
     paths:
@@ -15,6 +16,7 @@ on:
       - "tests/**"
       - ".github/workflows/tests.yml"
       - "requirements.txt"
+      - "Makefile"
 
 jobs:
   unit-tests:
