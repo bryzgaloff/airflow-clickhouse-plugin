@@ -1,3 +1,4 @@
+import contextlib
 from itertools import islice
 from typing import *
 
@@ -34,12 +35,12 @@ class ClickHouseHook(BaseHook):
 
     def get_records(self, sql: str, parameters: Optional[dict] = None) -> List[Tuple]:
         self._log_query(sql, parameters)
-        with disconnecting(self.get_conn()) as client:
+        with _disconnecting(self.get_conn()) as client:
             return client.execute(sql, params=parameters)
 
     def get_first(self, sql: str, parameters: Optional[dict] = None) -> Optional[Tuple]:
         self._log_query(sql, parameters)
-        with disconnecting(self.get_conn()) as client:
+        with _disconnecting(self.get_conn()) as client:
             try:
                 return next(client.execute_iter(sql, params=parameters))
             except StopIteration:
@@ -60,7 +61,7 @@ class ClickHouseHook(BaseHook):
     ) -> Any:
         if isinstance(sql, str):
             sql = (sql,)
-        with disconnecting(self.get_conn()) as conn:
+        with _disconnecting(self.get_conn()) as conn:
             last_result = None
             for s in sql:
                 self._log_query(s, parameters)
@@ -103,14 +104,16 @@ class ClickHouseHook(BaseHook):
 _InnerT = TypeVar('_InnerT')
 
 
-class disconnecting(ContextManager, Generic[_InnerT]):
-    """ Context to automatically disconnect something at the end of a block.
+@contextlib.contextmanager
+def _disconnecting(thing: _InnerT) -> ContextManager[_InnerT]:
+    """
+    Context to automatically disconnect something at the end of a block.
 
-    Similar to contextlib.closing but calls .disconnect() method on exit.
+    Similar to ``contextlib.closing`` but calls .disconnect() method on exit.
 
     Code like this:
 
-    >>> with disconnecting(<module>.open(<arguments>)) as f:
+    >>> with _disconnecting(<module>.open(<arguments>)) as f:
     >>>     <block>
 
     is equivalent to this:
@@ -121,12 +124,7 @@ class disconnecting(ContextManager, Generic[_InnerT]):
     >>> finally:
     >>>     f.disconnect()
     """
-
-    def __init__(self, thing: _InnerT):
-        self._thing = thing
-
-    def __enter__(self) -> _InnerT:
-        return self._thing
-
-    def __exit__(self, *exc_info) -> None:
-        self._thing.disconnect()
+    try:
+        yield thing
+    finally:
+        thing.disconnect()
