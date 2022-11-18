@@ -33,7 +33,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
-        python -m pip install .[pandas]
     - name: Run unit tests
       run: |
         python -m unittest discover -s tests/unit
@@ -58,7 +57,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
-        python -m pip install .[pandas]
     - name: Run tests on ClickHouse server
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
