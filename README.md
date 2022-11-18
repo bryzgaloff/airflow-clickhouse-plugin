@@ -190,7 +190,7 @@ Connection URI should look like in the example below:
 
 `clickhouse://login:password@host:port/?compression=lz4`
 
-see [official documentation](https://airflow.apache.org/docs/apache-airflow/stable/howto/connection.html) to 
+See [official documentation](https://airflow.apache.org/docs/apache-airflow/stable/howto/connection.html) to 
 get more info about connections in Airflow.
 
 ### Default values
@@ -349,7 +349,7 @@ make run-clickhouse
 Using `shell`:
 
 ```bash
-@docker run -p 9000:9000 --ulimit nofile=262144:262144 -it clickhouse/clickhouse-server
+docker run -p 9000:9000 --ulimit nofile=262144:262144 -it clickhouse/clickhouse-server
 ```
 
 And then run from the project root:

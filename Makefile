@@ -16,12 +16,11 @@ clean:
 	rm -rf $(VENV)
 	find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf
 
-
 run-clickhouse:
-	@docker run -p 9000:9000 --ulimit nofile=262144:262144 -it clickhouse/clickhouse-server
+	docker run -p 9000:9000 --ulimit nofile=262144:262144 -it clickhouse/clickhouse-server
 
 run-clickhouse-dind:
-	@docker exec -it $$(docker run --rm -d clickhouse/clickhouse-server) bash
+	docker exec -it $$(docker run --rm -d clickhouse/clickhouse-server) bash
 
 unit: venv
 	./$(VENV)/bin/python3 -m unittest discover -s tests/unit
