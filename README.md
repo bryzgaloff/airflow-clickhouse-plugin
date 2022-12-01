@@ -25,7 +25,8 @@ Top-1% downloads [on PyPI](https://pypi.org/project/airflow-clickhouse-plugin/).
 
 `pip install -U airflow-clickhouse-plugin`
 
-Dependencies: `apache-airflow` and `clickhouse-driver`.
+Dependencies: `apache-airflow` with `apache-airflow-providers-common-sql`
+    (usually pre-packed with Airflow) and `clickhouse-driver`.
 
 ## Python and Airflow versions support
 
