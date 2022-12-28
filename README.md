@@ -1,7 +1,7 @@
 # Airflow ClickHouse Plugin
 
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/airflow-clickhouse-plugin)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/bryzgaloff/airflow-clickhouse-plugin/Run%20tests)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bryzgaloff/airflow-clickhouse-plugin/tests.yml?branch=master)
 ![GitHub contributors](https://img.shields.io/github/contributors/bryzgaloff/airflow-clickhouse-plugin?color=blue)
 
 Provides `ClickHouseOperator`, `ClickHouseHook` and `ClickHouseSqlSensor` for
