@@ -1,4 +1,4 @@
-from typing import *
+from typing import Any, Dict, Iterable, Optional, Sequence, Union
 
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
@@ -8,6 +8,8 @@ from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 class ClickHouseOperator(BaseOperator):
     template_fields = ('_sql',)
+    template_ext: Sequence[str] = ('.sql',)
+    template_fields_renderers = {'_sql': 'sql'}
     default_conn_name = ClickHouseHook.default_conn_name
 
     def __init__(
