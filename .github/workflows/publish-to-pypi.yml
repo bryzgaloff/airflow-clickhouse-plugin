@@ -5,13 +5,16 @@ on:
     tags:
       - '*'
 
+env:
+  VERSION: (echo '${{ github.ref }}' | sed -e 's,.*/\(.*\),\1,' | sed -e 's/^v//')
+
 jobs:
   build-n-publish-test:
     name: Build and publish to TestPyPI
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.7' , '3.8', '3.9', '3.10', '3.11' ]
+        python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -19,19 +22,9 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install pypa/build
-        run: >-
-          python -m
-          pip install
-          build
-          --user
+        run: python -m pip install build --user
       - name: Build a binary wheel and a source tarball
-        run: >-
-          python -m
-          build
-          --sdist
-          --wheel
-          --outdir dist/
-          .
+        run: python -m build --sdist --wheel --outdir dist/ .
       - name: Save built package
         uses: actions/upload-artifact@v3
         with:
@@ -44,44 +37,41 @@ jobs:
           skip_existing: true
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
-      - name: Wait publishing to TestPyPI
-        uses: juliangruber/sleep-action@v2.0.0
-        with:
-          time: 300s
   unit-tests-test:
     name: Running unit tests for TestPyPI
     needs: build-n-publish-test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.7' , '3.8', '3.9', '3.10', '3.11' ]
-        airflow-version: [ '2.0.2' , '2.2.5', '2.3.4', '2.4.3', '2.5.0' ]
+        python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
+        airflow-version: [ '2.0.2', '2.2.5', '2.3.4', '2.4.3', '2.5.0' ]
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          rm -rf airflow_clickhouse_plugin
+      - run: rm -rf airflow_clickhouse_plugin
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4.4.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
-          python -m pip install --force-reinstall --index-url https://test.pypi.org/simple --extra-index-url https://pypi.org/simple airflow-clickhouse-plugin[pandas]==$VERSION
+          INSTALLED="python -m pip list | grep -F airflow-clickhouse-plugin | grep -c $(eval $VERSION)"
+          until [[ $(eval "$INSTALLED") > 0 ]]
+          do
+            sleep 10
+            python -m pip install --force-reinstall --index-url https://test.pypi.org/simple --extra-index-url https://pypi.org/simple airflow-clickhouse-plugin[pandas]==$(eval $VERSION) || true
+          done
       - name: Run unit tests
-        run: |
-          python -m unittest discover -s tests/unit
+        run: python -m unittest discover -s tests/unit
   integration-tests-test:
     name: Running integration tests for TestPyPI
     needs: build-n-publish-test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.7' , '3.8', '3.9', '3.10', '3.11' ]
-        airflow-version: [ '2.0.2' , '2.2.5', '2.3.4', '2.4.3', '2.5.0' ]
+        python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
+        airflow-version: [ '2.0.2', '2.2.5', '2.3.4', '2.4.3', '2.5.0' ]
     services:
       clickhouse:
         image: yandex/clickhouse-server
@@ -89,24 +79,25 @@ jobs:
           - 9000/tcp
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          rm -rf airflow_clickhouse_plugin
+      - run: rm -rf airflow_clickhouse_plugin
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4.4.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
-          python -m pip install --force-reinstall --index-url https://test.pypi.org/simple --extra-index-url https://pypi.org/simple airflow-clickhouse-plugin[pandas]==$VERSION
+          INSTALLED="python -m pip list | grep -F airflow-clickhouse-plugin | grep -c $(eval $VERSION)"
+          until [[ $(eval "$INSTALLED") > 0 ]]
+          do
+            sleep 10
+            python -m pip install --force-reinstall --index-url https://test.pypi.org/simple --extra-index-url https://pypi.org/simple airflow-clickhouse-plugin[pandas]==$(eval $VERSION) || true
+          done
       - name: Run tests on ClickHouse server
         env:
           AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
-        run: |
-          python -m unittest discover -s tests/integration
+        run: python -m unittest discover -s tests/integration
 
   build-n-publish-public:
     name: Publish to PyPI
@@ -122,44 +113,41 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
-      - name: Wait publishing to PyPI
-        uses: juliangruber/sleep-action@v2.0.0
-        with:
-          time: 300s
   unit-tests-public:
     name: Running unit tests for PyPI
     needs: build-n-publish-public
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.7' , '3.8', '3.9', '3.10', '3.11' ]
-        airflow-version: [ '2.0.2' , '2.2.5', '2.3.4', '2.4.3', '2.5.0' ]
+        python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
+        airflow-version: [ '2.0.2', '2.2.5', '2.3.4', '2.4.3', '2.5.0' ]
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          rm -rf airflow_clickhouse_plugin
+      - run: rm -rf airflow_clickhouse_plugin
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4.4.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
-          python -m pip install airflow-clickhouse-plugin[pandas]==$VERSION
+          INSTALLED="python -m pip list | grep -F airflow-clickhouse-plugin | grep -c $(eval $VERSION)"
+          until [[ $(eval "$INSTALLED") > 0 ]]
+          do
+            sleep 10
+            python -m pip install airflow-clickhouse-plugin[pandas]==$(eval $VERSION) || true
+          done
       - name: Run unit tests
-        run: |
-          python -m unittest discover -s tests/unit
+        run: python -m unittest discover -s tests/unit
   integration-tests-public:
     name: Running integration tests for PyPI
     needs: build-n-publish-public
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.7' , '3.8', '3.9', '3.10', '3.11' ]
-        airflow-version: [ '2.0.2' , '2.2.5', '2.3.4', '2.4.3', '2.5.0' ]
+        python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
+        airflow-version: [ '2.0.2', '2.2.5', '2.3.4', '2.4.3', '2.5.0' ]
     services:
       clickhouse:
         image: yandex/clickhouse-server
@@ -167,21 +155,22 @@ jobs:
           - 9000/tcp
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          rm -rf airflow_clickhouse_plugin
+      - run: rm -rf airflow_clickhouse_plugin
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4.4.0
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
-          python -m pip install airflow-clickhouse-plugin[pandas]==$VERSION
+          INSTALLED="python -m pip list | grep -F airflow-clickhouse-plugin | grep -c $(eval $VERSION)"
+          until [[ $(eval "$INSTALLED") > 0 ]]
+          do
+            sleep 10
+            python -m pip install airflow-clickhouse-plugin[pandas]==$(eval $VERSION) || true
+          done
       - name: Run tests on ClickHouse server
         env:
           AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
-        run: |
-          python -m unittest discover -s tests/integration
+        run: python -m unittest discover -s tests/integration
