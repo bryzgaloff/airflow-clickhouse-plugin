@@ -9,7 +9,7 @@ from airflow.models import DAG
 from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 from airflow_clickhouse_plugin.operators.clickhouse_operator import ClickHouseOperator
 
-DEFAULT_DATE = datetime.datetime.now()
+_TEST_START_DATE = datetime.datetime.now()
 
 
 class ClickHouseOperatorTestCase(unittest.TestCase):
@@ -51,31 +51,29 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
         assert ClickHouseOperator.template_fields == ('_sql',)
 
     def test_resolve_template_files_value(self):
-        with NamedTemporaryFile(suffix='.sql') as f:
-            f.write(b'{{ ds }}')
-            f.flush()
-            template_dir = os.path.dirname(f.name)
-            template_file = os.path.basename(f.name)
+        with NamedTemporaryFile(suffix='.sql') as sql_file:
+            sql_file.write(b'{{ ds }}')
+            sql_file.flush()
+            sql_file_dir = os.path.dirname(sql_file.name)
+            sql_file_name = os.path.basename(sql_file.name)
 
-            with DAG('test-dag', start_date=DEFAULT_DATE, template_searchpath=template_dir):
-                task = ClickHouseOperator(task_id='test_task', sql='SELECT 1')
+            with DAG('test-dag', start_date=_TEST_START_DATE, template_searchpath=sql_file_dir):
+                task = ClickHouseOperator(task_id='test_task', sql=sql_file_name)
 
-            task._sql = template_file
             task.resolve_template_files()
 
         assert task._sql == '{{ ds }}'
 
     def test_resolve_template_files_list(self):
-        with NamedTemporaryFile(suffix='.sql') as f:
-            f.write(b'{{ ds }}')
-            f.flush()
-            template_dir = os.path.dirname(f.name)
-            template_file = os.path.basename(f.name)
+        with NamedTemporaryFile(suffix='.sql') as sql_file:
+            sql_file.write(b'{{ ds }}')
+            sql_file.flush()
+            sql_file_dir = os.path.dirname(sql_file.name)
+            sql_file_name = os.path.basename(sql_file.name)
 
-            with DAG('test-dag', start_date=DEFAULT_DATE, template_searchpath=template_dir):
-                task = ClickHouseOperator(task_id='test_task', sql='SELECT 1')
+            with DAG('test-dag', start_date=_TEST_START_DATE, template_searchpath=sql_file_dir):
+                task = ClickHouseOperator(task_id='test_task', sql=[sql_file_name, 'some_string'])
 
-            task._sql = [template_file, 'some_string']
             task.resolve_template_files()
 
         assert task._sql == ['{{ ds }}', 'some_string']
