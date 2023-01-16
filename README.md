@@ -444,6 +444,8 @@ Community contributors:
 * Stanislav Morozov, [@r3b-fish](https://github.com/r3b-fish)
 * Sergey Bychkov, [@SergeyBychkov](https://github.com/SergeyBychkov)
 * [@was-av](https://github.com/was-av)
+* Maxim Tarasov, [@MaximTar](https://github.com/MaximTar)
+* [@dvnrvn](https://github.com/dvnrvn)
 
 
 [airflow]: https://airflow.apache.org/
