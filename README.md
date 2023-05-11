@@ -37,6 +37,7 @@ Different versions of the plugin support different combinations of Python and
 
 | airflow-clickhouse-plugin version | Airflow version         | Python version     |
 |-----------------------------------|-------------------------|--------------------|
+| 0.11.0                            | ~=2.0.0,\>=2.2.0,<2.7.0 | ~=3.7              |
 | 0.10.0,0.10.1                     | ~=2.0.0,\>=2.2.0,<2.6.0 | ~=3.7              |
 | 0.9.0,0.9.1                       | ~=2.0.0,\>=2.2.0,<2.5.0 | ~=3.7              |
 | 0.8.2                             | \>=2.0.0,<2.4.0         | ~=3.7              |
@@ -446,6 +447,7 @@ Community contributors:
 * [@was-av](https://github.com/was-av)
 * Maxim Tarasov, [@MaximTar](https://github.com/MaximTar)
 * [@dvnrvn](https://github.com/dvnrvn)
+* Giovanni Corsetti, [@CorsettiS](https://github.com/CorsettiS)
 
 
 [airflow]: https://airflow.apache.org/
