@@ -18,6 +18,9 @@ class ClickHouseOperator(BaseOperator):
             clickhouse_conn_id: str = default_conn_name,
             parameters: Optional[Dict[str, Any]] = None,
             database: Optional[str] = None,
+            with_column_types: Optional[bool] = False,
+            types_check: Optional[bool] = False,
+            query_id: Optional[str] = None,
             *args,
             **kwargs,
     ):
@@ -26,10 +29,13 @@ class ClickHouseOperator(BaseOperator):
         self._conn_id = clickhouse_conn_id
         self._parameters = parameters
         self._database = database
+        self._with_column_types = with_column_types
+        self._types_check = types_check
+        self._query_id = query_id
 
     def execute(self, context: Dict[str, Any]) -> Any:
         hook = ClickHouseHook(
             clickhouse_conn_id=self._conn_id,
             database=self._database,
         )
-        return hook.run(self._sql, self._parameters)
+        return hook.run(self._sql, self._parameters, self._with_column_types, self._types_check, self._query_id)
