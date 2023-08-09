@@ -22,16 +22,20 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
         clickhouse_conn_id = object()
         parameters = object()
         database = object()
+        with_column_types = object()
+        types_check = object()
+        query_id = object()
         op = ClickHouseOperator(
             task_id='_', sql=sql, clickhouse_conn_id=clickhouse_conn_id,
-            parameters=parameters, database=database,
+            parameters=parameters, database=database, with_column_types=with_column_types,
+            types_check=types_check, query_id=query_id,
         )
         op.execute(context=dict())
         clickhouse_hook_mock.assert_called_once_with(
             clickhouse_conn_id=clickhouse_conn_id,
             database=database,
         )
-        clickhouse_hook_mock().run.assert_called_once_with(sql, parameters)
+        clickhouse_hook_mock().run.assert_called_once_with(sql, parameters, with_column_types, types_check, query_id)
 
     @mock.patch(
         'airflow_clickhouse_plugin'
@@ -39,13 +43,14 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
     )
     def test_defaults(self, clickhouse_hook_mock: mock.MagicMock):
         sql = 'SELECT 1'
-        op = ClickHouseOperator(task_id='_', sql=sql)
+        query_id = 'query_id test str'
+        op = ClickHouseOperator(task_id='_', sql=sql, with_column_types=False, types_check=False, query_id=query_id)
         op.execute(context=dict())
         clickhouse_hook_mock.assert_called_once_with(
             clickhouse_conn_id=ClickHouseHook.default_conn_name,
             database=None,
         )
-        clickhouse_hook_mock().run.assert_called_once_with(sql, None)
+        clickhouse_hook_mock().run.assert_called_once_with(sql, None, False, False, query_id)
 
     def test_template_fields_overrides(self):
         assert ClickHouseOperator.template_fields == ('_sql',)
