@@ -46,7 +46,6 @@ dependencies = { file = ["requirements.txt"] }
 
 [tool.setuptools]
 zip-safe = false
-include-package-data = true
 
 [tool.setuptools.packages.find]
 exclude = [
