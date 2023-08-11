@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict
+import typing as t
 from unittest import TestCase, mock
 
 import airflow.models
@@ -71,7 +71,7 @@ class ClickHouseConnectionParamsTestCase(TestCase):
         args = (clickhouse_driver.Client,) + args
         self._client_mock.assert_called_once_with(*args, **kwargs)
 
-    _connection_kwargs: Dict[str, Any] = {}
+    _connection_kwargs: t.Dict[str, t.Any] = {}
     _patched_hook_connection: mock._patch
     _patched_client: mock._patch
     _client_mock: mock.Mock

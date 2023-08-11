@@ -1,22 +1,22 @@
-from typing import Any, Callable, Dict, Optional, Sequence
+import typing as t
 
 from airflow.providers.common.sql.sensors.sql import SqlSensor
 from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 
 class ClickHouseSqlSensor(SqlSensor):
-    template_fields: Sequence[str] = ('sql',)
-    template_ext: Sequence[str] = ('.sql',)
+    template_fields: t.Sequence[str] = ('sql',)
+    template_ext: t.Sequence[str] = ('.sql',)
     default_conn_name = ClickHouseHook.default_conn_name
 
     def __init__(
         self,
         sql: str = None,
         clickhouse_conn_id: str = default_conn_name,
-        parameters: Optional[Dict[str, Any]] = None,
-        database: Optional[str] = None,
-        success: Optional[Callable[[Any], bool]] = None,
-        failure: Optional[Callable[[Any], bool]] = None,
+        parameters: t.Optional[t.Dict[str, t.Any]] = None,
+        database: t.Optional[str] = None,
+        success: t.Optional[t.Callable[[t.Any], bool]] = None,
+        failure: t.Optional[t.Callable[[t.Any], bool]] = None,
         fail_on_empty: bool = False,
         *args,
         **kwargs,

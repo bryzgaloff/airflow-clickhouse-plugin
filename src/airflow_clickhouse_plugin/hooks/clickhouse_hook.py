@@ -1,6 +1,6 @@
 import contextlib
 from itertools import islice
-from typing import *
+import typing as t
 
 from airflow.hooks.base import BaseHook
 from clickhouse_driver import Client
@@ -13,7 +13,7 @@ class ClickHouseHook(BaseHook):
     def __init__(
             self,
             clickhouse_conn_id: str = default_conn_name,
-            database: Optional[str] = None,
+            database: t.Optional[str] = None,
     ):
         self.clickhouse_conn_id = clickhouse_conn_id
         self.database = database
@@ -33,12 +33,12 @@ class ClickHouseHook(BaseHook):
             connection_kwargs.update(database=conn.schema)
         return Client(conn.host or 'localhost', **connection_kwargs)
 
-    def get_records(self, sql: str, parameters: Optional[dict] = None) -> List[Tuple]:
+    def get_records(self, sql: str, parameters: t.Optional[dict] = None) -> t.List[t.Tuple]:
         self._log_query(sql, parameters)
         with _disconnecting(self.get_conn()) as client:
             return client.execute(sql, params=parameters)
 
-    def get_first(self, sql: str, parameters: Optional[dict] = None) -> Optional[Tuple]:
+    def get_first(self, sql: str, parameters: t.Optional[dict] = None) -> t.Optional[t.Tuple]:
         self._log_query(sql, parameters)
         with _disconnecting(self.get_conn()) as client:
             try:
@@ -54,11 +54,11 @@ class ClickHouseHook(BaseHook):
 
     def run(
             self,
-            sql: Union[str, Iterable[str]],
-            parameters: Union[None, dict, list, tuple, Generator] = None,
+            sql: t.Union[str, t.Iterable[str]],
+            parameters: t.Union[None, dict, list, tuple, t.Generator] = None,
             with_column_types: bool = False,
             types_check: bool = False,
-    ) -> Any:
+    ) -> t.Any:
         if isinstance(sql, str):
             sql = (sql,)
         with _disconnecting(self.get_conn()) as conn:
@@ -77,7 +77,7 @@ class ClickHouseHook(BaseHook):
     def _log_query(
             self,
             sql: str,
-            parameters: Union[None, dict, list, tuple, Generator],
+            parameters: t.Union[None, dict, list, tuple, t.Generator],
     ) -> None:
         self.log.info(
             '%s%s', sql,
@@ -86,10 +86,10 @@ class ClickHouseHook(BaseHook):
 
     @staticmethod
     def _log_params(
-            parameters: Union[dict, list, tuple, Generator],
+            parameters: t.Union[dict, list, tuple, t.Generator],
             limit: int = 10,
     ) -> str:
-        if isinstance(parameters, Generator) or len(parameters) <= limit:
+        if isinstance(parameters, t.Generator) or len(parameters) <= limit:
             return str(parameters)
         if isinstance(parameters, dict):
             head = dict(islice(parameters.items(), limit))
@@ -101,11 +101,11 @@ class ClickHouseHook(BaseHook):
             f'more parameters{closing_paren}'
 
 
-_InnerT = TypeVar('_InnerT')
+_InnerT = t.TypeVar('_InnerT')
 
 
 @contextlib.contextmanager
-def _disconnecting(thing: _InnerT) -> ContextManager[_InnerT]:
+def _disconnecting(thing: _InnerT) -> t.ContextManager[_InnerT]:
     """
     Context to automatically disconnect something at the end of a block.
 
