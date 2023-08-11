@@ -1,7 +1,6 @@
 from typing import Any, Callable, Dict, Optional, Sequence
 
 from airflow.providers.common.sql.sensors.sql import SqlSensor
-from airflow.utils.decorators import apply_defaults
 from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 
