@@ -43,3 +43,7 @@ pandas = [
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = true  # add directories without __init__.py
