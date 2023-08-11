@@ -45,7 +45,7 @@ pandas = [
 dependencies = { file = ["requirements.txt"] }
 
 [tool.setuptools]
-zip-safe = false
+zip-safe = true
 
 [tool.setuptools.packages.find]
 exclude = [
