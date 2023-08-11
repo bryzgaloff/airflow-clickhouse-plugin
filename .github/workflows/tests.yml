@@ -1,7 +1,7 @@
 name: Unit & Integration Tests
 
 on:
-  push: &on-config
+  push:
     branches: [ "master" ]
     paths:
       - "airflow_clickhouse_plugin/hooks/**"
@@ -11,24 +11,31 @@ on:
       - ".github/workflows/tests.yml"
       - "requirements.txt"
       - "Makefile"
-  pull_request: *on-config
+  pull_request:
+    branches: [ "master" ]
+    paths:
+      - "airflow_clickhouse_plugin/hooks/**"
+      - "airflow_clickhouse_plugin/operators/**"
+      - "airflow_clickhouse_plugin/sensors/**"
+      - "tests/**"
+      - ".github/workflows/tests.yml"
+      - "requirements.txt"
+      - "Makefile"
 
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
     strategy:
-      matrix: &versions-matrix
+      matrix:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
         airflow-version: ["2.0.2", "2.2.5", "2.3.4", "2.4.3", "2.5.0", "2.6.0"]
     steps:
     - uses: actions/checkout@v3
-    - &setup-python
-      name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    - &pip-install
-      name: Install dependencies
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
@@ -38,7 +45,9 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
     strategy:
-      matrix: *versions-matrix
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+        airflow-version: ["2.0.2", "2.2.5", "2.3.4", "2.4.3", "2.5.0","2.6.0"]
     services:
       clickhouse:
         image: yandex/clickhouse-server
@@ -46,8 +55,14 @@ jobs:
           - 9000/tcp
     steps:
     - uses: actions/checkout@v3
-    - *setup-python
-    - *pip-install
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
     - name: Run tests on ClickHouse server
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
