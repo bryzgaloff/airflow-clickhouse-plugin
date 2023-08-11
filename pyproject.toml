@@ -44,9 +44,6 @@ pandas = [
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }
 
-[tool.setuptools]
-zip-safe = true
-
 [tool.setuptools.packages.find]
 exclude = [
     "tests",
