@@ -5,7 +5,7 @@ from unittest import TestCase, mock
 import airflow.models
 import clickhouse_driver
 
-from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
+from airflow_clickhouse_plugin.hooks.clickhouse_dbapi_hook import ClickHouseDbApiHook
 
 
 class ClickHouseConnectionParamsTestCase(TestCase):
@@ -26,7 +26,7 @@ class ClickHouseConnectionParamsTestCase(TestCase):
 
     def test_database(self):
         database = 'test-db-from-init-args'
-        ClickHouseHook(database=database).get_conn()
+        ClickHouseDbApiHook(database=database).get_conn()
         self._assert_client_initiated_with(database=database)
 
     def test_schema(self):
@@ -62,7 +62,7 @@ class ClickHouseConnectionParamsTestCase(TestCase):
 
     def _test_client_initiated_with(self, *args, **kwargs) -> None:
         self._client_mock.reset_mock()
-        ClickHouseHook().get_conn()  # instantiate connection
+        ClickHouseDbApiHook().get_conn()  # instantiate connection
         self._assert_client_initiated_with(*args, **kwargs)
 
     def _assert_client_initiated_with(self, *args, **kwargs) -> None:
@@ -79,7 +79,7 @@ class ClickHouseConnectionParamsTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         cls._patched_hook_connection = mock.patch(
-            'airflow_clickhouse_plugin.hooks.clickhouse_hook.ClickHouseHook.get_connection',
+            'airflow_clickhouse_plugin.hooks.clickhouse_dbapi_hook.ClickHouseDbApiHook.get_connection',
             lambda self, conn_id: airflow.models.Connection(**dict(
                 cls._connection_kwargs,
                 extra=json.dumps(cls._connection_kwargs['extra']),
@@ -104,7 +104,7 @@ class ClickHouseConnectionParamsTestCase(TestCase):
 
 class HookLogQueryTestCase(TestCase):
     def setUp(self) -> None:
-        self.hook = ClickHouseHook()
+        self.hook = ClickHouseDbApiHook()
 
     def test_log_params_dict(self):
         self.assertEqual('{}', self.hook._log_params({}))

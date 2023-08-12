@@ -99,8 +99,8 @@ class ClickHouseSqlSensorTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._get_records_patch = mock.patch(
-            'airflow_clickhouse_plugin.hooks.clickhouse_hook'
-                '.ClickHouseHook.get_records',
+            'airflow_clickhouse_plugin.hooks.clickhouse_dbapi_hook'
+                '.ClickHouseDbApiHook.get_records',
         )
         cls._get_records_mock = cls._get_records_patch.__enter__()
 

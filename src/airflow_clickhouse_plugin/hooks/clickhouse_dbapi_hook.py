@@ -2,11 +2,11 @@ import contextlib
 from itertools import islice
 import typing as t
 
-from airflow.hooks.base import BaseHook
+from airflow.hooks.dbapi import DbApiHook
 from clickhouse_driver import Client
 
 
-class ClickHouseHook(BaseHook):
+class ClickHouseDbApiHook(DbApiHook):
     conn_name_attr = 'clickhouse_conn_id'
     default_conn_name = 'clickhouse_default'
 

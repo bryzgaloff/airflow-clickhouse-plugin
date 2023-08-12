@@ -1,13 +1,13 @@
 import typing as t
 
 from airflow.providers.common.sql.sensors.sql import SqlSensor
-from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
+from airflow_clickhouse_plugin.hooks.clickhouse_dbapi_hook import ClickHouseDbApiHook
 
 
 class ClickHouseSqlSensor(SqlSensor):
     template_fields: t.Sequence[str] = ('sql',)
     template_ext: t.Sequence[str] = ('.sql',)
-    default_conn_name = ClickHouseHook.default_conn_name
+    default_conn_name = ClickHouseDbApiHook.default_conn_name
 
     def __init__(
         self,
@@ -33,8 +33,8 @@ class ClickHouseSqlSensor(SqlSensor):
         )
         self._database = database
 
-    def _get_hook(self) -> ClickHouseHook:
-        return ClickHouseHook(
+    def _get_hook(self) -> ClickHouseDbApiHook:
+        return ClickHouseDbApiHook(
             clickhouse_conn_id=self.conn_id,
             database=self._database,
         )

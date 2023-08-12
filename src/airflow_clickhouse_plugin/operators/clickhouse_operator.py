@@ -2,14 +2,14 @@ import typing as t
 
 from airflow.models import BaseOperator
 
-from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
+from airflow_clickhouse_plugin.hooks.clickhouse_dbapi_hook import ClickHouseDbApiHook
 
 
 class ClickHouseOperator(BaseOperator):
     template_fields = ('_sql',)
     template_ext: t.Sequence[str] = ('.sql',)
     template_fields_renderers = {'_sql': 'sql'}
-    default_conn_name = ClickHouseHook.default_conn_name
+    default_conn_name = ClickHouseDbApiHook.default_conn_name
 
     def __init__(
             self,
@@ -27,7 +27,7 @@ class ClickHouseOperator(BaseOperator):
         self._database = database
 
     def execute(self, context: t.Dict[str, t.Any]) -> t.Any:
-        hook = ClickHouseHook(
+        hook = ClickHouseDbApiHook(
             clickhouse_conn_id=self._conn_id,
             database=self._database,
         )

@@ -2,15 +2,15 @@ import unittest
 
 from clickhouse_driver.errors import ServerException, ErrorCodes
 
-from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
+from airflow_clickhouse_plugin.hooks.clickhouse_dbapi_hook import ClickHouseDbApiHook
 from tests.integration.util import ClickHouseConnectionEnvVarTestCase
 
 
 class BasicTestCase(ClickHouseConnectionEnvVarTestCase):
-    _hook: ClickHouseHook
+    _hook: ClickHouseDbApiHook
 
     def setUp(self):
-        self._hook = ClickHouseHook()
+        self._hook = ClickHouseDbApiHook()
 
     def test_connection_recreated(self):
         temp_table_name = 'test_temp_table'
@@ -35,10 +35,10 @@ class BasicTestCase(ClickHouseConnectionEnvVarTestCase):
 
 
 class BasicInsertTestCase(ClickHouseConnectionEnvVarTestCase):
-    _hook: ClickHouseHook
+    _hook: ClickHouseDbApiHook
 
     def setUp(self):
-        self._hook = ClickHouseHook()
+        self._hook = ClickHouseDbApiHook()
         self._temp_table_name = f'test_temp_table_for_insert'
         self._hook.run(f'CREATE TABLE {self._temp_table_name} (test_field UInt8) ENGINE MergeTree() ORDER BY test_field')
 
@@ -77,7 +77,7 @@ except ImportError:
 else:
     class GetAsPandasDfTestCase(ClickHouseConnectionEnvVarTestCase):
         def _test(self, sql: str, expected_df):
-            actual_df = ClickHouseHook().get_pandas_df(sql)
+            actual_df = ClickHouseDbApiHook().get_pandas_df(sql)
             self.assertListEqual(
                 list(actual_df.columns),
                 list(expected_df.columns),
