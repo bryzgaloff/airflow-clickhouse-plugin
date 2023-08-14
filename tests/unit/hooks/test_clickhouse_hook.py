@@ -7,14 +7,15 @@ from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 class ClickHouseHookTestCase(TestCase):
     def test_arguments(self):
+        queries = ['SELECT 1', 'SELECT 2']
         client_instance_mock = self._client_mock.return_value
-        client_instance_mock.execute.return_value = 'test-return-value'
+        client_instance_mock.execute.side_effect = [1, 2]
         return_value = ClickHouseHook(
             clickhouse_conn_id='test-conn-id',
             database='test-database',
         ).execute(
-            sql='INSERT INTO test_table VALUES',
-            params=[('insert-me', 1)],
+            sql=queries,
+            params=[('test-param', 1)],
             with_column_types=True,
             external_tables=[{'name': 'ext'}],
             query_id='test-query-id',
@@ -31,18 +32,23 @@ class ClickHouseHookTestCase(TestCase):
             database='test-database',
             test_extra='test-extra-value',
         )
-        client_instance_mock.execute.assert_called_once_with(
-            'INSERT INTO test_table VALUES',
-            params=[('insert-me', 1)],
-            with_column_types=True,
-            external_tables=[{'name': 'ext'}],
-            query_id='test-query-id',
-            settings={'test-setting': 1},
-            types_check=True,
-            columnar=True,
-        )
+        for query, mock_call \
+                in zip(queries, client_instance_mock.execute.mock_calls):
+            self.assertEqual(
+                mock.call(
+                    query,
+                    params=[('test-param', 1)],
+                    with_column_types=True,
+                    external_tables=[{'name': 'ext'}],
+                    query_id='test-query-id',
+                    settings={'test-setting': 1},
+                    types_check=True,
+                    columnar=True,
+                ),
+                mock_call,
+            )
         client_instance_mock.disconnect.assert_called_once_with()
-        self.assertEqual('test-return-value', return_value)
+        self.assertEqual(2, return_value)
 
     def test_defaults(self):
         client_instance_mock = self._client_mock.return_value
@@ -69,17 +75,6 @@ class ClickHouseHookTestCase(TestCase):
         )
         client_instance_mock.disconnect.assert_called_once_with()
         self.assertEqual('test-return-value', return_value)
-
-    def test_multiple_queries(self):
-        queries = ['SELECT 1', 'SELECT 2']
-        client_instance_mock = self._client_mock.return_value
-        client_instance_mock.execute.side_effect = [1, 2]
-        return_value = ClickHouseHook().execute(queries)
-        mock_calls = client_instance_mock.execute.mock_calls
-        for mock_call, query in zip(mock_calls, queries):
-            self.assertEqual(query, mock_call.args[0])
-        client_instance_mock.disconnect.assert_called_once()
-        self.assertEqual(2, return_value)
 
     def setUp(self):
         self._client_patcher = mock.patch('clickhouse_driver.Client')
