@@ -23,58 +23,79 @@ class ClickHouseHookTestCase(TestCase):
             types_check=True,
             columnar=True,
         )
-        self._get_connection_mock.assert_called_once_with('test-conn-id')
-        self._client_mock.assert_called_once_with(
-            'test-host',
-            port=1234,
-            user='test-login',
-            password='test-pass',
-            database='test-database',
-            test_extra='test-extra-value',
-        )
+
+        with self.subTest('connection id'):
+            self._get_connection_mock.assert_called_once_with('test-conn-id')
+
+        with self.subTest('Client.__init__'):
+            self._client_mock.assert_called_once_with(
+                'test-host',
+                port=1234,
+                user='test-login',
+                password='test-pass',
+                database='test-database',
+                test_extra='test-extra-value',
+            )
+
         for query, mock_call \
                 in zip(queries, client_instance_mock.execute.mock_calls):
-            self.assertEqual(
-                mock.call(
-                    query,
-                    params=[('test-param', 1)],
-                    with_column_types=True,
-                    external_tables=[{'name': 'ext'}],
-                    query_id='test-query-id',
-                    settings={'test-setting': 1},
-                    types_check=True,
-                    columnar=True,
-                ),
-                mock_call,
-            )
-        client_instance_mock.disconnect.assert_called_once_with()
-        self.assertEqual(2, return_value)
+            with self.subTest(f'Client.execute {query}'):
+                self.assertEqual(
+                    mock.call(
+                        query,
+                        params=[('test-param', 1)],
+                        with_column_types=True,
+                        external_tables=[{'name': 'ext'}],
+                        query_id='test-query-id',
+                        settings={'test-setting': 1},
+                        types_check=True,
+                        columnar=True,
+                    ),
+                    mock_call,
+                )
+
+        with self.subTest('Client.disconnect'):
+            client_instance_mock.disconnect.assert_called_once_with()
+
+        with self.subTest('return value'):
+            self.assertEqual(2, return_value)
 
     def test_defaults(self):
         client_instance_mock = self._client_mock.return_value
         client_instance_mock.execute.return_value = 'test-return-value'
         return_value = ClickHouseHook().execute('SELECT 1')
-        self._get_connection_mock.assert_called_once_with('clickhouse_default')
-        self._client_mock.assert_called_once_with(
-            'test-host',
-            port=1234,
-            user='test-login',
-            password='test-pass',
-            database='test-schema',
-            test_extra='test-extra-value'
-        )
-        client_instance_mock.execute.assert_called_once_with(
-            'SELECT 1',
-            params=None,
-            with_column_types=False,
-            external_tables=None,
-            query_id=None,
-            settings=None,
-            types_check=False,
-            columnar=False,
-        )
-        client_instance_mock.disconnect.assert_called_once_with()
-        self.assertEqual('test-return-value', return_value)
+
+        with self.subTest('connection id'):
+            self._get_connection_mock \
+                .assert_called_once_with('clickhouse_default')
+
+        with self.subTest('Client.__init__'):
+            self._client_mock.assert_called_once_with(
+                'test-host',
+                port=1234,
+                user='test-login',
+                password='test-pass',
+                database='test-schema',
+                test_extra='test-extra-value'
+            )
+
+        with self.subTest('Client.execute'):
+            client_instance_mock.execute.assert_called_once_with(
+                'SELECT 1',
+                params=None,
+                with_column_types=False,
+                external_tables=None,
+                query_id=None,
+                settings=None,
+                types_check=False,
+                columnar=False,
+            )
+
+        with self.subTest('Client.disconnect'):
+            client_instance_mock.disconnect.assert_called_once_with()
+
+        with self.subTest('return value'):
+            self.assertEqual('test-return-value', return_value)
 
     def setUp(self):
         self._client_patcher = mock.patch('clickhouse_driver.Client')
