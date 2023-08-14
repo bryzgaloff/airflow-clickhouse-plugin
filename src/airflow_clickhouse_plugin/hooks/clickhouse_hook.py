@@ -17,6 +17,15 @@ ExecuteParamsT = t.NewType(
         dict,
     ],
 )
+ExecuteReturnT = t.NewType(
+    # clickhouse_driver.Client.execute return type
+    'ExecuteReturnT',
+    t.Union[
+        int,  # number of inserted rows
+        t.List[tuple],  # list of tuples with rows/columns
+        t.Tuple[t.List[tuple], t.List[t.Tuple[str, str]]],  # with_column_types
+    ],
+)
 
 
 class BaseClickHouseHook(BaseHook):
@@ -62,7 +71,7 @@ class ClickHouseHook(BaseClickHouseHook):
             settings: t.Dict[str, t.Any] = None,
             types_check: bool = False,
             columnar: bool = False,
-    ) -> t.Any:
+    ) -> ExecuteReturnT:
         """
         Passes arguments to ``clickhouse_driver.Client.execute``.
 

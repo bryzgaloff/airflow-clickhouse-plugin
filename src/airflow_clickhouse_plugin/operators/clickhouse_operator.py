@@ -2,7 +2,8 @@ import typing as t
 
 from airflow.models import BaseOperator
 
-from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook, ExecuteParamsT
+from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook, \
+    ExecuteParamsT, ExecuteReturnT
 
 
 class BaseClickHouseOperator(BaseOperator):
@@ -50,7 +51,7 @@ class BaseClickHouseOperator(BaseOperator):
 
 
 class ClickHouseOperator(BaseClickHouseOperator, BaseOperator):
-    def execute(self, context: t.Dict[str, t.Any]) -> t.Any:
+    def execute(self, context: t.Dict[str, t.Any]) -> ExecuteReturnT:
         hook = ClickHouseHook(
             clickhouse_conn_id=self._clickhouse_conn_id,
             database=self._database,
