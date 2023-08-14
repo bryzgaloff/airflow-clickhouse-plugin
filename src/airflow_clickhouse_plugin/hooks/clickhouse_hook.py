@@ -47,7 +47,7 @@ class BaseClickHouseHook(BaseHook):
         connection_kwargs = conn.extra_dejson.copy()
         # Connection attributes can be parsed to empty strings by urllib.unparse
         if conn.port:
-            connection_kwargs.update(port=int(conn.port))
+            connection_kwargs.update(port=conn.port)
         if conn.login:
             connection_kwargs.update(user=conn.login)
         if conn.password:
