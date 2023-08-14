@@ -49,9 +49,7 @@ class BaseClickHouseOperator(BaseOperator):
         self._clickhouse_conn_id = clickhouse_conn_id
         self._database = database
 
-
-class ClickHouseOperator(BaseClickHouseOperator, BaseOperator):
-    def execute(self, context: t.Dict[str, t.Any]) -> ExecuteReturnT:
+    def _hook_execute(self) -> ExecuteReturnT:
         hook = ClickHouseHook(
             clickhouse_conn_id=self._clickhouse_conn_id,
             database=self._database,
@@ -66,3 +64,8 @@ class ClickHouseOperator(BaseClickHouseOperator, BaseOperator):
             self._types_check,
             self._columnar,
         )
+
+
+class ClickHouseOperator(BaseClickHouseOperator, BaseOperator):
+    def execute(self, context: t.Dict[str, t.Any]) -> ExecuteReturnT:
+        return self._hook_execute()
