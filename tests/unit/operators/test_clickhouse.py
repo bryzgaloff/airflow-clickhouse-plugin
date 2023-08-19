@@ -7,9 +7,7 @@ from airflow_clickhouse_plugin.operators.clickhouse import \
 
 class ClickHouseOperatorTestCase(unittest.TestCase):
     def test_arguments(self):
-        hook_return_value = object()
-        self._hook_mock.return_value.execute.return_value = hook_return_value
-        operator_return_value = ClickHouseOperator(
+        return_value = ClickHouseOperator(
             task_id='test1',  # required by Airflow
             sql='SELECT 1',
             params=[('test-param', 1)],
@@ -39,7 +37,10 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
                 True,
             )
         with self.subTest('return value'):
-            self.assertIs(operator_return_value, hook_return_value)
+            self.assertIs(
+                return_value,
+                self._hook_mock.return_value.execute.return_value,
+            )
 
     def test_defaults(self):
         ClickHouseOperator(
