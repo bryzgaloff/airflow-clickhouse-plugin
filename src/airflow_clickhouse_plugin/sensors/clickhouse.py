@@ -24,6 +24,8 @@ class ClickHouseSensor(BaseClickHouseOperator, BaseSensorOperator):
 
     def poke(self, context: dict) -> bool:
         result = self._hook_execute()
-        if self._is_failure is not None and self._is_failure(result):
-            raise AirflowException('is_failure callable returned True')
+        if self._is_failure is not None:
+            is_failure = self._is_failure(result)
+            if is_failure:
+                raise AirflowException(f'is_failure returned {is_failure}')
         return self._is_success(result)
