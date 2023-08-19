@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from airflow_clickhouse_plugin.hooks.clickhouse_dbapi_hook import ClickHouseDbApiHook
+from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import ClickHouseDbApiHook
 
 
 class ClickHouseConnectionEnvVarTestCase(unittest.TestCase):

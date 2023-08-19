@@ -3,7 +3,7 @@ from unittest import mock
 
 from airflow.models import Connection
 
-from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
+from airflow_clickhouse_plugin.hooks.clickhouse import ClickHouseHook
 
 
 class ClickHouseHookTestCase(unittest.TestCase):

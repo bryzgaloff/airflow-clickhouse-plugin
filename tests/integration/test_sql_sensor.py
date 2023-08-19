@@ -1,6 +1,6 @@
 import unittest
 
-from airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor import ClickHouseSqlSensor
+from airflow_clickhouse_plugin.sensors.clickhouse_dbapi import ClickHouseSqlSensor
 
 
 class BasicTestCase(unittest.TestCase):

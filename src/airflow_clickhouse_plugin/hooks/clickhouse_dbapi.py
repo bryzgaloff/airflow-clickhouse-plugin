@@ -1,7 +1,7 @@
 import clickhouse_driver
 from airflow.providers.common.sql.hooks.sql import DbApiHook
 
-from airflow_clickhouse_plugin.hooks.clickhouse_hook import BaseClickHouseHook
+from airflow_clickhouse_plugin.hooks.clickhouse import BaseClickHouseHook
 
 
 class ClickHouseDbApiHook(BaseClickHouseHook, DbApiHook):

@@ -2,7 +2,7 @@ import unittest
 
 from clickhouse_driver.errors import ServerException, ErrorCodes
 
-from airflow_clickhouse_plugin.hooks.clickhouse_dbapi_hook import ClickHouseDbApiHook
+from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import ClickHouseDbApiHook
 from tests.integration.util import ClickHouseConnectionEnvVarTestCase
 
 
