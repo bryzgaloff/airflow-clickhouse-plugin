@@ -21,12 +21,12 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
             database='test-database',
         ).execute(context={})
         with self.subTest('ClickHouseHook.__init__'):
-            self._hook_mock.assert_called_once_with(
+            self._hook_cls_mock.assert_called_once_with(
                 clickhouse_conn_id='test-conn-id',
                 database='test-database',
             )
         with self.subTest('ClickHouseHook.execute'):
-            self._hook_mock.return_value.execute.assert_called_once_with(
+            self._hook_cls_mock.return_value.execute.assert_called_once_with(
                 'SELECT 1',
                 [('test-param', 1)],
                 True,
@@ -39,7 +39,7 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
         with self.subTest('return value'):
             self.assertIs(
                 return_value,
-                self._hook_mock.return_value.execute.return_value,
+                self._hook_cls_mock.return_value.execute.return_value,
             )
 
     def test_defaults(self):
@@ -48,12 +48,12 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
             sql='SELECT 2',
         ).execute(context={})
         with self.subTest('ClickHouseHook.__init__'):
-            self._hook_mock.assert_called_once_with(
+            self._hook_cls_mock.assert_called_once_with(
                 clickhouse_conn_id='clickhouse_default',
                 database=None,
             )
         with self.subTest('ClickHouseHook.execute'):
-            self._hook_mock.return_value.execute.assert_called_once_with(
+            self._hook_cls_mock.return_value.execute.assert_called_once_with(
                 'SELECT 2',
                 None,
                 False,
@@ -65,14 +65,14 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
             )
 
     def setUp(self):
-        self._hook_patcher = mock.patch('.'.join((
+        self._hook_cls_patcher = mock.patch('.'.join((
             'airflow_clickhouse_plugin.operators',
             'clickhouse.ClickHouseHook',
         )))
-        self._hook_mock = self._hook_patcher.start()
+        self._hook_cls_mock = self._hook_cls_patcher.start()
 
     def tearDown(self):
-        self._hook_patcher.stop()
+        self._hook_cls_patcher.stop()
 
 
 if __name__ == '__main__':
