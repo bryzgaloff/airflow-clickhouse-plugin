@@ -10,12 +10,10 @@ class ClickHouseBaseDbApiOperatorTestCase(unittest.TestCase):
         return_value = ClickHouseBaseDbApiOperator(
             task_id='test1',  # required by Airflow
             conn_id='test-conn-id',
-            database='test-database',
             hook_params={'test_param': 'test-param-value'},
         ).get_db_hook()
         self._hook_cls_mock.assert_called_once_with(
             clickhouse_conn_id='test-conn-id',
-            database='test-database',
             test_param='test-param-value',
         )
         self.assertIs(return_value, self._hook_cls_mock.return_value)
@@ -24,10 +22,7 @@ class ClickHouseBaseDbApiOperatorTestCase(unittest.TestCase):
         ClickHouseBaseDbApiOperator(
             task_id='test2',  # required by Airflow
         ).get_db_hook()
-        self._hook_cls_mock.assert_called_once_with(
-            clickhouse_conn_id=None,
-            database=None,
-        )
+        self._hook_cls_mock.assert_called_once_with(clickhouse_conn_id=None)
 
     def setUp(self):
         self._hook_cls_patcher = mock.patch('.'.join((

@@ -11,12 +11,10 @@ class ClickHouseSqlSensorTestCase(unittest.TestCase):
             task_id='test1',  # required by Airflow
             sql='SELECT 1',  # required by SqlSensor
             conn_id='test-conn-id',
-            database='test-database',
             hook_params={'test_param': 'test-param-value'},
         )._get_hook()
         self._hook_cls_mock.assert_called_once_with(
             clickhouse_conn_id='test-conn-id',
-            database='test-database',
             test_param='test-param-value',
         )
         self.assertIs(return_value, self._hook_cls_mock.return_value)
@@ -29,12 +27,11 @@ class ClickHouseSqlSensorTestCase(unittest.TestCase):
         )._get_hook()
         self._hook_cls_mock.assert_called_once_with(
             clickhouse_conn_id='test-conn-id',
-            database=None,
         )
 
     def setUp(self):
         self._hook_cls_patcher = mock.patch('.'.join((
-            'airflow_clickhouse_plugin.sensors',
+            'airflow_clickhouse_plugin.operators',
             'clickhouse_dbapi.ClickHouseDbApiHook',
         )))
         self._hook_cls_mock = self._hook_cls_patcher.start()

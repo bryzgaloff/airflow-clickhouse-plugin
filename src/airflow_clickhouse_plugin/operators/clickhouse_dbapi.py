@@ -1,16 +1,26 @@
+import typing as t
+
 from airflow.providers.common.sql.operators import sql
 
 from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import \
     ClickHouseDbApiHook
 
 
-class ClickHouseBaseDbApiOperator(sql.BaseSQLOperator):
-    def get_db_hook(self) -> ClickHouseDbApiHook:
+class ClickHouseDbApiHookMixin(object):
+    # these attributes are defined in both BaseSQLOperator and SqlSensor
+    conn_id: str
+    hook_params: t.Optional[t.Mapping]
+
+    def _get_clickhouse_db_api_hook(self) -> ClickHouseDbApiHook:
         return ClickHouseDbApiHook(
             clickhouse_conn_id=self.conn_id,
-            database=self.database,
-            **self.hook_params,
+            **({} if self.hook_params is None else self.hook_params),
         )
+
+
+class ClickHouseBaseDbApiOperator(ClickHouseDbApiHookMixin, sql.BaseSQLOperator):
+    def get_db_hook(self) -> ClickHouseDbApiHook:
+        return self._get_clickhouse_db_api_hook()
 
 
 class ClickHouseSQLExecuteQueryOperator(

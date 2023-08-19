@@ -1,22 +1,9 @@
-import typing as t
-
 from airflow.providers.common.sql.sensors.sql import SqlSensor
 from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import ClickHouseDbApiHook
+from airflow_clickhouse_plugin.operators.clickhouse_dbapi import \
+    ClickHouseDbApiHookMixin
 
 
-class ClickHouseSqlSensor(SqlSensor):
-    def __init__(
-            self,
-            *args,
-            database: t.Optional[str] = None,
-            **kwargs,
-    ):
-        super().__init__(*args, **kwargs)
-        self._database = database
-
+class ClickHouseSqlSensor(ClickHouseDbApiHookMixin, SqlSensor):
     def _get_hook(self) -> ClickHouseDbApiHook:
-        return ClickHouseDbApiHook(
-            clickhouse_conn_id=self.conn_id,
-            database=self._database,
-            **({} if self.hook_params is None else self.hook_params),
-        )
+        return self._get_clickhouse_db_api_hook()
