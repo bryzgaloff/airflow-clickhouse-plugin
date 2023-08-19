@@ -22,7 +22,7 @@ class BaseClickHouseOperator(BaseOperator):
             *args,
             sql: t.Union[str, t.Iterable[str]],
             # arguments of clickhouse_driver.Client.execute
-            params: t.Optional[ExecuteParamsT] = None,
+            parameters: t.Optional[ExecuteParamsT] = None,
             with_column_types: bool = False,
             external_tables: t.Optional[t.List[dict]] = None,
             query_id: t.Optional[str] = None,
@@ -38,7 +38,7 @@ class BaseClickHouseOperator(BaseOperator):
 
         self._sql = sql
 
-        self._params = params
+        self._params = parameters
         self._with_column_types = with_column_types
         self._external_tables = external_tables
         self._query_id = query_id

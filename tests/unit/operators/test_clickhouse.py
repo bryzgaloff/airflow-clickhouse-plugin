@@ -10,7 +10,7 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
         return_value = ClickHouseOperator(
             task_id='test1',  # required by Airflow
             sql='SELECT 1',
-            params=[('test-param', 1)],
+            parameters=[('test-param', 1)],
             with_column_types=True,
             external_tables=[{'name': 'ext'}],
             query_id='test-query-id',
