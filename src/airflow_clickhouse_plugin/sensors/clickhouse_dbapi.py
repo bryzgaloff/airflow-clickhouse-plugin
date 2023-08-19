@@ -18,4 +18,5 @@ class ClickHouseSqlSensor(SqlSensor):
         return ClickHouseDbApiHook(
             clickhouse_conn_id=self.conn_id,
             database=self._database,
+            **({} if self.hook_params is None else self.hook_params),
         )
