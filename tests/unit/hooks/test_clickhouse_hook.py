@@ -1,11 +1,12 @@
-from unittest import TestCase, mock
+import unittest
+from unittest import mock
 
 from airflow.models import Connection
 
 from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
 
 
-class ClickHouseHookTestCase(TestCase):
+class ClickHouseHookTestCase(unittest.TestCase):
     def test_arguments(self):
         queries = ['SELECT 1', 'SELECT 2']
         client_instance_mock = self._client_mock.return_value
@@ -116,3 +117,7 @@ class ClickHouseHookTestCase(TestCase):
     def tearDown(self):
         self._client_patcher.stop()
         self._get_connection_patcher.stop()
+
+
+if __name__ == '__main__':
+    unittest.main()
