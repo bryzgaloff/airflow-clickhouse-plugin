@@ -10,8 +10,10 @@ from airflow_clickhouse_plugin.hooks.clickhouse_hook import BaseClickHouseHook
 
 class ClickHouseDbApiHookTestCase(unittest.TestCase):
     def test_definition(self):
-        self.assertTrue(issubclass(ClickHouseDbApiHook, BaseClickHouseHook))
-        self.assertTrue(issubclass(ClickHouseDbApiHook, DbApiHook))
+        self.assertEqual(
+            (ClickHouseDbApiHook, BaseClickHouseHook, DbApiHook),
+            ClickHouseDbApiHook.__mro__[:3],
+        )
         self.assertIs(ClickHouseDbApiHook.connector, clickhouse_driver.dbapi)
         self.assertEqual('clickhouse_default', ClickHouseDbApiHook.default_conn_name)
 
