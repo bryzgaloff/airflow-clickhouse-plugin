@@ -20,6 +20,9 @@ on:
       - ".github/workflows/tests.yml"
       - "requirements.txt"
 
+env:
+  PYTHONPATH: "src"  # for tests to import src/airflow_clickhouse_plugin
+
 jobs:
 
   unit-tests-no-common-sql:
