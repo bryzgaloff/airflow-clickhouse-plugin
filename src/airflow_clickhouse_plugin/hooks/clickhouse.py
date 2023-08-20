@@ -34,9 +34,10 @@ class ExternalTable(t.TypedDict):
     data: t.List[t.Dict[str, t.Any]]
 
 
-class BaseClickHouseHook(BaseHook):
-    default_conn_name = 'clickhouse_default'
+default_conn_name = 'clickhouse_default'
 
+
+class ClickHouseHook(BaseHook):
     def __init__(
             self,
             *args,
@@ -64,8 +65,6 @@ class BaseClickHouseHook(BaseHook):
             connection_kwargs.update(database=conn.schema)
         return clickhouse_driver.Client(conn.host or 'localhost', **connection_kwargs)
 
-
-class ClickHouseHook(BaseClickHouseHook):
     def execute(
             self,
             sql: t.Union[str, t.Iterable[str]],

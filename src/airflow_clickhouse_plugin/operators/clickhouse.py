@@ -3,7 +3,7 @@ import typing as t
 from airflow.models import BaseOperator
 
 from airflow_clickhouse_plugin.hooks.clickhouse import ClickHouseHook, \
-    ExecuteParamsT, ExecuteReturnT
+    ExecuteParamsT, ExecuteReturnT, default_conn_name
 
 
 class BaseClickHouseOperator(BaseOperator):
@@ -30,7 +30,7 @@ class BaseClickHouseOperator(BaseOperator):
             types_check: bool = False,
             columnar: bool = False,
             # arguments of ClickHouseHook.__init__
-            clickhouse_conn_id: str = ClickHouseHook.default_conn_name,
+            clickhouse_conn_id: str = default_conn_name,
             database: t.Optional[str] = None,
             **kwargs,
     ):
