@@ -28,6 +28,12 @@ ExecuteReturnT = t.NewType(
 )
 
 
+class ExternalTable(t.TypedDict):
+    name: str
+    structure: t.List[t.Tuple[str, str]]
+    data: t.List[t.Dict[str, t.Any]]
+
+
 class BaseClickHouseHook(BaseHook):
     default_conn_name = 'clickhouse_default'
 
@@ -66,7 +72,7 @@ class ClickHouseHook(BaseClickHouseHook):
             # arguments of clickhouse_driver.Client.execute
             params: t.Optional[ExecuteParamsT] = None,
             with_column_types: bool = False,
-            external_tables: t.Optional[t.List[dict]] = None,
+            external_tables: t.Optional[t.List[ExternalTable]] = None,
             query_id: t.Optional[str] = None,
             settings: t.Dict[str, t.Any] = None,
             types_check: bool = False,

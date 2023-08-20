@@ -18,7 +18,7 @@ class ClickHouseHookTestCase(unittest.TestCase):
             sql=queries,
             params=[('test-param', 1)],
             with_column_types=True,
-            external_tables=[{'name': 'ext'}],
+            external_tables=[{'name': 'ext'}],  # type: ignore
             query_id='test-query-id',
             settings={'test-setting': 1},
             types_check=True,
