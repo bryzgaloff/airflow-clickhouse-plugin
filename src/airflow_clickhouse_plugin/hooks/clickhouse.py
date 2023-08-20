@@ -88,7 +88,7 @@ class ClickHouseHook(BaseHook):
         with _disconnecting(self.get_conn()) as conn:
             last_result = None
             for query in sql:
-                _log_query(self.log, query, params)
+                self.log.info(_format_query_log(query, params))
                 last_result = conn.execute(
                     query,
                     params=params,
@@ -102,21 +102,20 @@ class ClickHouseHook(BaseHook):
         return last_result
 
 
-def _log_query(logger: logging.Logger, query: str, params: ExecuteParamsT) -> None:
-    params_formatted = f' with {_format_params(params)}' if params else ''
-    logger.info('%s%s', query, params_formatted)
+def _format_query_log(query: str, params: ExecuteParamsT) -> str:
+    return ''.join((query, f' with {_format_params(params)}' if params else ''))
 
 
-def _format_params(parameters: ExecuteParamsT, limit: int = 10) -> str:
-    if isinstance(parameters, t.Generator) or len(parameters) <= limit:
-        return str(parameters)
-    if isinstance(parameters, dict):
-        head = dict(islice(parameters.items(), limit))
+def _format_params(params: ExecuteParamsT, limit: int = 10) -> str:
+    if isinstance(params, t.Generator) or len(params) <= limit:
+        return str(params)
+    if isinstance(params, dict):
+        head = dict(islice(params.items(), limit))
     else:
-        head = parameters[:limit]
+        head = params[:limit]
     head_str = str(head)
     closing_paren = head_str[-1]
-    return f'{head_str[:-1]} … and {len(parameters) - limit} ' \
+    return f'{head_str[:-1]} … and {len(params) - limit} ' \
         f'more parameters{closing_paren}'
 
 

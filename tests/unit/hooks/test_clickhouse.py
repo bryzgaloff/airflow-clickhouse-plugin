@@ -3,7 +3,8 @@ from unittest import mock
 
 from airflow.models import Connection
 
-from airflow_clickhouse_plugin.hooks.clickhouse import ClickHouseHook
+from airflow_clickhouse_plugin.hooks.clickhouse import ClickHouseHook, \
+    _format_query_log
 
 
 class ClickHouseHookTestCase(unittest.TestCase):
@@ -117,6 +118,77 @@ class ClickHouseHookTestCase(unittest.TestCase):
     def tearDown(self):
         self._client_cls_patcher.stop()
         self._get_connection_patcher.stop()
+
+
+class ClickHouseHookLoggingTestCase(unittest.TestCase):
+    def test(self):
+        test_generator = (_ for _ in range(1))
+        subtests = (
+            # params=None
+            (
+                'SELECT 1', None,
+                'SELECT 1',
+            ),
+            # params: list
+            (
+                'INSERT INTO test2 VALUES', [],
+                'INSERT INTO test2 VALUES',
+            ),
+            (
+                'INSERT INTO test3 VALUES', [3],
+                'INSERT INTO test3 VALUES with [3]',
+            ),
+            (
+                'INSERT INTO test4 VALUES', [val for val in range(11)],
+                ''.join((
+                    'INSERT INTO test4 VALUES with [',
+                    ', '.join(map(str, range(10))),
+                    ' … and 1 more parameters]',
+                )),
+            ),
+            # params: tuple
+            (
+                'INSERT INTO test5 VALUES', (),
+                'INSERT INTO test5 VALUES',
+            ),
+            (
+                'INSERT INTO test6 VALUES', (6,),
+                'INSERT INTO test6 VALUES with (6,)',
+            ),
+            (
+                'INSERT INTO test7 VALUES', tuple(val for val in range(11)),
+                ''.join((
+                    'INSERT INTO test7 VALUES with (',
+                    ', '.join(map(str, range(10))),
+                    ' … and 1 more parameters)',
+                )),
+            ),
+            # params: dict
+            (
+                'SELECT 8', {},
+                'SELECT 8',
+            ),
+            (
+                'SELECT %(param)s', {'param': 9},
+                "SELECT %(param)s with {'param': 9}",
+            ),
+            (
+                'SELECT 10', {k: k for k in range(11)},
+                ''.join((
+                    'SELECT 10 with {',
+                    ', '.join(f'{key}: {key}' for key in range(10)),
+                    ' … and 1 more parameters}',
+                )),
+            ),
+            # params: Generator
+            (
+                'INSERT INTO test11 VALUES', test_generator,
+                f'INSERT INTO test11 VALUES with {test_generator}',
+            ),
+        )
+        for query, params, expected in subtests:
+            with self.subTest((query, params)):
+                self.assertEqual(expected, _format_query_log(query, params))
 
 
 if __name__ == '__main__':
