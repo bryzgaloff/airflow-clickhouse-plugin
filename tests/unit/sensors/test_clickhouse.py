@@ -48,12 +48,16 @@ class ClickHouseSensorTestCase(unittest.TestCase):
             is_success_mock.assert_called_once_with(execute_mock.return_value)
             self.assertIs(return_value, is_success_mock.return_value)
 
-    @mock.patch('builtins.bool')
-    def test_defaults(self, bool_mock: mock.Mock):
-        return_value = ClickHouseSensor(
-            task_id='test2',  # required by Airflow
-            sql='SELECT 2',
-        ).poke(context={})
+    def test_defaults(self):
+        # side_effect is for bool_mock to operate as real bool during __init__
+        bool_mock = mock.Mock(side_effect=bool)
+        with mock.patch('builtins.bool', bool_mock):
+            operator = ClickHouseSensor(
+                task_id='test2',  # required by Airflow
+                sql='SELECT 2',
+            )
+        bool_mock.side_effect = None
+        return_value = operator.poke(context={})
         with self.subTest('ClickHouseHook.__init__'):
             self._hook_cls_mock.assert_called_once_with(
                 clickhouse_conn_id='clickhouse_default',
