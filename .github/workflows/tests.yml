@@ -43,7 +43,7 @@ jobs:
         python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
     - name: Run unit tests
       run: |
-        python -m unittest discover -s tests/unit -p test_clickhouse.py
+        python -m unittest discover -t tests -s unit -p test_clickhouse.py
 
   unit-tests-common-sql:
     runs-on: ubuntu-latest
@@ -63,7 +63,7 @@ jobs:
         python -m pip install -r requirements.txt --ignore-installed apache-airflow[common.sql]==${{ matrix.airflow-version }}
     - name: Run unit tests
       run: |
-        python -m unittest discover -s tests/unit
+        python -m unittest discover -t tests -s unit
 
   integration-tests-no-common-sql:
     runs-on: ubuntu-latest
@@ -90,7 +90,7 @@ jobs:
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
       run: |
-        python -m unittest discover -s tests/integration -p test_clickhouse.py
+        python -m unittest discover -t tests -s integration -p test_clickhouse.py
 
   integration-tests-common-sql:
     runs-on: ubuntu-latest
@@ -117,4 +117,4 @@ jobs:
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
       run: |
-        python -m unittest discover -s tests/integration
+        python -m unittest discover -t tests -s integration
