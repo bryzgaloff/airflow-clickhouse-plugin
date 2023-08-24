@@ -1,10 +1,9 @@
 import unittest
 
 from airflow_clickhouse_plugin.hooks.clickhouse import ClickHouseHook
-from integration.airflow_env_conn import ClickHouseConnectionEnvironTestCaseBase
 
 
-class ClickHouseHookTestCase(ClickHouseConnectionEnvironTestCaseBase):
+class ClickHouseHookTestCase(unittest.TestCase):
     def test_execute(self):
         return_value = ClickHouseHook().execute(
             'SELECT sum(value) * %(multiplier)s AS output FROM ext',

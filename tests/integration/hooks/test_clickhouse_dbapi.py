@@ -1,10 +1,9 @@
 import unittest
 
 from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import ClickHouseDbApiHook
-from integration.airflow_env_conn import ClickHouseConnectionEnvironTestCaseBase
 
 
-class ClickHouseDbApiHookTestCase(ClickHouseConnectionEnvironTestCaseBase):
+class ClickHouseDbApiHookTestCase(unittest.TestCase):
     def test_get_records(self):
         records = ClickHouseDbApiHook().get_records(
             '''
