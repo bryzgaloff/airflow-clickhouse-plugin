@@ -12,6 +12,16 @@ class ClickHouseHookTestCase(unittest.TestCase):
         queries = ['SELECT 1', 'SELECT 2']
         client_instance_mock = self._client_cls_mock.return_value
         client_instance_mock.execute.side_effect = [1, 2]
+        self._get_connection_mock.return_value = Connection(
+            conn_id='test-conn-id',
+            host='test-host',
+            port=1234,
+            login='test-login',
+            password='test-pass',
+            schema='test-schema',
+            extra='{"test_extra": "test-extra-value"}',
+        )
+
         return_value = ClickHouseHook(
             clickhouse_conn_id='test-conn-id',
             database='test-database',
@@ -31,7 +41,7 @@ class ClickHouseHookTestCase(unittest.TestCase):
 
         with self.subTest('Client.__init__'):
             self._client_cls_mock.assert_called_once_with(
-                'test-host',
+                host='test-host',
                 port=1234,
                 user='test-login',
                 password='test-pass',
@@ -65,6 +75,8 @@ class ClickHouseHookTestCase(unittest.TestCase):
     def test_defaults(self):
         client_instance_mock = self._client_cls_mock.return_value
         client_instance_mock.execute.return_value = 'test-return-value'
+        self._get_connection_mock.return_value = Connection()
+
         return_value = ClickHouseHook().execute('SELECT 1')
 
         with self.subTest('connection id'):
@@ -72,14 +84,7 @@ class ClickHouseHookTestCase(unittest.TestCase):
                 .assert_called_once_with('clickhouse_default')
 
         with self.subTest('Client.__init__'):
-            self._client_cls_mock.assert_called_once_with(
-                'test-host',
-                port=1234,
-                user='test-login',
-                password='test-pass',
-                database='test-schema',
-                test_extra='test-extra-value'
-            )
+            self._client_cls_mock.assert_called_once_with(host='localhost')
 
         with self.subTest('Client.execute'):
             client_instance_mock.execute.assert_called_once_with(
@@ -105,15 +110,6 @@ class ClickHouseHookTestCase(unittest.TestCase):
         self._get_connection_patcher = \
             mock.patch.object(ClickHouseHook, 'get_connection')
         self._get_connection_mock = self._get_connection_patcher.start()
-        self._get_connection_mock.return_value = Connection(
-            conn_id='test-conn-id',
-            host='test-host',
-            port=1234,
-            login='test-login',
-            password='test-pass',
-            schema='test-schema',
-            extra='{"test_extra": "test-extra-value"}',
-        )
 
     def tearDown(self):
         self._client_cls_patcher.stop()

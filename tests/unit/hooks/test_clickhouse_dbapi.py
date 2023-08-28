@@ -1,6 +1,8 @@
 import unittest
 from unittest import mock
 
+from airflow.models import Connection
+
 from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import \
     ClickHouseDbApiHook
 
@@ -11,34 +13,35 @@ class ClickHouseDbApiHookTestCase(unittest.TestCase):
         self.assertEqual('clickhouse_default', ClickHouseDbApiHook.default_conn_name)
 
     def test_arguments(self):
-        conn_mock = self._get_connection_mock.return_value
-        conn_mock.extra_dejson = {'test_extra': 'test-extra'}
+        self._get_connection_mock.return_value = Connection(
+            conn_id='test-conn-id',
+            host='test-host',
+            port=1234,
+            login='test-login',
+            password='test-pass',
+            schema='test-schema',
+            extra='{"test_extra": "test-extra"}',
+        )
         return_value = ClickHouseDbApiHook(
             clickhouse_conn_id='test-conn-id',
             schema='test-schema',
         ).get_conn()
         self._get_connection_mock.assert_called_once_with('test-conn-id')
         self._connect_mock.assert_called_once_with(
-            user=conn_mock.login,
-            password=conn_mock.password,
-            host=conn_mock.host,
-            port=conn_mock.port,
+            user='test-login',
+            password='test-pass',
+            host='test-host',
+            port=1234,
             database='test-schema',
             test_extra='test-extra',
         )
         self.assertIs(return_value, self._connect_mock.return_value)
 
     def test_defaults(self):
+        self._get_connection_mock.return_value = Connection()
         ClickHouseDbApiHook().get_conn()
-        conn_mock = self._get_connection_mock.return_value
         self._get_connection_mock.assert_called_once_with('clickhouse_default')
-        self._connect_mock.assert_called_once_with(
-            user=conn_mock.login,
-            password=conn_mock.password,
-            host=conn_mock.host,
-            port=conn_mock.port,
-            database=conn_mock.schema,
-        )
+        self._connect_mock.assert_called_once_with(host='localhost')
 
     def setUp(self) -> None:
         self._get_connection_patcher = \

@@ -5,6 +5,7 @@ import typing as t
 
 from airflow.hooks.base import BaseHook
 import clickhouse_driver
+from airflow.models import Connection
 
 # annotated according to clickhouse_driver.Client.execute comments
 _ParamT = t.NewType('_ParamT', t.Union[list, tuple, dict])
@@ -51,19 +52,7 @@ class ClickHouseHook(BaseHook):
 
     def get_conn(self) -> clickhouse_driver.Client:
         conn = self.get_connection(self._clickhouse_conn_id)
-        connection_kwargs = conn.extra_dejson.copy()
-        # Connection attributes can be parsed to empty strings by urllib.unparse
-        if conn.port:
-            connection_kwargs.update(port=conn.port)
-        if conn.login:
-            connection_kwargs.update(user=conn.login)
-        if conn.password:
-            connection_kwargs.update(password=conn.password)
-        if self._database is not None:
-            connection_kwargs.update(database=self._database)
-        elif conn.schema:
-            connection_kwargs.update(database=conn.schema)
-        return clickhouse_driver.Client(conn.host or 'localhost', **connection_kwargs)
+        return clickhouse_driver.Client(**conn_to_kwargs(conn, self._database))
 
     def execute(
             self,
@@ -100,6 +89,24 @@ class ClickHouseHook(BaseHook):
                     columnar=columnar,
                 )
         return last_result
+
+
+def conn_to_kwargs(conn: Connection, database: t.Optional[str]) -> t.Dict[str, t.Any]:
+    """ Translate Airflow Connection to clickhouse-driver Connection kwargs. """
+    connection_kwargs = conn.extra_dejson.copy()
+    # Connection attributes can be parsed to empty strings by urllib.unparse
+    connection_kwargs['host'] = conn.host or 'localhost'
+    if conn.port:
+        connection_kwargs.update(port=conn.port)
+    if conn.login:
+        connection_kwargs.update(user=conn.login)
+    if conn.password:
+        connection_kwargs.update(password=conn.password)
+    if database is not None:
+        connection_kwargs.update(database=database)
+    elif conn.schema:
+        connection_kwargs.update(database=conn.schema)
+    return connection_kwargs
 
 
 def _format_query_log(query: str, params: ExecuteParamsT) -> str:
