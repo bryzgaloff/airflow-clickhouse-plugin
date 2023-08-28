@@ -1,10 +1,9 @@
 import contextlib
-import logging
-from itertools import islice
 import typing as t
+from itertools import islice
 
-from airflow.hooks.base import BaseHook
 import clickhouse_driver
+from airflow.hooks.base import BaseHook
 from airflow.models import Connection
 
 # annotated according to clickhouse_driver.Client.execute comments
