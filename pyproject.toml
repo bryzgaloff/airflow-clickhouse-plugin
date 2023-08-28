@@ -9,7 +9,7 @@ name = "airflow-clickhouse-plugin"
 version = "0.11.0"
 description = "airflow-clickhouse-plugin — Airflow plugin to execute ClickHouse commands and queries"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 license = { text = "MIT License" }
 authors = [
     { name = "Anton Bryzgalov", email = "tony.bryzgaloff@gmail.com" },
@@ -27,7 +27,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.7",
 ]
 dynamic = [
     "dependencies",
