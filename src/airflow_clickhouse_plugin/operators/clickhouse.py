@@ -13,7 +13,14 @@ class BaseClickHouseOperator(BaseOperator):
     Includes arguments of clickhouse_driver.Client.execute.
     """
 
-    template_fields = ('_sql',)
+    template_fields = (  # all str-containing arguments
+        '_sql',
+        '_params',
+        '_external_tables',
+        '_query_id',
+        '_settings',
+        '_database',
+    )
     template_ext: t.Sequence[str] = ('.sql',)
     template_fields_renderers = {'_sql': 'sql'}
 

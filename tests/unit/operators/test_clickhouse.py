@@ -75,5 +75,20 @@ class ClickHouseOperatorTestCase(unittest.TestCase):
         self._hook_cls_patcher.stop()
 
 
+class ClickHouseOperatorClassTestCase(unittest.TestCase):
+    def test_template_fields(self):
+        self.assertSetEqual(
+            {
+                '_sql',
+                '_params',
+                '_external_tables',
+                '_query_id',
+                '_settings',
+                '_database',
+            },
+            frozenset(ClickHouseOperator.template_fields),
+        )
+
+
 if __name__ == '__main__':
     unittest.main()

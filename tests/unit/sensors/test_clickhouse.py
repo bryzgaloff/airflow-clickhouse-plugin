@@ -97,5 +97,20 @@ class ClickHouseSensorTestCase(unittest.TestCase):
         self._hook_cls_patcher.stop()
 
 
+class ClickHouseSensorClassTestCase(unittest.TestCase):
+    def test_template_fields(self):
+        self.assertSetEqual(
+            {
+                '_sql',
+                '_params',
+                '_external_tables',
+                '_query_id',
+                '_settings',
+                '_database',
+            },
+            frozenset(ClickHouseSensor.template_fields),
+        )
+
+
 if __name__ == '__main__':
     unittest.main()
