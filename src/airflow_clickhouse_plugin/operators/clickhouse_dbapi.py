@@ -2,6 +2,7 @@ import typing as t
 
 from airflow.providers.common.sql.operators import sql
 
+from airflow_clickhouse_plugin.hooks.clickhouse import default_conn_name
 from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import \
     ClickHouseDbApiHook
 
@@ -14,7 +15,10 @@ class ClickHouseDbApiHookMixin(object):
     def _get_clickhouse_db_api_hook(self, **extra_hook_params) -> ClickHouseDbApiHook:
         hook_params = {} if self.hook_params is None else self.hook_params.copy()
         hook_params.update(extra_hook_params)
-        return ClickHouseDbApiHook(clickhouse_conn_id=self.conn_id, **hook_params)
+        return ClickHouseDbApiHook(
+            clickhouse_conn_id=self.conn_id or default_conn_name,
+            **hook_params,
+        )
 
 
 class ClickHouseBaseDbApiOperator(ClickHouseDbApiHookMixin, sql.BaseSQLOperator):

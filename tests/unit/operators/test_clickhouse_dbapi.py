@@ -25,7 +25,7 @@ class ClickHouseBaseDbApiOperatorTestCase(unittest.TestCase):
             task_id='test2',  # required by Airflow
         ).get_db_hook()
         self._hook_cls_mock.assert_called_once_with(
-            clickhouse_conn_id=None,
+            clickhouse_conn_id='clickhouse_default',
             schema=None,
         )
 
