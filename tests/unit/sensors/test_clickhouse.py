@@ -102,7 +102,7 @@ class ClickHouseSensorClassTestCase(unittest.TestCase):
         self.assertSetEqual(
             {
                 '_sql',
-                '_params',
+                '_parameters',
                 '_external_tables',
                 '_query_id',
                 '_settings',

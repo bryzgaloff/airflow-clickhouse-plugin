@@ -15,7 +15,7 @@ class BaseClickHouseOperator(BaseOperator):
 
     template_fields = (  # all str-containing arguments
         '_sql',
-        '_params',
+        '_parameters',
         '_external_tables',
         '_query_id',
         '_settings',
@@ -45,7 +45,7 @@ class BaseClickHouseOperator(BaseOperator):
 
         self._sql = sql
 
-        self._params = parameters
+        self._parameters = parameters
         self._with_column_types = with_column_types
         self._external_tables = external_tables
         self._query_id = query_id
@@ -63,7 +63,7 @@ class BaseClickHouseOperator(BaseOperator):
         )
         return hook.execute(
             self._sql,
-            self._params,
+            self._parameters,
             self._with_column_types,
             self._external_tables,
             self._query_id,
