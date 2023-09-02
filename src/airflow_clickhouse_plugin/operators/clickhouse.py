@@ -22,7 +22,12 @@ class BaseClickHouseOperator(BaseOperator):
         '_database',
     )
     template_ext: t.Sequence[str] = ('.sql',)
-    template_fields_renderers = {'_sql': 'sql'}
+    template_fields_renderers = {
+        '_sql': 'sql',
+        '_parameters': 'json',
+        '_external_tables': 'json',
+        '_settings': 'json',
+    }
 
     def __init__(
             self,
