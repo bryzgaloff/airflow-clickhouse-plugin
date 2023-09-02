@@ -4,39 +4,72 @@
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bryzgaloff/airflow-clickhouse-plugin/tests.yml?branch=master)
 ![GitHub contributors](https://img.shields.io/github/contributors/bryzgaloff/airflow-clickhouse-plugin?color=blue)
 
-Provides `ClickHouseOperator`, `ClickHouseHook` and `ClickHouseSqlSensor` for
-    [Apache Airflow][airflow] based on [mymarilyn/clickhouse-driver][ch-driver].
+🔝 The most popular [Apache Airflow][airflow] plugin for ClickHouse, ranked in the top 1% of downloads [on PyPI](https://pypi.org/project/airflow-clickhouse-plugin/).
 
-Top-1% downloads [on PyPI](https://pypi.org/project/airflow-clickhouse-plugin/).
+This plugin provides two families of operators: richer [`clickhouse_driver.Client.execute`-based](#clickhouse-driver-family) and standardized [compatible with Python DB API 2.0](#python-db-api-20-family).
 
-# Features
+Both operators' families are fully supported and covered with tests for different versions of Airflow and Python.
 
-1. SQL queries are templated.
-2. Can run multiple SQL queries per single `ClickHouseOperator`.
-3. Result of the last query of `ClickHouseOperator` instance is pushed to XCom.
-4. Executed queries are logged in a pretty form.
-5. Uses efficient native ClickHouse TCP protocol thanks to 
-    [clickhouse-driver][ch-driver-docs]. **Does not support HTTP protocol.**
-6. Supports extra ClickHouse [connection parameters][ch-driver-connection] such
-    as various timeouts, `compression`, `secure`, etc through Airflow
-    [Connection.extra][airflow-conn-extra] property.
+## `clickhouse-driver` family
 
-# Installation and dependencies
+- `ClickHouseOperator`
+- `ClickHouseHook`
+- `ClickHouseSensor`
+
+These operators are based on [mymarilyn/clickhouse-driver][ch-driver]'s `Client.execute` method and arguments. They offer a full functionality of `clickhouse-driver` and are recommended if you are starting fresh with ClickHouse in Airflow.
+
+### Features
+
+- **SQL Templating**: SQL queries and other parameters are templated.
+- **Multiple SQL Queries**: execute run multiple SQL queries within a single `ClickHouseOperator`. The result of the last query is pushed to XCom (configurable by `do_xcom_push`).
+- **Logging**: executed queries are logged in a visually pleasing format, making it easier to track and debug.
+- **Efficient Native ClickHouse Protocol**: Utilizes efficient _native_ ClickHouse TCP protocol, thanks to [clickhouse-driver][ch-driver-docs]. **Does not support HTTP protocol.**
+- **Custom Connection Parameters**: Supports additional ClickHouse [connection parameters][ch-driver-connection], such as various timeouts, `compression`, `secure`, through the Airflow [Connection.extra][airflow-conn-extra] property.
+
+See reference and examples [below](#usage).
+
+### Installation and dependencies
 
 `pip install -U airflow-clickhouse-plugin`
 
-Dependencies: `apache-airflow` with `apache-airflow-providers-common-sql`
-    (usually pre-packed with Airflow) and `clickhouse-driver`.
+Dependencies: only `apache-airflow` and `clickhouse-driver`.
+
+## Python DB API 2.0 family
+
+- Operators:
+  - `ClickHouseSQLExecuteQueryOperator`
+  - `ClickHouseSQLColumnCheckOperator`
+  - `ClickHouseSQLTableCheckOperator`
+  - `ClickHouseSQLCheckOperator`
+  - `ClickHouseSQLValueCheckOperator`
+  - `ClickHouseSQLIntervalCheckOperator`
+  - `ClickHouseSQLThresholdCheckOperator`
+  - `ClickHouseBranchSQLOperator`
+- `ClickHouseDbApiHook`
+- `ClickHouseSqlSensor`
+
+These operators combine [`clickhouse_driver.dbapi`][ch-driver-db-api] with [apache-airflow-providers-common-sql]. While they have limited functionality compared to `Client.execute` (not all arguments are supported), they provide a standardized interface. This is useful when porting Airflow pipelines to ClickHouse from another SQL provider backed by `common.sql` Airflow package, such as MySQL, Postgres, BigQuery, and others.
+
+The feature set of this version is fully based on `common.sql` Airflow provider: refer to its [reference][common-sql-reference] and [examples][common-sql-examples] for details.
+
+An example is also available [below](#db-api-20-clickhousesqlsensor-and-clickhousesqlexecutequeryoperator-example).
+
+### Installation and dependencies
+
+Add `common.sql` extra when installing the plugin: `pip install -U airflow-clickhouse-plugin[common.sql]` — to enable DB API 2.0 operators.
+
+Dependencies: `apache-airflow-providers-common-sql` (usually pre-packed with Airflow) in addition to `apache-airflow` and `clickhouse-driver`.
 
 ## Python and Airflow versions support
 
 Different versions of the plugin support different combinations of Python and
-    Airflow versions. We _primarily_ support **Airflow 2.0+ and Python 3.7+**.
+    Airflow versions. We _primarily_ support **Airflow 2.0+ and Python 3.8+**.
     If you need to use the plugin with older Python-Airflow combinations, pick a
     suitable plugin version:
 
 | airflow-clickhouse-plugin version | Airflow version         | Python version     |
 |-----------------------------------|-------------------------|--------------------|
+| 1.0.0                             | \>=2.0.0,<2.7.0         | ~=3.8              |
 | 0.11.0                            | ~=2.0.0,\>=2.2.0,<2.7.0 | ~=3.7              |
 | 0.10.0,0.10.1                     | ~=2.0.0,\>=2.2.0,<2.6.0 | ~=3.7              |
 | 0.9.0,0.9.1                       | ~=2.0.0,\>=2.2.0,<2.5.0 | ~=3.7              |
@@ -50,177 +83,130 @@ Different versions of the plugin support different combinations of Python and
 `~=` means compatible release, see [PEP 440][pep-440-compatible-releases] for an
     explanation.
 
-## Note on pandas dependency
-
-Starting from Airflow 2.2 `pandas` is now an [extra requirement][pandas-extra].
-    To install `airflow-clickhouse-plugin` with `pandas` support, use
-    `pip install airflow-clickhouse-plugin[pandas]`.
-
-**Important**: this works only with `pip` 21+. So to handle `pandas` dependency
-    properly  you may need to first upgrade `pip` using `pip install -U pip`.
-
-If you are not able to upgrade `pip` to 21+, install dependency directly using
-    `pip install apache-airflow[pandas]==` (specifying current Airflow version).
-    Simple one-liner:
-    `pip install "apache-airflow[pandas]==$(pip freeze | grep apache-airflow== | cut -d'=' -f3)"`.
+Previous versions of the plugin might require `pandas` extra: `pip install airflow-clickhouse-plugin[pandas]==0.11.0`. Check out earlier versions of `README.md` for details.
 
 # Usage
 
 To see examples [scroll down](#examples). To run them, [create an Airflow connection to ClickHouse](#how-to-create-an-airflow-connection-to-clickhouse).
 
-## ClickHouseOperator Reference
+## ClickHouseOperator reference
 
-To import `ClickHouseOperator` use:
-    `from airflow_clickhouse_plugin.operators.clickhouse_operator import ClickHouseOperator`
+To import `ClickHouseOperator` use `from airflow_clickhouse_plugin.operators.clickhouse import ClickHouseOperator`.
 
-Supported kwargs:
-* `sql`: templated query (if argument is a single `str`) or queries (if iterable
-    of `str`'s).
-* `clickhouse_conn_id`: connection id. Connection schema is described
-    [below](#clickhouse-connection-schema).
-* `parameters`: passed to clickhouse-driver [execute method][ch-driver-execute].
-  * If multiple queries are provided via `sql` then the parameters are passed to
-      _all_ of them.
-  * Parameters are _not_ templated.
-* `database`: if present, overrides database defined by connection.
-* Other kwargs (including the required `task_id`) are inherited from Airflow 
-    [BaseOperator][airflow-base-op].
+Supported arguments:
+* `sql` (templated, required): query (if argument is a single `str`) or multiple queries (iterable of `str`). Supports files with `.sql` extension.
+* `clickhouse_conn_id`: Airflow connection id. Connection schema is described [below](#clickhouse-connection-schema). Default connection id is `clickhouse_default`.
+* Arguments of [`clickhouse_driver.Client.execute` method][ch-driver-execute-summary]:
+  * `parameters` (templated): passed `params` of the `execute` method. (Renamed to avoid name conflict with Airflow tasks' `params` argument.)
+    * `dict` for `SELECT` queries.
+    * `list`/`tuple`/generator for `INSERT` queries.
+    * If multiple queries are provided via `sql` then the `parameters` are passed to _all_ of them.
+  * `with_column_types` (not templated).
+  * `external_tables` (templated).
+  * `query_id` (templated).
+  * `settings` (templated).
+  * `types_check` (not templated).
+  * `columnar` (not templated).
+  * For the documentation of these arguments, refer to [`clickhouse_driver.Client.execute` API reference][ch-driver-execute-reference].
+* `database` (templated): if present, overrides `schema` of Airflow connection.
+* Other arguments (including a required `task_id`) are inherited from Airflow [BaseOperator][airflow-base-op].
 
-The result of the _last_ query is pushed to XCom.
+Result of the _last_ query is pushed to XCom (disable using `do_xcom_push=False` argument).
+
+In other words, the operator simply wraps [`ClickHouseHook.execute` method](#clickhousehook-reference).
 
 See [example](#clickhouseoperator-example) below.
 
-## ClickHouseHook Reference
+## ClickHouseHook reference
 
-To import `ClickHouseHook` use:
-    `from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook`
+To import `ClickHouseHook` use `from airflow_clickhouse_plugin.hooks.clickhouse import ClickHouseHook`.
 
 Supported kwargs of constructor (`__init__` method):
-* `clickhouse_conn_id`: connection id. Connection schema is described
-    [below](#clickhouse-connection-schema).
-* `database`: if present, overrides database defined by connection.
+* `clickhouse_conn_id`: Airflow connection id. Connection schema is described [below](#clickhouse-connection-schema). Default connection id is `clickhouse_default`.
+* `database`: if present, overrides `schema` of Airflow connection.
 
-Supports all the methods of the Airflow [BaseHook][airflow-base-hook] including:
-* `get_records(sql: str, parameters: dict=None)`: returns result of the query
-    as a list of tuples. Materializes all the records in memory.
-* `get_first(sql: str, parameters: dict=None)`: returns the first row of the
-    result. Does not load the whole dataset into memory because of using
-    [execute_iter][ch-driver-execute-iter]. If the dataset is empty then returns
-    `None` following [fetchone][python-db-api-2-fetchone] semantics.
-* `run(sql, parameters)`: runs a single query (specified argument of type `str`)
-    or multiple queries (if iterable of `str`). `parameters` can have any form
-    supported by [execute][ch-driver-execute] method of clickhouse-driver.
-  * If single query is run then returns its result. If multiple queries are run
-      then returns the result of the last of them.
-  * If multiple queries are given then `parameters` are passed to _all_ of them.
-  * Materializes all the records in memory (uses simple `execute` but not 
-      `execute_iter`).
-    * To achieve results streaming by `execute_iter` use it directly via
-        `hook.get_conn().execute_iter(…)`
-        (see [execute_iter reference][ch-driver-execute-iter]).
-  * Every `run` call uses a new connection which is closed when finished.
-* `get_conn()`: returns the underlying
-    [clickhouse_driver.Client][ch-driver-client] instance.
+Defines `ClickHouseHook.execute` method which simply wraps [`clickhouse_driver.Client.execute`][ch-driver-execute-reference]. It has all the same arguments, except of:
+* `sql` (instead of `execute`'s `query`): query (if argument is a single `str`) or multiple queries (iterable of `str`).
+
+`ClickHouseHook.execute` returns a result of the _last_ query.
+
+Also, the hook defines `get_conn()` method which returns an underlying [clickhouse_driver.Client][ch-driver-client] instance.
 
 See [example](#clickhousehook-example) below.
 
-## ClickHouseSqlSensor Reference
+## ClickHouseSensor reference
 
-Sensor fully inherits from [Airflow SQLSensor][airflow-sql-sensor] and therefore
-    fully implements its interface using `ClickHouseHook` to fetch the SQL
-    execution result and supports templating of `sql` argument.
+To import `ClickHouseSensor` use `from airflow_clickhouse_plugin.sensors.clickhouse import ClickHouseSensor`.
 
-See [example](#clickhousesqlsensor-example) below.
+This class wraps [`ClickHouseHook.execute` method](#clickhousehook-reference) into an [Airflow sensor][airflow-sensor]. Supports all the arguments of [`ClickHouseOperator`](#clickhouseoperator-reference) and additionally:
+* `is_success`: a callable which accepts a single argument — a return value of `ClickHouseHook.execute`. If a return value of `is_success` is truthy, the sensor succeeds. By default, the callable is `bool`: i.e. if the return value of `ClickHouseHook.execute` is truthy, the sensor succeeds. Usually, `execute` is a list of records returned by query: thus, by default it is falsy if no records are returned.
+* `is_failure`: a callable which accepts a single argument — a return value of `ClickHouseHook.execute`. If a return value of `is_failure` is truthy, the sensor raises `AirflowException`. By default, `is_failure` is `None` and no failure check is performed.
+
+See [example](#clickhousesensor-example) below.
 
 ## How to create an Airflow connection to ClickHouse
 
-As a `type` of a new connection, choose **SQLite**. `host` should be set to
-    ClickHouse host's IP or domain name.
+As a `type` of a new connection, choose **SQLite** or any other SQL database. There is **no** special ClickHouse connection type yet, so we use any SQL as the closest one.
 
-There is **no** special ClickHouse connection type yet, so we use SQLite as
-    the closest one.
+All the connection attributes are optional: default host is `localhost` and other credentials [have defaults](#default-values) defined by `clickhouse-driver`. If you use non-default values, set them according to the [connection schema](#clickhouse-connection-schema).
 
-The rest of the connection details may be skipped as they
-    [have defaults](#default-values) defined by `clickhouse-driver`. If
-    you use non-default values, set them according to the
-    [connection schema](#clickhouse-connection-schema).
+If you use a secure connection to ClickHouse (this requires additional configurations on ClickHouse side), set `extra` to `{"secure":true}`. All `extra` connection parameters are passed to [`clickhouse_driver.Client`][ch-driver-client] as-is.
 
-If you use a secure connection to ClickHouse (this requires additional
-    configurations on ClickHouse side), set `extra` to `{"secure":true}`.
+### ClickHouse connection schema
 
-### ClickHouse Connection schema
-
-[clickhouse_driver.Client][ch-driver-client] is initialized with attributes stored
-    in Airflow [Connection attributes][airflow-connection-attrs]. The mapping of
-    the attributes is listed below:
+[`clickhouse_driver.Client`][ch-driver-client] is initialized with attributes stored in Airflow [Connection attributes][airflow-connection-howto]:
   
 | Airflow Connection attribute | `Client.__init__` argument |
-| --- | --- |
-| `host` | `host` |
-| `port` | `port` |
-| `schema` | `database` |
-| `login` | `user` |
-| `password` | `password` |
-| `extra` | `**kwargs` |
+|------------------------------|----------------------------|
+| `host`                       | `host`                     |
+| `port` (`int`)               | `port`                     |
+| `schema`                     | `database`                 |
+| `login`                      | `user`                     |
+| `password`                   | `password`                 |
+| `extra`                      | `**kwargs`                 |
 
-`database` argument of `ClickHouseOperator` or `ClickHouseHook` overrides
-    `schema` attribute of the Airflow connection.
+`database` argument of `ClickHouseOperator`, `ClickHouseHook`, `ClickHouseSensor`, and others overrides `schema` attribute of the Airflow connection.
 
 ### Extra arguments
 
-You may also pass [additional arguments][ch-driver-connection], such as
-    timeouts, `compression`, `secure`, etc through
-    [Connection.extra][airflow-conn-extra] attribute. The attribute should
-    contain a JSON object which will be [deserialized][airflow-conn-dejson] and
-    all of its properties will be passed as-is to the `Client`.
+You may set non-standard arguments of [`clickhouse_driver.Client`][ch-driver-client], such as timeouts, `compression`, `secure`, etc. using Airflow's [`Connection.extra`][airflow-conn-extra] attribute. The attribute should contain a JSON object which will be [deserialized][airflow-conn-dejson] and all of its properties will be passed as-is to the `Client`.
 
-For example, if Airflow connection contains `extra={"secure":true}` then
-    the `Client.__init__` will receive `secure=True` keyword argument in
-    addition to other non-empty connection attributes.
+For example, if Airflow connection contains `extra='{"secure": true}'` then the `Client.__init__` will receive `secure=True` keyword argument in addition to other connection attributes.
 
 #### Compression
 
-You should install several packages to support compression. For example, for lz4:
+You should install specific packages to support compression. For example, for lz4:
 
 ```bash
 pip3 install clickhouse-cityhash lz4
 ```
 
-Then you should include `compression` parameter in airflow connection uri: `extra={"compression":"lz4"}`.  You can get 
-additional information about extra options from [official documentation of clickhouse-driver](https://clickhouse-driver.readthedocs.io/en/latest/installation.html#installation-pypi)
+Then you should include `compression` parameter in airflow connection uri: `extra='{"compression":"lz4"}'`. You can get additional information about extra options from [official documentation of clickhouse-driver][ch-driver-pypi-install].
 
-Connection URI should look like in the example below:
+Connection URI with compression will look like `clickhouse://login:password@host:port/?compression=lz4`.
 
-`clickhouse://login:password@host:port/?compression=lz4`
+See [official documentation][airflow-connection-howto] to learn more about connections management in Airflow.
 
-See [official documentation](https://airflow.apache.org/docs/apache-airflow/stable/howto/connection.html) to 
-get more info about connections in Airflow.
+### Default Values
 
-### Default values
+If some Airflow connection attribute is not set, it is not passed to `clickhouse_driver.Client`. In such cases, the plugin uses a default value from the corresponding [`clickhouse_driver.Connection`][ch-driver-connection] argument. For instance, `user` defaults to `'default'`.
 
-If the Airflow connection attribute is not set then it is not passed to the
-    `Client` at all. In that case the default value of the corresponding
-    [clickhouse_driver.Connection][ch-driver-connection] argument is used (e.g.
-    `user` defaults to `'default'`).
+This means that the plugin itself does not define any default values for the ClickHouse connection. You may fully rely on default values of the [clickhouse-driver][ch-driver] version you use.
 
-This means that Airflow ClickHouse Plugin does not itself define any default
-    values for the ClickHouse connection. You may fully rely on default values
-    of the [clickhouse-driver][ch-driver] version you use. The only exception is
-    `host`: if the attribute of Airflow connection is not set then `'localhost'`
-    is used.
+The only exception is `host`: if the attribute of Airflow connection is not set then `'localhost'` is used.
 
 ### Default connection
 
-By default, the plugin uses `connection_id='clickhouse_default'`.
+By default, the plugin uses Airflow connection with id `'clickhouse_default'`.
 
 ## Examples
 
-### ClickHouseOperator Example
+### ClickHouseOperator example
 
 ```python
 from airflow import DAG
-from airflow_clickhouse_plugin.operators.clickhouse_operator import ClickHouseOperator
-from airflow.operators.python_operator import PythonOperator
+from airflow_clickhouse_plugin.operators.clickhouse import ClickHouseOperator
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 
 with DAG(
@@ -246,55 +232,80 @@ with DAG(
             ''',
             # result of the last query is pushed to XCom
         ),
+        # query_id is templated and allows to quickly identify query in ClickHouse logs
+        query_id='{{ ti.dag_id }}-{{ ti.task_id }}-{{ ti.run_id }}-{{ ti.try_number }}',
         clickhouse_conn_id='clickhouse_test',
     ) >> PythonOperator(
         task_id='print_month_income',
-        provide_context=True,
-        python_callable=lambda task_instance, **_:
+        python_callable=lambda task_instance:
             # pulling XCom value and printing it
             print(task_instance.xcom_pull(task_ids='update_income_aggregate')),
     )
 ```
 
-### ClickHouseHook Example
+### ClickHouseHook example
 
 ```python
 from airflow import DAG
-from airflow_clickhouse_plugin.hooks.clickhouse_hook import ClickHouseHook
-from airflow.hooks.mysql_hook import MySqlHook
-from airflow.operators.python_operator import PythonOperator
+from airflow_clickhouse_plugin.hooks.clickhouse import ClickHouseHook
+from airflow.providers.sqlite.hooks.sqlite import SqliteHook
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 
 
-def mysql_to_clickhouse():
-    mysql_hook = MySqlHook()
+def sqlite_to_clickhouse():
+    sqlite_hook = SqliteHook()
     ch_hook = ClickHouseHook()
-    records = mysql_hook.get_records('SELECT * FROM some_mysql_table')
-    ch_hook.run('INSERT INTO some_ch_table VALUES', records)
+    records = sqlite_hook.get_records('SELECT * FROM some_sqlite_table')
+    ch_hook.execute('INSERT INTO some_ch_table VALUES', records)
 
 
 with DAG(
-        dag_id='mysql_to_clickhouse',
+        dag_id='sqlite_to_clickhouse',
         start_date=days_ago(2),
 ) as dag:
     dag >> PythonOperator(
-        task_id='mysql_to_clickhouse',
-        python_callable=mysql_to_clickhouse,
+        task_id='sqlite_to_clickhouse',
+        python_callable=sqlite_to_clickhouse,
     )
 ```
 
-Important note: don't try to insert values using 
-    `ch_hook.run('INSERT INTO some_ch_table VALUES (1)')` literal form.
-    clickhouse-driver [requires][ch-driver-insert] values for `INSERT` query to
-    be provided via `parameters` due to specifics of the native ClickHouse
-    protocol.
+Important note: don't try to insert values using `ch_hook.execute('INSERT INTO some_ch_table VALUES (1)')` literal form. [`clickhouse-driver` requires][ch-driver-insert] values for `INSERT` query to be provided via `parameters` due to specifics of the native ClickHouse protocol.
 
-### ClickHouseSqlSensor Example
+### ClickHouseSensor example
 
 ```python
 from airflow import DAG
-from airflow_clickhouse_plugin.sensors.clickhouse_sql_sensor import ClickHouseSqlSensor
-from airflow_clickhouse_plugin.operators.clickhouse_operator import ClickHouseOperator
+from airflow_clickhouse_plugin.sensors.clickhouse import ClickHouseSensor
+from airflow_clickhouse_plugin.operators.clickhouse import ClickHouseOperator
+from airflow.utils.dates import days_ago
+
+
+with DAG(
+        dag_id='listen_warnings',
+        start_date=days_ago(2),
+) as dag:
+    dag >> ClickHouseSensor(
+        task_id='poke_events_count',
+        database='monitor',
+        sql="SELECT count() FROM warnings WHERE eventDate = '{{ ds }}'",
+        is_success=lambda cnt: cnt > 10000,
+    ) >> ClickHouseOperator(
+        task_id='create_alert',
+        database='alerts',
+        sql='''
+            INSERT INTO events SELECT eventDate, count()
+            FROM monitor.warnings WHERE eventDate = '{{ ds }}'
+        ''',
+    )
+```
+
+### DB API 2.0: ClickHouseSqlSensor and ClickHouseSQLExecuteQueryOperator example
+
+```python
+from airflow import DAG
+from airflow_clickhouse_plugin.sensors.clickhouse_dbapi import ClickHouseSqlSensor
+from airflow_clickhouse_plugin.operators.clickhouse_dbapi import ClickHouseSQLExecuteQueryOperator
 from airflow.utils.dates import days_ago
 
 
@@ -304,10 +315,11 @@ with DAG(
 ) as dag:
     dag >> ClickHouseSqlSensor(
         task_id='poke_events_count',
-        database='monitor',
+        hook_params=dict(schema='monitor'),
         sql="SELECT count() FROM warnings WHERE eventDate = '{{ ds }}'",
         success=lambda cnt: cnt > 10000,
-    ) >> ClickHouseOperator(
+        conn_id=None,  # required by common.sql SqlSensor; use None for default
+    ) >> ClickHouseSQLExecuteQueryOperator(
         task_id='create_alert',
         database='alerts',
         sql='''
@@ -319,116 +331,37 @@ with DAG(
 
 # How to run tests
 
-## Unit tests
+Unit tests: `python3 -m unittest discover -t tests -s unit`
 
-From the root project directory
+Integration tests require access to a ClickHouse server. Here is how to set up a local test environment using Docker:
+* Run ClickHouse server in a local Docker container: `docker run -p 9000:9000 --ulimit nofile=262144:262144 -it clickhouse/clickhouse-server`
+* Run tests with Airflow connection details set [via environment variable][airflow-conn-env]: `PYTHONPATH=src AIRFLOW_CONN_CLICKHOUSE_DEFAULT=clickhouse://localhost python3 -m unittest discover -t tests -s integration`
+* Stop the container after running the tests to deallocate its resources.
 
-Using `make`:
+Run all (unit&integration) tests with ClickHouse connection defined: `PYTHONPATH=src AIRFLOW_CONN_CLICKHOUSE_DEFAULT=clickhouse://localhost python3 -m unittest discover -s tests`
 
-```bash
-make unit
-```
+## GitHub Actions
 
-Using `python`:
+[GitHub Action][github-action-src] is configured for this project.
 
-```bash
-python -m unittest discover -s tests
-```
+## Run all tests inside Docker
 
-## Integration tests
-
-Integration tests require access to ClickHouse server. Tests use connection
-    URI defined [via environment variable][airflow-conn-env]
-    `AIRFLOW_CONN_CLICKHOUSE_DEFAULT` with `clickhouse://localhost` as default.
-
-You can run ClickHouse server in a local Docker container using the following command:
-
-Using `make`:
-
-```bash
-make run-clickhouse
-```
-
-Using `shell`:
-
-```bash
-docker run -p 9000:9000 --ulimit nofile=262144:262144 -it clickhouse/clickhouse-server
-```
-
-And then run from the project root:
-
-Using `make`:
-
-```bash
-make integration
-```
-
-Using `python`:
-
-```bash
-python3 -m unittest discover -s tests/integration
-```
-
-## All tests
-
-From the root project directory:
-
-Using `make`:
-
-```bash
-make tests
-```
-
-Using `python`:
-
-```bash
-python3 -m unittest discover -s tests
-```
-
-### Github Actions
-
-[GitHub Action][github-action-src] is set up for this project.
-
-### Run tests using Docker
-
-Run ClickHouse server inside Docker:
-
-Using `shell`:
-
-```bash
-docker exec -it $(docker run --rm -d clickhouse/clickhouse-server) bash
-```
-
-Using `make`:
-
-```bash
-make run-clickhouse-dind
-```
+Start a ClickHouse server inside Docker: `docker exec -it $(docker run --rm -d clickhouse/clickhouse-server) bash`
 
 The above command will open `bash` inside the container.
 
 Install dependencies into container and run tests (execute inside container):
 
-Using `python`:
-
 ```bash
 apt-get update
-apt-get install -y python3.10 python3-pip git make
+apt-get install -y python3 python3-pip git make
 git clone https://github.com/whisklabs/airflow-clickhouse-plugin.git
 cd airflow-clickhouse-plugin
-python3.10 -m pip install -r requirements.txt
-python3.10 -m unittest discover -s tests
+python3 -m pip install -r requirements.txt
+PYTHONPATH=src AIRFLOW_CONN_CLICKHOUSE_DEFAULT=clickhouse://localhost python3 -m unittest discover -s tests
 ```
 
-Using `make`:
-
-```bash
-apt-get update
-apt-get install -y python3.10 python3-pip git make
-git clone https://github.com/whisklabs/airflow-clickhouse-plugin.git
-cd airflow-clickhouse-plugin
-make tests
-```
+Stop the container.
 
 # Contributors
 
@@ -448,25 +381,28 @@ Community contributors:
 * Maxim Tarasov, [@MaximTar](https://github.com/MaximTar)
 * [@dvnrvn](https://github.com/dvnrvn)
 * Giovanni Corsetti, [@CorsettiS](https://github.com/CorsettiS)
+* Dmytro Zhyzniev, [@1ng4lipt](https://github.com/1ng4lipt)
 
 
 [airflow]: https://airflow.apache.org/
 [ch-driver]: https://github.com/mymarilyn/clickhouse-driver
 [ch-driver-docs]: https://clickhouse-driver.readthedocs.io/en/latest/
-[ch-driver-execute]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#selecting-data
-[airflow-base-op]: https://airflow.apache.org/docs/2.1.0/_api/airflow/models/baseoperator/index.html
-[airflow-base-hook]: https://airflow.apache.org/docs/apache-airflow/2.1.0/_api/airflow/hooks/base/index.html#airflow.hooks.base.BaseHook
-[ch-driver-execute-iter]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#streaming-results
+[ch-driver-execute-summary]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#selecting-data
+[ch-driver-execute-reference]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#clickhouse_driver.Client.execute
+[airflow-base-op]: https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/baseoperator/index.html
 [ch-driver-insert]: https://clickhouse-driver.readthedocs.io/en/latest/quickstart.html#inserting-data
 [ch-driver-client]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#client
-[airflow-conn-extra]: https://airflow.apache.org/docs/2.1.0/_api/airflow/models/connection/index.html#airflow.models.connection.Connection.extra
 [ch-driver-connection]: https://clickhouse-driver.readthedocs.io/en/latest/api.html#connection
-[airflow-connection-attrs]: https://airflow.apache.org/docs/apache-airflow/2.1.0/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection
+[airflow-conn-extra]: https://airflow.apache.org/docs/2.1.0/_api/airflow/models/connection/index.html#airflow.models.connection.Connection.extra
+[airflow-connection-howto]: https://airflow.apache.org/docs/apache-airflow/stable/howto/connection.html
 [airflow-conn-dejson]: https://airflow.apache.org/docs/apache-airflow/2.1.0/_api/airflow/models/index.html?highlight=connection#airflow.models.Connection.extra_dejson
 [airflow-conn-env]: https://airflow.apache.org/docs/apache-airflow/2.1.0/howto/connection.html#storing-a-connection-in-environment-variables
-[python-db-api-2-fetchone]: https://www.python.org/dev/peps/pep-0249/#fetchone
-[cloud-composer-versions]: https://cloud.google.com/composer/docs/concepts/versioning/composer-versions#supported_versions
-[airflow-sql-sensor]: https://airflow.apache.org/docs/2.1.0/_api/airflow/sensors/sql/index.html
 [github-action-src]: https://github.com/whisklabs/airflow-clickhouse-plugin/tree/master/.github/workflows
-[pandas-extra]: https://github.com/apache/airflow/commit/2c26b15a8087cb8a81eb19fedbc768bd6da92df7#diff-60f61ab7a8d1910d86d9fda2261620314edcae5894d5aaa236b821c7256badd7
 [pep-440-compatible-releases]: https://peps.python.org/pep-0440/#compatible-release
+[apache-airflow-providers-common-sql]: https://airflow.apache.org/docs/apache-airflow-providers-common-sql/stable/index.html
+[db-api-pep]: https://peps.python.org/pep-0249/
+[airflow-sensor]: https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/sensors.html
+[ch-driver-pypi-install]: https://clickhouse-driver.readthedocs.io/en/latest/installation.html#installation-pypi
+[common-sql-reference]: https://airflow.apache.org/docs/apache-airflow-providers-common-sql/stable/_api/airflow/providers/common/sql/index.html
+[common-sql-examples]: https://airflow.apache.org/docs/apache-airflow-providers-common-sql/stable/operators.html
+[ch-driver-db-api]: https://clickhouse-driver.readthedocs.io/en/latest/dbapi.html
