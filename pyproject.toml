@@ -6,14 +6,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "airflow-clickhouse-plugin"
-version = "1.0.0"
+version = "1.0.0.post0"
 description = "airflow-clickhouse-plugin — Airflow plugin to execute ClickHouse commands and queries"
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT License" }
 authors = [
-    { name = "Anton Bryzgalov", email = "tony.bryzgaloff@gmail.com" },
-    { name = "Viktor Taranenko" },
+    { name = "Anton Bryzgalov, Viktor Taranenko", email = "tony.bryzgaloff@gmail.com" },
 ]
 keywords = [
     "clickhouse",
