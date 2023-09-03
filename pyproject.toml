@@ -1,0 +1,52 @@
+[build-system]
+requires = [
+    "setuptools",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "airflow-clickhouse-plugin"
+version = "1.0.0"
+description = "airflow-clickhouse-plugin — Airflow plugin to execute ClickHouse commands and queries"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT License" }
+authors = [
+    { name = "Anton Bryzgalov", email = "tony.bryzgaloff@gmail.com" },
+    { name = "Viktor Taranenko" },
+]
+keywords = [
+    "clickhouse",
+    "airflow",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Plugins",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.8",
+]
+dynamic = [
+    "dependencies",
+]
+
+[project.urls]
+GitHub = "https://github.com/bryzgaloff/airflow-clickhouse-plugin"
+Documentation = "https://github.com/bryzgaloff/airflow-clickhouse-plugin#airflow-clickhouse-plugin"
+Changelog = "https://github.com/bryzgaloff/airflow-clickhouse-plugin/releases"
+Issues = "https://github.com/bryzgaloff/airflow-clickhouse-plugin/issues"
+
+[project.optional-dependencies]
+"common.sql" = [
+    "apache-airflow[common.sql]>=2.2.0,<2.7.0",
+    "clickhouse-driver>=0.2.1",
+]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = true  # add directories without __init__.py
