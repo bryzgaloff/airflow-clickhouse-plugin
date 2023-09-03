@@ -4,7 +4,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bryzgaloff/airflow-clickhouse-plugin/tests.yml?branch=master)
 ![GitHub contributors](https://img.shields.io/github/contributors/bryzgaloff/airflow-clickhouse-plugin?color=blue)
 
-🔝 The most popular [Apache Airflow][airflow] plugin for ClickHouse, ranked in the top 1% of downloads [on PyPI](https://pypi.org/project/airflow-clickhouse-plugin/).
+🔝 The most popular [Apache Airflow][airflow] plugin for ClickHouse, ranked in the top 1% of downloads [on PyPI](https://pypi.org/project/airflow-clickhouse-plugin/). Based on awesome [mymarilyn/clickhouse-driver][ch-driver].
 
 This plugin provides two families of operators: richer [`clickhouse_driver.Client.execute`-based](#clickhouse-driver-family) and standardized [compatible with Python DB API 2.0](#python-db-api-20-family).
 
