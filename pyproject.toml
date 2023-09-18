@@ -39,7 +39,7 @@ Issues = "https://github.com/bryzgaloff/airflow-clickhouse-plugin/issues"
 
 [project.optional-dependencies]
 "common.sql" = [
-    "apache-airflow[common.sql]>=2.2.0,<2.7.0",
+    "apache-airflow[common.sql]>=2.2.0,<2.8.0",
     "clickhouse-driver>=0.2.1",
 ]
 
