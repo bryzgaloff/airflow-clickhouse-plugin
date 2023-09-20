@@ -383,6 +383,7 @@ Community contributors:
 * [@dvnrvn](https://github.com/dvnrvn)
 * Giovanni Corsetti, [@CorsettiS](https://github.com/CorsettiS)
 * Dmytro Zhyzniev, [@1ng4lipt](https://github.com/1ng4lipt)
+* Anton Bezdenezhnykh, [@GaMeRaM](https://github.com/GaMeRaM)
 
 
 [airflow]: https://airflow.apache.org/
