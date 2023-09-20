@@ -76,7 +76,7 @@ jobs:
           python -m pip install \
             --index-url https://test.pypi.org/simple \
             --extra-index-url https://pypi.org/simple \
-            airflow-clickhouse-plugin[common.sql]==1.1.0rc1
+            airflow-clickhouse-plugin[common.sql]==1.1.0rc2
       - name: Run tests on ClickHouse server
         env:
           AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
@@ -123,7 +123,7 @@ jobs:
       - name: Install airflow-clickhouse-plugin from PyPI
         run: |
           python -m pip install --upgrade pip
-          python -m pip install airflow-clickhouse-plugin[common.sql]==1.1.0rc1
+          python -m pip install airflow-clickhouse-plugin[common.sql]==1.1.0rc2
       - name: Run tests on ClickHouse server
         env:
           AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
