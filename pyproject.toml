@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "airflow-clickhouse-plugin"
-version = "1.1.0rc2"
+version = "1.1.0"
 description = "airflow-clickhouse-plugin — Airflow plugin to execute ClickHouse commands and queries"
 readme = "README.md"
 requires-python = ">=3.8"
