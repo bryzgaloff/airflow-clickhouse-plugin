@@ -131,7 +131,7 @@ Defines `ClickHouseHook.execute` method which simply wraps [`clickhouse_driver.C
 
 `ClickHouseHook.execute` returns a result of the _last_ query.
 
-Also, the hook defines `get_conn()` method which returns an underlying [clickhouse_driver.Client][ch-driver-client] instance.
+Also, the hook defines `get_conn()` method which returns an underlying [`clickhouse_driver.Client`][ch-driver-client] instance.
 
 See [example](#clickhousehook-example) below.
 
