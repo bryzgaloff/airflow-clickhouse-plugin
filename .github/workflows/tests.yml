@@ -4,18 +4,14 @@ on:
   push:
     branches: [ "master" ]
     paths:
-      - "airflow_clickhouse_plugin/hooks/**"
-      - "airflow_clickhouse_plugin/operators/**"
-      - "airflow_clickhouse_plugin/sensors/**"
+      - "src/**"
       - "tests/**"
       - ".github/workflows/tests.yml"
       - "requirements.txt"
   pull_request:
     branches: [ "master" ]
     paths:
-      - "airflow_clickhouse_plugin/hooks/**"
-      - "airflow_clickhouse_plugin/operators/**"
-      - "airflow_clickhouse_plugin/sensors/**"
+      - "src/**"
       - "tests/**"
       - ".github/workflows/tests.yml"
       - "requirements.txt"
