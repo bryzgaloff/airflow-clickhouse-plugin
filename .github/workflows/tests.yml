@@ -38,7 +38,9 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install \
           -r requirements.txt \
-          --ignore-installed apache-airflow==${{ matrix.airflow-version }}
+          apache-airflow[common.sql]==${{ matrix.airflow-version }} \
+          --ignore-installed \
+          --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run unit tests
       run: |
         python -m unittest discover -t tests -s unit -p test_clickhouse.py
@@ -60,7 +62,9 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install \
           -r requirements.txt \
-          --ignore-installed apache-airflow[common.sql]==${{ matrix.airflow-version }}
+          apache-airflow[common.sql]==${{ matrix.airflow-version }} \
+          --ignore-installed \
+          --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run unit tests
       run: |
         python -m unittest discover -t tests -s unit
@@ -87,7 +91,9 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install \
           -r requirements.txt \
-          --ignore-installed apache-airflow==${{ matrix.airflow-version }}
+          apache-airflow[common.sql]==${{ matrix.airflow-version }} \
+          --ignore-installed \
+          --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run tests on ClickHouse server
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
@@ -116,7 +122,9 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install \
           -r requirements.txt \
-          --ignore-installed apache-airflow[common.sql]==${{ matrix.airflow-version }}
+          apache-airflow[common.sql]==${{ matrix.airflow-version }} \
+          --ignore-installed \
+          --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run tests on ClickHouse server
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
