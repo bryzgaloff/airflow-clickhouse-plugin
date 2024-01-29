@@ -57,7 +57,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install \
           -r requirements.txt \
-          apache-airflow[common.sql]==${{ matrix.airflow-version }} \
+          apache-airflow==${{ matrix.airflow-version }} \
           --ignore-installed \
           --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run unit tests
@@ -148,7 +148,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install \
           -r requirements.txt \
-          apache-airflow[common.sql]==${{ matrix.airflow-version }} \
+          apache-airflow==${{ matrix.airflow-version }} \
           --ignore-installed \
           --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run tests on ClickHouse server
