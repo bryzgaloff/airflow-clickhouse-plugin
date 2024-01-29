@@ -36,7 +36,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
+        python -m pip install \
+          -r requirements.txt \
+          --ignore-installed apache-airflow==${{ matrix.airflow-version }}
     - name: Run unit tests
       run: |
         python -m unittest discover -t tests -s unit -p test_clickhouse.py
@@ -56,7 +58,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt --ignore-installed apache-airflow[common.sql]==${{ matrix.airflow-version }}
+        python -m pip install \
+          -r requirements.txt \
+          --ignore-installed apache-airflow[common.sql]==${{ matrix.airflow-version }}
     - name: Run unit tests
       run: |
         python -m unittest discover -t tests -s unit
@@ -81,7 +85,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
+        python -m pip install \
+          -r requirements.txt \
+          --ignore-installed apache-airflow==${{ matrix.airflow-version }}
     - name: Run tests on ClickHouse server
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
@@ -108,7 +114,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt --ignore-installed apache-airflow[common.sql]==${{ matrix.airflow-version }}
+        python -m pip install \
+          -r requirements.txt \
+          --ignore-installed apache-airflow[common.sql]==${{ matrix.airflow-version }}
     - name: Run tests on ClickHouse server
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
