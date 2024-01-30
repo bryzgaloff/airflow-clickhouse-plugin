@@ -8,6 +8,7 @@ on:
       - "tests/**"
       - ".github/workflows/tests.yml"
       - "requirements.txt"
+      - "pyproject.toml"
   pull_request:
     branches: [ "master" ]
     paths:
@@ -15,6 +16,7 @@ on:
       - "tests/**"
       - ".github/workflows/tests.yml"
       - "requirements.txt"
+      - "pyproject.toml"
 
 env:
   PYTHONPATH: "src"  # for tests to import src/airflow_clickhouse_plugin
