@@ -8,6 +8,7 @@ on:
       - "tests/**"
       - ".github/workflows/tests.yml"
       - "requirements.txt"
+      - "pyproject.toml"
   pull_request:
     branches: [ "master" ]
     paths:
@@ -15,102 +16,140 @@ on:
       - "tests/**"
       - ".github/workflows/tests.yml"
       - "requirements.txt"
+      - "pyproject.toml"
 
 env:
   PYTHONPATH: "src"  # for tests to import src/airflow_clickhouse_plugin
 
 jobs:
 
-  unit-tests-no-common-sql:
+  unit-tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
         airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1"]
+        airflow-extras: ["", "[common.sql]"]
+        exclude:
+          # constraints files for these combinations are missing
+          - python-version: "3.10"
+            airflow-version: "2.0.2"
+          - python-version: "3.10"
+            airflow-version: "2.1.4"
+          - python-version: "3.10"
+            airflow-version: "2.2.5"
+          - python-version: "3.11"
+            airflow-version: "2.0.2"
+          - python-version: "3.11"
+            airflow-version: "2.1.4"
+          - python-version: "3.11"
+            airflow-version: "2.2.5"
+          - python-version: "3.11"
+            airflow-version: "2.3.4"
+          - python-version: "3.11"
+            airflow-version: "2.4.3"
+          - python-version: "3.11"
+            airflow-version: "2.5.3"
+          # common.sql constraint for these Airflow versions is <1.3.0
+          #   => misses SQLExecuteQueryOperator
+          - airflow-extras: "[common.sql]"
+            airflow-version: "2.0.2"
+          - airflow-extras: "[common.sql]"
+            airflow-version: "2.1.4"
+          - airflow-extras: "[common.sql]"
+            airflow-version: "2.2.5"
+          - airflow-extras: "[common.sql]"
+            airflow-version: "2.3.4"
+          - airflow-extras: "[common.sql]"
+            airflow-version: "2.4.3"
+        include:
+          - airflow-extras: "[common.sql]"
+            tests-pattern: ""
+          - airflow-extras: ""
+            tests-pattern: "-p test_clickhouse.py"
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
+        python -m pip install \
+          -r requirements.txt \
+          apache-airflow${{ matrix.airflow-extras }}==${{ matrix.airflow-version }} \
+          --ignore-installed \
+          --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run unit tests
       run: |
-        python -m unittest discover -t tests -s unit -p test_clickhouse.py
+        python -m unittest discover -t tests -s unit ${{ matrix.tests-pattern }}
 
-  unit-tests-common-sql:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-        airflow-version: ["2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1"]
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt --ignore-installed apache-airflow[common.sql]==${{ matrix.airflow-version }}
-    - name: Run unit tests
-      run: |
-        python -m unittest discover -t tests -s unit
-
-  integration-tests-no-common-sql:
+  integration-tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
         airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1"]
+        airflow-extras: ["", "[common.sql]"]
+        exclude:
+          # constraints files for these combinations are missing
+          - python-version: "3.10"
+            airflow-version: "2.0.2"
+          - python-version: "3.10"
+            airflow-version: "2.1.4"
+          - python-version: "3.10"
+            airflow-version: "2.2.5"
+          - python-version: "3.11"
+            airflow-version: "2.0.2"
+          - python-version: "3.11"
+            airflow-version: "2.1.4"
+          - python-version: "3.11"
+            airflow-version: "2.2.5"
+          - python-version: "3.11"
+            airflow-version: "2.3.4"
+          - python-version: "3.11"
+            airflow-version: "2.4.3"
+          - python-version: "3.11"
+            airflow-version: "2.5.3"
+          # common.sql constraint for these Airflow versions is <1.3.0
+          #   => misses SQLExecuteQueryOperator
+          - airflow-extras: "[common.sql]"
+            airflow-version: "2.0.2"
+          - airflow-extras: "[common.sql]"
+            airflow-version: "2.1.4"
+          - airflow-extras: "[common.sql]"
+            airflow-version: "2.2.5"
+          - airflow-extras: "[common.sql]"
+            airflow-version: "2.3.4"
+          - airflow-extras: "[common.sql]"
+            airflow-version: "2.4.3"
+        include:
+          - airflow-extras: "[common.sql]"
+            tests-pattern: ""
+          - airflow-extras: ""
+            tests-pattern: "-p test_clickhouse.py"
     services:
       clickhouse:
         image: yandex/clickhouse-server
         ports:
           - 9000/tcp
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt --ignore-installed apache-airflow==${{ matrix.airflow-version }}
+        python -m pip install \
+          -r requirements.txt \
+          apache-airflow${{ matrix.airflow-extras }}==${{ matrix.airflow-version }} \
+          --ignore-installed \
+          --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run tests on ClickHouse server
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
       run: |
-        python -m unittest discover -t tests -s integration -p test_clickhouse.py
-
-  integration-tests-common-sql:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-        airflow-version: ["2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1"]
-    services:
-      clickhouse:
-        image: yandex/clickhouse-server
-        ports:
-          - 9000/tcp
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install -r requirements.txt --ignore-installed apache-airflow[common.sql]==${{ matrix.airflow-version }}
-    - name: Run tests on ClickHouse server
-      env:
-        AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
-      run: |
-        python -m unittest discover -t tests -s integration
+        python -m unittest discover -t tests -s integration ${{ matrix.tests-pattern }}

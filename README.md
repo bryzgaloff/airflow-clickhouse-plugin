@@ -62,10 +62,7 @@ Dependencies: `apache-airflow-providers-common-sql` (usually pre-packed with Air
 
 ## Python and Airflow versions support
 
-Different versions of the plugin support different combinations of Python and
-    Airflow versions. We _primarily_ support **Airflow 2.0+ and Python 3.8+**.
-    If you need to use the plugin with older Python-Airflow combinations, pick a
-    suitable plugin version:
+Different versions of the plugin support different combinations of Python and Airflow versions. We _primarily_ support **Airflow 2.0+ and Python 3.8+**. If you need to use the plugin with older Python-Airflow combinations, pick a suitable plugin version:
 
 | airflow-clickhouse-plugin version | Airflow version         | Python version     |
 |-----------------------------------|-------------------------|--------------------|
@@ -81,8 +78,9 @@ Different versions of the plugin support different combinations of Python and
 | \>=0.5.4,<0.6.0                   | ~=1.10.6                | \>=2.7 or >=3.5.\* |
 | \>=0.5.0,<0.5.4                   | ==1.10.6                | \>=2.7 or >=3.5.\* |
 
-`~=` means compatible release, see [PEP 440][pep-440-compatible-releases] for an
-    explanation.
+`~=` means compatible release, see [PEP 440][pep-440-compatible-releases] for an explanation.
+
+[DB API 2.0 functionality](#python-db-api-20-family) requires `apache-airflow>=2.2` and `apache-airflow-providers-common-sql>=1.3`: earlier versions are not supported.
 
 Previous versions of the plugin might require `pandas` extra: `pip install airflow-clickhouse-plugin[pandas]==0.11.0`. Check out earlier versions of `README.md` for details.
 
