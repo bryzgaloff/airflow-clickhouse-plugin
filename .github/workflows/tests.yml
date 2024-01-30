@@ -131,7 +131,7 @@ jobs:
             tests-pattern: "-p test_clickhouse.py"
     services:
       clickhouse:
-        image: yandex/clickhouse-server
+        image: clickhouse/clickhouse-server
         ports:
           - 9000/tcp
     steps:
