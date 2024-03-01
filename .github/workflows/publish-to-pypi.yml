@@ -43,14 +43,15 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.x"
+          python-version: "3.11"
       - name: Install airflow-clickhouse-plugin from TestPyPI
         run: |
           python -m pip install --upgrade pip
           python -m pip install \
             --index-url https://test.pypi.org/simple \
             --extra-index-url https://pypi.org/simple \
-            airflow-clickhouse-plugin[common.sql]==1.1.0
+            airflow-clickhouse-plugin[common.sql]==1.2.0 \
+            --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.8.2/constraints-3.11.txt"
       - name: Run tests on ClickHouse server
         env:
           AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
@@ -93,11 +94,13 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: "3.x"
+          python-version: "3.11"
       - name: Install airflow-clickhouse-plugin from PyPI
         run: |
           python -m pip install --upgrade pip
-          python -m pip install airflow-clickhouse-plugin[common.sql]==1.1.0
+          python -m pip install \
+            airflow-clickhouse-plugin[common.sql]==1.2.0 \
+            --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.8.2/constraints-3.11.txt"
       - name: Run tests on ClickHouse server
         env:
           AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
