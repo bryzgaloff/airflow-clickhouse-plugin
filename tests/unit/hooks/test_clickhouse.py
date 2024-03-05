@@ -19,7 +19,7 @@ class ClickHouseHookTestCase(unittest.TestCase):
             login='test-login',
             password='test-pass',
             schema='test-schema',
-            extra='{"test_extra": "test-extra-value"}',
+            extra='{"test_extra": "test-extra-value", "secure": "true", "verify": "false"}',
         )
 
         return_value = ClickHouseHook(
@@ -47,6 +47,8 @@ class ClickHouseHookTestCase(unittest.TestCase):
                 password='test-pass',
                 database='test-database',
                 test_extra='test-extra-value',
+                secure=True,
+                verify=False
             )
 
         for query, mock_call \
