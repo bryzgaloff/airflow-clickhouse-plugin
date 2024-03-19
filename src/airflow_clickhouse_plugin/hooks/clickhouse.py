@@ -90,19 +90,14 @@ class ClickHouseHook(BaseHook):
         return last_result
 
 
-def strtobool(val):
-    """Convert a string representation of truth to true (1) or false (0).
-    True values are 'y', 'yes', 't', 'true', 'on', and '1'; false values
-    are 'n', 'no', 'f', 'false', 'off', and '0'.  Raises ValueError if
-    'val' is anything else.
-    """
-    val = val.lower()
-    if val in ('y', 'yes', 't', 'true', 'on', '1'):
-        return 1
-    elif val in ('n', 'no', 'f', 'false', 'off', '0'):
-        return 0
+def strtobool(str_value: str) -> bool:
+    str_value = str_value.lower()
+    if str_value in ('y', 'yes', 't', 'true', 'on', '1'):
+        return True
+    elif str_value in ('n', 'no', 'f', 'false', 'off', '0'):
+        return False
     else:
-        raise ValueError("invalid truth value %r" % (val,))
+        raise ValueError(f'invalid truth value {str_value!r}')
 
 
 def conn_to_kwargs(conn: Connection, database: t.Optional[str]) -> t.Dict[str, t.Any]:
@@ -123,7 +118,10 @@ def conn_to_kwargs(conn: Connection, database: t.Optional[str]) -> t.Dict[str, t
     # converting types for flags
     for key in ('secure', 'verify'):
         if key in connection_kwargs:
-            connection_kwargs[key] = strtobool(connection_kwargs[key])
+            current_value = connection_kwargs[key]
+            if isinstance(current_value, (bool, int)):
+                continue
+            connection_kwargs[key] = strtobool(current_value)
     return connection_kwargs
 
 

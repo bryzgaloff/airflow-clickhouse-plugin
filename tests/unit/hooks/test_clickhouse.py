@@ -48,7 +48,7 @@ class ClickHouseHookTestCase(unittest.TestCase):
                 database='test-database',
                 test_extra='test-extra-value',
                 secure=True,
-                verify=False
+                verify=False,
             )
 
         for query, mock_call \
