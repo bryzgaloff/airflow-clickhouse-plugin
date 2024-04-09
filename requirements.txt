@@ -1,2 +1,2 @@
 clickhouse-driver~=0.2.0
-apache-airflow>=2.0.0,<2.9.0
+apache-airflow>=2.0.0,<2.10.0

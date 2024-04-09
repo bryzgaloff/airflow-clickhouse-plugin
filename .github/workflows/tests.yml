@@ -28,7 +28,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-        airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1", "2.8.1"]
+        airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1", "2.8.1", "2.9.0"]
         airflow-extras: ["", "[common.sql]"]
         exclude:
           # constraints files for these combinations are missing
@@ -90,7 +90,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
-        airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1", "2.8.1"]
+        airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1", "2.8.1", "2.9.0"]
         airflow-extras: ["", "[common.sql]"]
         exclude:
           # constraints files for these combinations are missing
