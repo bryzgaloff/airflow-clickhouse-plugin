@@ -385,6 +385,7 @@ Community contributors:
 * Dmytro Zhyzniev, [@1ng4lipt](https://github.com/1ng4lipt)
 * Anton Bezdenezhnykh, [@GaMeRaM](https://github.com/GaMeRaM)
 * Andrey, [@bobelev](https://github.com/bobelev)
+* Misha Epikhin, [@epikhinm](https://github.com/epikhinm)
 
 
 [airflow]: https://airflow.apache.org/
