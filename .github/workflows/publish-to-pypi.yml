@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       clickhouse:
-        image: yandex/clickhouse-server
+        image: clickhouse/clickhouse-server
         ports:
           - 9000/tcp
     steps:
@@ -95,7 +95,7 @@ jobs:
     - publish-to-testpypi
     services:
       clickhouse:
-        image: yandex/clickhouse-server
+        image: clickhouse/clickhouse-server
         ports:
           - 9000/tcp
     steps:
@@ -147,7 +147,7 @@ jobs:
       - publish-to-pypi
     services:
       clickhouse:
-        image: yandex/clickhouse-server
+        image: clickhouse/clickhouse-server
         ports:
           - 9000/tcp
     steps:
