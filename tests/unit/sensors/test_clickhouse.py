@@ -79,7 +79,7 @@ class ClickHouseSensorTestCase(unittest.TestCase):
 
     def test_failure(self):
         is_failure_mock = mock.Mock(return_value=True)
-        with self.assertRaisesRegexp(AirflowException, 'is_failure returned True'):
+        with self.assertRaisesRegex(AirflowException, 'is_failure returned True'):
             ClickHouseSensor(
                 task_id='test3',  # required by Airflow
                 sql='SELECT 3',
