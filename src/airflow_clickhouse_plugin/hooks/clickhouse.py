@@ -91,7 +91,7 @@ class ClickHouseHook(BaseHook):
 
     def get_pandas_df(
         self, sql: str, parameters: t.Union[None, dict, list, tuple, t.Generator] = None
-    ) -> Any:
+    ) -> t.Any:
         import pandas as pd
 
         rows, columns_defs = self.run(sql, parameters, with_column_types=True)
@@ -104,7 +104,7 @@ class ClickHouseHook(BaseHook):
         parameters: t.Union[None, dict, list, tuple, t.Generator] = None,
         with_column_types: bool = False,
         types_check: bool = False,
-    ) -> Any:
+    ) -> t.Any:
         if isinstance(sql, str):
             sql = (sql,)
         with _disconnecting(self.get_conn()) as conn:
