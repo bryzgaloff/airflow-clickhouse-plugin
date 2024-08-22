@@ -66,6 +66,7 @@ Different versions of the plugin support different combinations of Python and Ai
 
 | airflow-clickhouse-plugin version | Airflow version         | Python version     |
 |-----------------------------------|-------------------------|--------------------|
+| 1.4.0                             | \>=2.0.0,<2.11.0        | ~=3.8              |
 | 1.3.0                             | \>=2.0.0,<2.10.0        | ~=3.8              |
 | 1.2.0                             | \>=2.0.0,<2.9.0         | ~=3.8              |
 | 1.1.0                             | \>=2.0.0,<2.8.0         | ~=3.8              |
@@ -156,7 +157,7 @@ If you use a secure connection to ClickHouse (this requires additional configura
 ### ClickHouse connection schema
 
 [`clickhouse_driver.Client`][ch-driver-client] is initialized with attributes stored in Airflow [Connection attributes][airflow-connection-howto]:
-  
+
 | Airflow Connection attribute | `Client.__init__` argument |
 |------------------------------|----------------------------|
 | `host`                       | `host`                     |
