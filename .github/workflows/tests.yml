@@ -27,8 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-        airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1", "2.8.1", "2.9.0"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1", "2.8.1", "2.9.0", "2.10.0"]
         airflow-extras: ["", "[common.sql]"]
         exclude:
           # constraints files for these combinations are missing
@@ -50,6 +50,24 @@ jobs:
             airflow-version: "2.4.3"
           - python-version: "3.11"
             airflow-version: "2.5.3"
+          - python-version: "3.12"
+            airflow-version: "2.0.2"
+          - python-version: "3.12"
+            airflow-version: "2.1.4"
+          - python-version: "3.12"
+            airflow-version: "2.2.5"
+          - python-version: "3.12"
+            airflow-version: "2.3.4"
+          - python-version: "3.12"
+            airflow-version: "2.4.3"
+          - python-version: "3.12"
+            airflow-version: "2.5.3"
+          - python-version: "3.12"
+            airflow-version: "2.6.3"
+          - python-version: "3.12"
+            airflow-version: "2.7.1"
+          - python-version: "3.12"
+            airflow-version: "2.8.1"
           # common.sql constraint for these Airflow versions is <1.3.0
           #   => misses SQLExecuteQueryOperator
           - airflow-extras: "[common.sql]"
@@ -89,8 +107,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-        airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1", "2.8.1", "2.9.0"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        airflow-version: ["2.0.2", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.1", "2.8.1", "2.9.0", "2.10.0"]
         airflow-extras: ["", "[common.sql]"]
         exclude:
           # constraints files for these combinations are missing
@@ -112,6 +130,24 @@ jobs:
             airflow-version: "2.4.3"
           - python-version: "3.11"
             airflow-version: "2.5.3"
+          - python-version: "3.12"
+            airflow-version: "2.0.2"
+          - python-version: "3.12"
+            airflow-version: "2.1.4"
+          - python-version: "3.12"
+            airflow-version: "2.2.5"
+          - python-version: "3.12"
+            airflow-version: "2.3.4"
+          - python-version: "3.12"
+            airflow-version: "2.4.3"
+          - python-version: "3.12"
+            airflow-version: "2.5.3"
+          - python-version: "3.12"
+            airflow-version: "2.6.3"
+          - python-version: "3.12"
+            airflow-version: "2.7.1"
+          - python-version: "3.12"
+            airflow-version: "2.8.1"
           # common.sql constraint for these Airflow versions is <1.3.0
           #   => misses SQLExecuteQueryOperator
           - airflow-extras: "[common.sql]"
