@@ -388,6 +388,7 @@ Community contributors:
 * Andrey, [@bobelev](https://github.com/bobelev)
 * Misha Epikhin, [@epikhinm](https://github.com/epikhinm)
 * igor, [@cra](https://github.com/cra)
+* Yuriy Natarov, [@Acuion](https://github.com/Acuion)
 
 
 [airflow]: https://airflow.apache.org/
