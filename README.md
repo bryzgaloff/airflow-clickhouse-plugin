@@ -66,6 +66,8 @@ Different versions of the plugin support different combinations of Python and Ai
 
 | airflow-clickhouse-plugin version | Airflow version         | Python version     |
 |-----------------------------------|-------------------------|--------------------|
+| 1.4.0                             | \>=2.0.0,<2.11.0        | ~=3.8              |
+| 1.3.0                             | \>=2.0.0,<2.10.0        | ~=3.8              |
 | 1.2.0                             | \>=2.0.0,<2.9.0         | ~=3.8              |
 | 1.1.0                             | \>=2.0.0,<2.8.0         | ~=3.8              |
 | 1.0.0                             | \>=2.0.0,<2.7.0         | ~=3.8              |
@@ -81,7 +83,7 @@ Different versions of the plugin support different combinations of Python and Ai
 
 `~=` means compatible release, see [PEP 440][pep-440-compatible-releases] for an explanation.
 
-[DB API 2.0 functionality](#python-db-api-20-family) requires `apache-airflow>=2.2` and `apache-airflow-providers-common-sql>=1.3`: earlier versions are not supported.
+[DB API 2.0 functionality](#python-db-api-20-family) requires `apache-airflow>2.9.3` (strictly greater since versions up to 2.9.3 had an MRO-related bug, see [#87](https://github.com/bryzgaloff/airflow-clickhouse-plugin/issues/87)) and `apache-airflow-providers-common-sql>=1.3`: earlier versions are not supported.
 
 Previous versions of the plugin might require `pandas` extra: `pip install airflow-clickhouse-plugin[pandas]==0.11.0`. Check out earlier versions of `README.md` for details.
 
@@ -155,7 +157,7 @@ If you use a secure connection to ClickHouse (this requires additional configura
 ### ClickHouse connection schema
 
 [`clickhouse_driver.Client`][ch-driver-client] is initialized with attributes stored in Airflow [Connection attributes][airflow-connection-howto]:
-  
+
 | Airflow Connection attribute | `Client.__init__` argument |
 |------------------------------|----------------------------|
 | `host`                       | `host`                     |
@@ -384,6 +386,9 @@ Community contributors:
 * Dmytro Zhyzniev, [@1ng4lipt](https://github.com/1ng4lipt)
 * Anton Bezdenezhnykh, [@GaMeRaM](https://github.com/GaMeRaM)
 * Andrey, [@bobelev](https://github.com/bobelev)
+* Misha Epikhin, [@epikhinm](https://github.com/epikhinm)
+* igor, [@cra](https://github.com/cra)
+* Yuriy Natarov, [@Acuion](https://github.com/Acuion)
 
 
 [airflow]: https://airflow.apache.org/
