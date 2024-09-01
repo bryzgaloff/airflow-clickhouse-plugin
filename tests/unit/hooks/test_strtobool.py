@@ -7,14 +7,14 @@ class StrToBoolTestCase(unittest.TestCase):
     def test_correct_true(self):
         self.assertTrue(strtobool('true'))
 
-    def test_correct_one(self):
-        self.assertTrue(strtobool('1'))
+    def test_correct_true_capital(self):
+        self.assertTrue(strtobool('True'))
 
     def test_correct_false(self):
         self.assertFalse(strtobool('false'))
 
-    def test_correct_zero(self):
-        self.assertFalse(strtobool('0'))
+    def test_correct_false_capital(self):
+        self.assertFalse(strtobool('False'))
 
     def test_unknown_throws(self):
         with self.assertRaises(ValueError):

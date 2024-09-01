@@ -92,12 +92,11 @@ class ClickHouseHook(BaseHook):
 
 def strtobool(str_value: str) -> bool:
     str_value = str_value.lower()
-    if str_value in ('y', 'yes', 't', 'true', 'on', '1'):
+    if str_value == 'true':
         return True
-    elif str_value in ('n', 'no', 'f', 'false', 'off', '0'):
+    elif str_value == 'false':
         return False
-    else:
-        raise ValueError(f'invalid truth value {str_value!r}')
+    raise ValueError(f'unsupported string value: {str_value!r}')
 
 
 def conn_to_kwargs(conn: Connection, database: t.Optional[str]) -> t.Dict[str, t.Any]:
