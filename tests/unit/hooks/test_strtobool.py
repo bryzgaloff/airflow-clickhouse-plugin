@@ -5,16 +5,14 @@ from airflow_clickhouse_plugin.hooks.clickhouse import strtobool
 
 class StrToBoolTestCase(unittest.TestCase):
     def test_correct_true(self):
-        self.assertTrue(strtobool('true'))
-
-    def test_correct_true_capital(self):
-        self.assertTrue(strtobool('True'))
+        for v in ['true', 'True']:
+            with self.subTest('Testing %s value' % v, v=v):
+                self.assertTrue(strtobool(v))
 
     def test_correct_false(self):
-        self.assertFalse(strtobool('false'))
-
-    def test_correct_false_capital(self):
-        self.assertFalse(strtobool('False'))
+        for v in ['false', 'False']:
+            with self.subTest('Testing %s value' % v, v=v):
+                self.assertFalse(strtobool(v))
 
     def test_unknown_throws(self):
         with self.assertRaises(ValueError):
