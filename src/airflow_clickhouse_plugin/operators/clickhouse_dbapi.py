@@ -27,56 +27,56 @@ class ClickHouseBaseDbApiOperator(ClickHouseDbApiHookMixin, sql.BaseSQLOperator)
 
 
 class ClickHouseSQLExecuteQueryOperator(
-    ClickHouseBaseDbApiOperator,
     sql.SQLExecuteQueryOperator,
+    ClickHouseBaseDbApiOperator,
 ):
     pass
 
 
 class ClickHouseSQLColumnCheckOperator(
-    ClickHouseBaseDbApiOperator,
     sql.SQLColumnCheckOperator,
+    ClickHouseBaseDbApiOperator,
 ):
     pass
 
 
 class ClickHouseSQLTableCheckOperator(
-    ClickHouseBaseDbApiOperator,
     sql.SQLTableCheckOperator,
+    ClickHouseBaseDbApiOperator,
 ):
     pass
 
 
 class ClickHouseSQLCheckOperator(
-    ClickHouseBaseDbApiOperator,
     sql.SQLCheckOperator,
+    ClickHouseBaseDbApiOperator,
 ):
     pass
 
 
 class ClickHouseSQLValueCheckOperator(
-    ClickHouseBaseDbApiOperator,
     sql.SQLValueCheckOperator,
+    ClickHouseBaseDbApiOperator,
 ):
     pass
 
 
 class ClickHouseSQLIntervalCheckOperator(
-    ClickHouseBaseDbApiOperator,
     sql.SQLIntervalCheckOperator,
+    ClickHouseBaseDbApiOperator,
 ):
     pass
 
 
 class ClickHouseSQLThresholdCheckOperator(
-    ClickHouseBaseDbApiOperator,
     sql.SQLThresholdCheckOperator,
+    ClickHouseBaseDbApiOperator,
 ):
     pass
 
 
 class ClickHouseBranchSQLOperator(
-    ClickHouseBaseDbApiOperator,
     sql.BranchSQLOperator,
+    ClickHouseBaseDbApiOperator,
 ):
     pass
