@@ -154,6 +154,8 @@ All the connection attributes are optional: default host is `localhost` and othe
 
 If you use a secure connection to ClickHouse (this requires additional configurations on ClickHouse side), set `extra` to `{"secure":true}`. All `extra` connection parameters are passed to [`clickhouse_driver.Client`][ch-driver-client] as-is.
 
+_If you work locally, do not put `secure:true`, this prevents the connection between airflow and clickhouse_
+
 ### ClickHouse connection schema
 
 [`clickhouse_driver.Client`][ch-driver-client] is initialized with attributes stored in Airflow [Connection attributes][airflow-connection-howto]:
