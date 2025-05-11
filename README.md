@@ -390,6 +390,7 @@ Community contributors:
 * Misha Epikhin, [@epikhinm](https://github.com/epikhinm)
 * igor, [@cra](https://github.com/cra)
 * Yuriy Natarov, [@Acuion](https://github.com/Acuion)
+* Daniil Parmon, [@dparmon](https://github.com/dparmon)
 
 
 [airflow]: https://airflow.apache.org/
