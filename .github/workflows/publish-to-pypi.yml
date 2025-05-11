@@ -20,6 +20,8 @@ jobs:
         image: clickhouse/clickhouse-server
         ports:
           - 9000/tcp
+        options: >-
+          --env CLICKHOUSE_SKIP_USER_SETUP=1
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -95,6 +97,8 @@ jobs:
         image: clickhouse/clickhouse-server
         ports:
           - 9000/tcp
+        options: >-
+          --env CLICKHOUSE_SKIP_USER_SETUP=1
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -146,6 +150,8 @@ jobs:
         image: clickhouse/clickhouse-server
         ports:
           - 9000/tcp
+        options: >-
+          --env CLICKHOUSE_SKIP_USER_SETUP=1
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
