@@ -66,6 +66,7 @@ Different versions of the plugin support different combinations of Python and Ai
 
 | airflow-clickhouse-plugin version | Airflow version         | Python version     |
 |-----------------------------------|-------------------------|--------------------|
+| 1.6.0                             | \>=2.0.0,<3.2.0         | ~=3.9              |
 | 1.5.0                             | \>=2.0.0,<3.1.0         | ~=3.9              |
 | 1.4.0                             | \>=2.0.0,<2.11.0        | ~=3.8              |
 | 1.3.0                             | \>=2.0.0,<2.10.0        | ~=3.8              |
