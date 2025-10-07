@@ -33,7 +33,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install \
           -r requirements.txt \
-          --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.0.0/constraints-3.12.txt"
+          --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.1.0/constraints-3.12.txt"
     - name: Run tests on ClickHouse server
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
@@ -111,7 +111,7 @@ jobs:
             --index-url https://test.pypi.org/simple \
             --extra-index-url https://pypi.org/simple \
             airflow-clickhouse-plugin[common.sql]==1.5.0 \
-            --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.0.0/constraints-3.12.txt"
+            --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.1.0/constraints-3.12.txt"
       - name: Run tests on ClickHouse server
         env:
           AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
@@ -162,7 +162,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install \
             airflow-clickhouse-plugin[common.sql]==1.5.0 \
-            --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.0.0/constraints-3.12.txt"
+            --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.1.0/constraints-3.12.txt"
       - name: Run tests on ClickHouse server
         env:
           AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
