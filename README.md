@@ -392,6 +392,7 @@ Community contributors:
 * igor, [@cra](https://github.com/cra)
 * Yuriy Natarov, [@Acuion](https://github.com/Acuion)
 * Daniil Parmon, [@dparmon](https://github.com/dparmon)
+* Behzod Mansurov, [@star-tek-mb](https://github.com/star-tek-mb)
 
 
 [airflow]: https://airflow.apache.org/
