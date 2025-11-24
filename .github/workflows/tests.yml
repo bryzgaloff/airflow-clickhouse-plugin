@@ -88,7 +88,7 @@ jobs:
           - airflow-extras: ""
             tests-pattern: "-p test_clickhouse.py"
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -177,7 +177,7 @@ jobs:
         options: >-
           --env CLICKHOUSE_SKIP_USER_SETUP=1
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
