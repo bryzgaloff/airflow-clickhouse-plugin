@@ -12,3 +12,5 @@ __pycache__/
 
 # misc
 .DS_Store
+
+uv.lock
