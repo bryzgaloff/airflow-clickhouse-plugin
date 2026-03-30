@@ -7,7 +7,7 @@
 🔝 The most popular [Apache Airflow][airflow] plugin for ClickHouse, ranked in the top 1% of downloads [on PyPI](https://pypi.org/project/airflow-clickhouse-plugin/). Based on awesome [mymarilyn/clickhouse-driver][ch-driver].
 
 > 💡 **Need expert help with Airflow, ClickHouse, or Data Engineering?** 
-> As the creator of this plugin, I offer technical consultations and data platform architecture design. **[Learn more about my professional support below](#-professional-support)**.
+> As the creator of this plugin, I offer 1-on-1 technical consultations and data platform architecture design. **[Book a call](https://www.upwork.com/services/product/development-it-anton-1493606115419942912?ref=github_top&tier=0)** or **[see more options below](#-professional-support)**.
 
 This plugin provides two families of operators: richer [`clickhouse_driver.Client.execute`-based](#clickhouse-driver-family) and standardized [compatible with Python DB API 2.0](#python-db-api-20-family).
 
@@ -375,7 +375,7 @@ Stop the container.
 This plugin is running in production with over 250K+ downloads per month. As its creator and a Cloud Solutions Architect with 11+ years in Big Data, I offer professional services to help your team build reliable data infrastructure.
 
 You can book my services:
-* **[Technical Consultation](https://www.upwork.com/services/product/development-it-anton-1493606115419942912?ref=github&tier=0)**: Need help debugging Airflow pipelines, optimizing ClickHouse performance, or discussing Data Engineering best practices? Book a targeted Q&A session.
+* **[Technical Consultation](https://www.upwork.com/services/product/development-it-anton-1493606115419942912?ref=github_bottom&tier=0)**: Need help debugging Airflow pipelines, optimizing ClickHouse performance, or discussing Data Engineering best practices? Book a targeted Q&A session.
 * **[Data Platform Architecture Proposal](https://www.upwork.com/services/product/development-it-an-architecture-proposal-for-a-scalable-production-ready-data-platform-1319971270428594176)**: Best for new projects or major migrations to a modern data stack. Get a comprehensive, production-ready architecture proposal for AWS/GCP aligned with your business needs.
 
 **Enterprise & Custom Projects**  
