@@ -2,8 +2,7 @@ import typing as t
 
 from airflow.providers.common.sql.operators import sql
 
-from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import \
-    ClickHouseDbApiHook
+from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import ClickHouseDbApiHook
 
 
 class ClickHouseDbApiHookMixin(object):
@@ -27,56 +26,64 @@ class ClickHouseBaseDbApiOperator(ClickHouseDbApiHookMixin, sql.BaseSQLOperator)
 
 
 class ClickHouseSQLExecuteQueryOperator(
-    ClickHouseBaseDbApiOperator,
+    ClickHouseDbApiHookMixin,
     sql.SQLExecuteQueryOperator,
 ):
-    pass
+    def get_db_hook(self) -> ClickHouseDbApiHook:
+        return self._get_clickhouse_db_api_hook(schema=self.database)
 
 
 class ClickHouseSQLColumnCheckOperator(
-    ClickHouseBaseDbApiOperator,
+    ClickHouseDbApiHookMixin,
     sql.SQLColumnCheckOperator,
 ):
-    pass
+    def get_db_hook(self) -> ClickHouseDbApiHook:
+        return self._get_clickhouse_db_api_hook(schema=self.database)
 
 
 class ClickHouseSQLTableCheckOperator(
-    ClickHouseBaseDbApiOperator,
+    ClickHouseDbApiHookMixin,
     sql.SQLTableCheckOperator,
 ):
-    pass
+    def get_db_hook(self) -> ClickHouseDbApiHook:
+        return self._get_clickhouse_db_api_hook(schema=self.database)
 
 
 class ClickHouseSQLCheckOperator(
-    ClickHouseBaseDbApiOperator,
+    ClickHouseDbApiHookMixin,
     sql.SQLCheckOperator,
 ):
-    pass
+    def get_db_hook(self) -> ClickHouseDbApiHook:
+        return self._get_clickhouse_db_api_hook(schema=self.database)
 
 
 class ClickHouseSQLValueCheckOperator(
-    ClickHouseBaseDbApiOperator,
+    ClickHouseDbApiHookMixin,
     sql.SQLValueCheckOperator,
 ):
-    pass
+    def get_db_hook(self) -> ClickHouseDbApiHook:
+        return self._get_clickhouse_db_api_hook(schema=self.database)
 
 
 class ClickHouseSQLIntervalCheckOperator(
-    ClickHouseBaseDbApiOperator,
+    ClickHouseDbApiHookMixin,
     sql.SQLIntervalCheckOperator,
 ):
-    pass
+    def get_db_hook(self) -> ClickHouseDbApiHook:
+        return self._get_clickhouse_db_api_hook(schema=self.database)
 
 
 class ClickHouseSQLThresholdCheckOperator(
-    ClickHouseBaseDbApiOperator,
+    ClickHouseDbApiHookMixin,
     sql.SQLThresholdCheckOperator,
 ):
-    pass
+    def get_db_hook(self) -> ClickHouseDbApiHook:
+        return self._get_clickhouse_db_api_hook(schema=self.database)
 
 
 class ClickHouseBranchSQLOperator(
-    ClickHouseBaseDbApiOperator,
+    ClickHouseDbApiHookMixin,
     sql.BranchSQLOperator,
 ):
-    pass
+    def get_db_hook(self) -> ClickHouseDbApiHook:
+        return self._get_clickhouse_db_api_hook(schema=self.database)
