@@ -40,11 +40,28 @@ class ClickHouseBaseDbApiOperatorTestCase(unittest.TestCase):
 
 
 class ClickHouseSQLExecuteQueryOperatorTestCase(unittest.TestCase):
-    def test_init(self):
-        ClickHouseSQLExecuteQueryOperator(
-            task_id='test-task-id',  # required by Airflow
-            sql='SELECT 1',
-        )
+    def test_init_arguments(self):
+        with mock.patch(
+            'airflow.providers.common.sql.operators.sql.SQLExecuteQueryOperator.__init__',
+            return_value=None,
+        ) as mock_init:
+            params = {
+                'sql': 'SELECT 1',
+                'autocommit': True,
+                'parameters': {'a': 1},
+                'handler': list,
+                'split_statements': True,
+                'return_last': True,
+                'show_return_value_in_logs': True,
+                'output_processor': lambda x: x,
+                'requires_result_fetch': True,
+            }
+            # task_id is required by BaseOperator
+            ClickHouseSQLExecuteQueryOperator(task_id='test-task-id', **params)
+            mock_init.assert_called_once()
+            _, kwargs = mock_init.call_args
+            for name, value in params.items():
+                self.assertEqual(kwargs[name], value)
 
 
 if __name__ == '__main__':
