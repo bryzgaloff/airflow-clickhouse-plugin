@@ -1,8 +1,10 @@
 import unittest
 from unittest import mock
 
-from airflow_clickhouse_plugin.operators.clickhouse_dbapi import \
-    ClickHouseBaseDbApiOperator
+from airflow_clickhouse_plugin.operators.clickhouse_dbapi import (
+    ClickHouseBaseDbApiOperator,
+    ClickHouseSQLExecuteQueryOperator,
+)
 
 
 class ClickHouseBaseDbApiOperatorTestCase(unittest.TestCase):
@@ -35,6 +37,14 @@ class ClickHouseBaseDbApiOperatorTestCase(unittest.TestCase):
 
     def tearDown(self):
         self._hook_cls_patcher.stop()
+
+
+class ClickHouseSQLExecuteQueryOperatorTestCase(unittest.TestCase):
+    def test_init(self):
+        ClickHouseSQLExecuteQueryOperator(
+            task_id='test-task-id',  # required by Airflow
+            sql='SELECT 1',
+        )
 
 
 if __name__ == '__main__':
