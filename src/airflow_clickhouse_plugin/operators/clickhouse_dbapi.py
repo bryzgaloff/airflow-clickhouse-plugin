@@ -21,7 +21,14 @@ class ClickHouseDbApiHookMixin(object):
         return ClickHouseDbApiHook(**hook_kwargs)
 
 
-class ClickHouseBaseDbApiOperator(ClickHouseDbApiHookMixin, sql.BaseSQLOperator):
+class ClickHouseBaseDbApiOperator(
+    ClickHouseDbApiHookMixin,
+    sql.BaseSQLOperator,
+):
+    # Explicitly define __init__ to prevent Airflow's BaseOperatorMeta from breaking MRO.
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def get_db_hook(self) -> ClickHouseDbApiHook:
         return self._get_clickhouse_db_api_hook(schema=self.database)
 
@@ -30,7 +37,8 @@ class ClickHouseSQLExecuteQueryOperator(
     ClickHouseBaseDbApiOperator,
     sql.SQLExecuteQueryOperator,
 ):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
 
 class ClickHouseSQLColumnCheckOperator(

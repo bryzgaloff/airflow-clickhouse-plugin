@@ -408,6 +408,8 @@ Community contributors:
 * Daniil Parmon, [@dparmon](https://github.com/dparmon)
 * Behzod Mansurov, [@star-tek-mb](https://github.com/star-tek-mb)
 * Ward Gielis, [@wardgielis](https://github.com/wardgielis)
+* Maxim Martynov, [@dolfinus](https://github.com/dolfinus)
+* Rohith Reddy Kota, [@rohithreddykota](https://github.com/rohithreddykota)
 
 
 [airflow]: https://airflow.apache.org/
