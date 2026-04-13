@@ -22,6 +22,9 @@ class ClickHouseDbApiHookMixin(object):
 
 
 class ClickHouseBaseDbApiOperator(ClickHouseDbApiHookMixin, sql.BaseSQLOperator):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def get_db_hook(self) -> ClickHouseDbApiHook:
         return self._get_clickhouse_db_api_hook(schema=self.database)
 
@@ -30,61 +33,53 @@ class ClickHouseSQLExecuteQueryOperator(
     ClickHouseBaseDbApiOperator,
     sql.SQLExecuteQueryOperator,
 ):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
 
 
 class ClickHouseSQLColumnCheckOperator(
     ClickHouseBaseDbApiOperator,
     sql.SQLColumnCheckOperator,
 ):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
 
 
 class ClickHouseSQLTableCheckOperator(
     ClickHouseBaseDbApiOperator,
     sql.SQLTableCheckOperator,
 ):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
 
 
 class ClickHouseSQLCheckOperator(
     ClickHouseBaseDbApiOperator,
     sql.SQLCheckOperator,
 ):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
 
 
 class ClickHouseSQLValueCheckOperator(
     ClickHouseBaseDbApiOperator,
     sql.SQLValueCheckOperator,
 ):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
 
 
 class ClickHouseSQLIntervalCheckOperator(
     ClickHouseBaseDbApiOperator,
     sql.SQLIntervalCheckOperator,
 ):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
 
 
 class ClickHouseSQLThresholdCheckOperator(
     ClickHouseBaseDbApiOperator,
     sql.SQLThresholdCheckOperator,
 ):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
 
 
 class ClickHouseBranchSQLOperator(
     ClickHouseBaseDbApiOperator,
     sql.BranchSQLOperator,
 ):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass
