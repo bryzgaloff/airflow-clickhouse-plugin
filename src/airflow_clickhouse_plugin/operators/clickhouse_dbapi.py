@@ -25,6 +25,7 @@ class ClickHouseBaseDbApiOperator(
     ClickHouseDbApiHookMixin,
     sql.BaseSQLOperator,
 ):
+    # Explicitly define __init__ to prevent Airflow's BaseOperatorMeta from breaking MRO.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
