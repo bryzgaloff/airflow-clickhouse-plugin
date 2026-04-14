@@ -73,7 +73,46 @@ class ClickHouseSQLIntervalCheckOperator(
     ClickHouseBaseDbApiOperator,
     sql.SQLIntervalCheckOperator,
 ):
-    pass
+    def __init__(
+        self,
+        *args,
+        table: str,
+        metrics_thresholds: t.Dict[str, int],
+        date_filter_column: t.Optional[str] = "ds",
+        days_back: int = -7,
+        ratio_formula: t.Optional[str] = "max_over_min",
+        ignore_zero: bool = True,
+        conn_id: t.Optional[str] = None,
+        database: t.Optional[str] = None,
+        **kwargs,
+    ):
+        super().__init__(
+            *args,
+            table=table,
+            metrics_thresholds=metrics_thresholds,
+            date_filter_column=date_filter_column,
+            days_back=days_back,
+            ratio_formula=ratio_formula,
+            ignore_zero=ignore_zero,
+            conn_id=conn_id,
+            database=database,
+            **kwargs,
+        )
+        # method internals were changed a bit between Airflow versions, this is a workaround
+        self.ratio_formula = ratio_formula
+        self.ignore_zero = ignore_zero
+        self.table = table
+        self.metrics_thresholds = metrics_thresholds
+        self.metrics_sorted = sorted(metrics_thresholds.keys())
+        self.date_filter_column = date_filter_column
+        self.days_back = -abs(days_back)
+        sqlexp = ", ".join(self.metrics_sorted)
+
+        # actual change
+        sqlt = f"SELECT {sqlexp} FROM {table} WHERE {date_filter_column}="
+        self.sql1 = f"{sqlt}parseDateTime64BestEffort('{{{{ ds }}}}', 6)"
+        self.sql2 = f"{sqlt}parseDateTime64BestEffort('{{{{ macros.ds_add(ds, {self.days_back}) }}}}', 6)"
+        self.sql: t.List[str] = [self.sql1, self.sql2]
 
 
 class ClickHouseSQLThresholdCheckOperator(
