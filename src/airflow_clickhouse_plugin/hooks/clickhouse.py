@@ -3,7 +3,19 @@ import typing as t
 from itertools import islice
 
 import clickhouse_driver
-from airflow.hooks.base import BaseHook
+try:
+    from airflow.sdk import BaseHook
+except ImportError:
+    import warnings
+
+    from airflow.hooks.base import BaseHook
+    warnings.warn(
+        "Importing 'BaseHook' from 'airflow.hooks.base' is deprecated from "
+        "Airflow 3.1 onwards. Modern Airflow versions will use 'airflow.sdk' instead. ",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
 from airflow.models import Connection
 
 # annotated according to clickhouse_driver.Client.execute comments
