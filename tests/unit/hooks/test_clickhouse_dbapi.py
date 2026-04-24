@@ -3,8 +3,7 @@ from unittest import mock
 
 from airflow.models import Connection
 
-from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import \
-    ClickHouseDbApiHook
+from airflow_clickhouse_plugin.hooks.clickhouse_dbapi import ClickHouseDbApiHook
 
 
 class ClickHouseDbApiHookTestCase(unittest.TestCase):
@@ -42,6 +41,33 @@ class ClickHouseDbApiHookTestCase(unittest.TestCase):
         ClickHouseDbApiHook().get_conn()
         self._get_connection_mock.assert_called_once_with('clickhouse_default')
         self._connect_mock.assert_called_once_with(host='localhost')
+
+    def test_get_openlineage_database_info(self):
+        try:
+            import airflow.providers.openlineage
+        except ImportError:
+            self.skipTest('airflow.providers.openlineage is not installed')
+
+        hook = ClickHouseDbApiHook()
+
+        conn = Connection(host='11.22.33.44', login='user', password='pass', schema='mydb')
+        database_info = hook.get_openlineage_database_info(conn)
+        self.assertEqual(database_info.scheme, 'clickhouse')
+        self.assertEqual(database_info.authority, '11.22.33.44:9000')
+
+        conn_with_port = Connection(host='11.22.33.44', port=9001, login='user', password='pass', schema='mydb')
+        database_info = hook.get_openlineage_database_info(conn_with_port)
+        self.assertEqual(database_info.scheme, 'clickhouse')
+        self.assertEqual(database_info.authority, '11.22.33.44:9001')
+
+    def test_get_openlineage_default_schema(self):
+        try:
+            import airflow.providers.openlineage
+        except ImportError:
+            self.skipTest('airflow.providers.openlineage is not installed')
+
+        self.assertEqual(ClickHouseDbApiHook().get_openlineage_default_schema(), 'default')
+        self.assertEqual(ClickHouseDbApiHook(schema='mydb').get_openlineage_default_schema(), 'mydb')
 
     def setUp(self) -> None:
         self._get_connection_patcher = \
