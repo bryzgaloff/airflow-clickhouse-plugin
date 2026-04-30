@@ -44,6 +44,9 @@ Issues = "https://github.com/bryzgaloff/airflow-clickhouse-plugin/issues"
     "apache-airflow-providers-common-sql>=1.3.0",  # introduces SQLExecuteQueryOperator
     "clickhouse-driver>=0.2.1",
 ]
+"openlineage" = [
+    "apache-airflow[openlineage]>=2.2.0,<3.2.0",
+]
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }

@@ -63,6 +63,8 @@ Add `common.sql` extra when installing the plugin: `pip install -U airflow-click
 
 Dependencies: `apache-airflow-providers-common-sql` (usually pre-packed with Airflow) in addition to `apache-airflow` and `clickhouse-driver`.
 
+`ClickHouseDbApiHook` supports OpenLineage integration. To enable OpenLineage, add `openlineage` extra when installing the plugin: `pip install -U airflow-clickhouse-plugin[common.sql,openlineage]`. Adds `apache-airflow[openlineage]`.
+
 ## Python and Airflow versions support
 
 Different versions of the plugin support different combinations of Python and Airflow versions. We _primarily_ support **Airflow 2.0+ and Python 3.8+**. If you need to use the plugin with older Python-Airflow combinations, pick a suitable plugin version:
