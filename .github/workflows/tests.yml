@@ -7,7 +7,6 @@ on:
       - "src/**"
       - "tests/**"
       - ".github/workflows/tests.yml"
-      - "requirements.txt"
       - "pyproject.toml"
   pull_request:
     branches: [ "master" ]
@@ -15,7 +14,6 @@ on:
       - "src/**"
       - "tests/**"
       - ".github/workflows/tests.yml"
-      - "requirements.txt"
       - "pyproject.toml"
 
 env:

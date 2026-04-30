@@ -28,8 +28,9 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.10",
 ]
-dynamic = [
-    "dependencies",
+dependencies = [
+    "apache-airflow>=2.0.0,<3.3.0",
+    "clickhouse-driver~=0.2.9",
 ]
 
 [project.urls]
