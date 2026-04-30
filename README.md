@@ -59,11 +59,9 @@ An example is also available [below](#db-api-20-clickhousesqlsensor-and-clickhou
 
 ### Installation and dependencies
 
-Add `common.sql` extra when installing the plugin: `pip install -U airflow-clickhouse-plugin[common.sql]` — to enable DB API 2.0 operators.
+Add `common.sql` extra when installing the plugin: `pip install -U airflow-clickhouse-plugin[common.sql]` — to enable DB API 2.0 operators. Adds `apache-airflow-providers-common-sql` (usually pre-packed with Airflow >= 2.3.0).
 
-Dependencies: `apache-airflow-providers-common-sql` (usually pre-packed with Airflow) in addition to `apache-airflow` and `clickhouse-driver`.
-
-`ClickHouseDbApiHook` supports OpenLineage integration. To enable OpenLineage, add `openlineage` extra when installing the plugin: `pip install -U airflow-clickhouse-plugin[common.sql,openlineage]`. Adds `apache-airflow[openlineage]`.
+`ClickHouseDbApiHook` supports OpenLineage integration. To enable OpenLineage functionality, add `openlineage` extra when installing the plugin: `pip install -U airflow-clickhouse-plugin[common.sql,openlineage]`. Adds `apache-airflow-providers-openlineage` (usually pre-packed with Airflow >= 2.7.0).
 
 ## Python and Airflow versions support
 
