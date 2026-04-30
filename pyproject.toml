@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "airflow-clickhouse-plugin"
-version = "1.6.0"
+version = "1.7.0"
 description = "airflow-clickhouse-plugin — Airflow plugin to execute ClickHouse commands and queries"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -22,6 +22,8 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Plugins",
     "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.10",
@@ -38,7 +40,7 @@ Issues = "https://github.com/bryzgaloff/airflow-clickhouse-plugin/issues"
 
 [project.optional-dependencies]
 "common.sql" = [
-    "apache-airflow[common.sql]>=2.2.0,<3.2.0",
+    "apache-airflow[common.sql]>=2.2.0,<3.3.0",
     "apache-airflow-providers-common-sql>=1.3.0",  # introduces SQLExecuteQueryOperator
     "clickhouse-driver>=0.2.1",
 ]
