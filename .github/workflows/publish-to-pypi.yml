@@ -110,7 +110,7 @@ jobs:
           python -m pip install \
             --index-url https://test.pypi.org/simple \
             --extra-index-url https://pypi.org/simple \
-            airflow-clickhouse-plugin[common.sql]==1.7.0 \
+            airflow-clickhouse-plugin[common.sql,openlineage]==1.7.0 \
             --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.2.1/constraints-3.14.txt"
       - name: Run tests on ClickHouse server
         env:
@@ -161,7 +161,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install \
-            airflow-clickhouse-plugin[common.sql]==1.7.0 \
+            airflow-clickhouse-plugin[common.sql,openlineage]==1.7.0 \
             --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.2.1/constraints-3.14.txt"
       - name: Run tests on ClickHouse server
         env:
