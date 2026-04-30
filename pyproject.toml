@@ -40,12 +40,20 @@ Issues = "https://github.com/bryzgaloff/airflow-clickhouse-plugin/issues"
 
 [project.optional-dependencies]
 "common.sql" = [
+    # Airflow supports common.sql extra from 2.3.0 version
+    # For versions below, this extra will be ignored
     "apache-airflow[common.sql]>=2.2.0,<3.3.0",
-    "apache-airflow-providers-common-sql>=1.3.0",  # introduces SQLExecuteQueryOperator
-    "clickhouse-driver>=0.2.1",
+    # For versions below 2.3.0, CommonSQL is installed separately
+    # CommonSQL provider version is pinned as of Airflow 3.2.1
+    "apache-airflow-providers-common-sql>=1.18.0",
 ]
 "openlineage" = [
-    "apache-airflow[openlineage]>=2.2.0,<3.2.0",
+    # Airflow supports openlineage extra from 2.7.0 version
+    # For versions below, this extra will be ignored
+    "apache-airflow[openlineage]>=2.2.0,<3.3.0",
+    # For versions below 2.7.0, OpenLineage is installed separately
+    # OpenLineage provider version is pinned as of Airflow 3.2.1
+    "apache-airflow-providers-openlineage>=2.3.0",
 ]
 
 [tool.setuptools.dynamic]
