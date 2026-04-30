@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         airflow-version: ["2.0.3", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.3", "2.8.4", "2.9.3", "2.10.5", "2.11.2", "3.0.6", "3.1.8", "3.2.1"]
         airflow-extras: ["", "[common.sql,openlineage]"]
         include:
@@ -39,14 +39,6 @@ jobs:
             tests-pattern: ""
         exclude:
           # constraints files for these combinations are missing
-          - python-version: "3.9"
-            airflow-version: "2.0.3"
-          - python-version: "3.9"
-            airflow-version: "2.11.2"
-          - python-version: "3.9"
-            airflow-version: "3.1.8"
-          - python-version: "3.9"
-            airflow-version: "3.2.1"
           - python-version: "3.10"
             airflow-version: "2.0.3"
           - python-version: "3.10"
@@ -171,7 +163,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         airflow-version: ["2.0.3", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.3", "2.8.4", "2.9.3", "2.10.5", "2.11.2", "3.0.6", "3.1.8", "3.2.1"]
         airflow-extras: ["", "[common.sql,openlineage]"]
         include:
@@ -183,14 +175,6 @@ jobs:
             tests-pattern: ""
         exclude:
           # constraints files for these combinations are missing
-          - python-version: "3.9"
-            airflow-version: "2.0.3"
-          - python-version: "3.9"
-            airflow-version: "2.11.2"
-          - python-version: "3.9"
-            airflow-version: "3.1.8"
-          - python-version: "3.9"
-            airflow-version: "3.2.1"
           - python-version: "3.10"
             airflow-version: "2.0.3"
           - python-version: "3.10"
