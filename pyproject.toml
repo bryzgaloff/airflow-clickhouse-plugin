@@ -49,9 +49,6 @@ Issues = "https://github.com/bryzgaloff/airflow-clickhouse-plugin/issues"
     "apache-airflow-providers-openlineage>=1.0.0",
 ]
 
-[tool.setuptools.dynamic]
-dependencies = { file = ["requirements.txt"] }
-
 [tool.setuptools.packages.find]
 where = ["src"]
 namespaces = true  # add directories without __init__.py
