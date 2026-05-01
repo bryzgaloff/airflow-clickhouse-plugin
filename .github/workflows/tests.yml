@@ -127,7 +127,7 @@ jobs:
       uses: astral-sh/setup-uv@v8.1.0
     - name: Install dependencies
       run: |
-        uv pip install -e .${{ matrix.extras }} \
+        uv pip install --system -e .${{ matrix.extras }} \
           apache-airflow==${{ matrix.airflow-version }} \
           --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run unit tests
@@ -245,7 +245,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        uv pip install -e .${{ matrix.extras }} \
+        uv pip install --system -e .${{ matrix.extras }} \
           apache-airflow==${{ matrix.airflow-version }} \
           --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run tests on ClickHouse server
