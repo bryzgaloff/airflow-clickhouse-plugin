@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
-        airflow-version: ["2.0.3", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.3", "2.8.4", "2.9.3", "2.10.5", "2.11.2", "3.0.6", "3.1.8", "3.2.1"]
+        airflow-version: ["2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.3", "2.8.4", "2.9.3", "2.10.5", "2.11.2", "3.0.6", "3.1.8", "3.2.1"]
         extras: ["", "[common.sql,openlineage]"]
         include:
           # if no extras installed => run only clickhouse-driver native tests
@@ -37,30 +37,12 @@ jobs:
             tests-pattern: ""
         exclude:
           # constraints files for these combinations are missing
-          - python-version: "3.10"
-            airflow-version: "2.0.3"
-          - python-version: "3.10"
-            airflow-version: "2.1.4"
-          - python-version: "3.10"
-            airflow-version: "2.2.5"
-          - python-version: "3.11"
-            airflow-version: "2.0.3"
-          - python-version: "3.11"
-            airflow-version: "2.1.4"
-          - python-version: "3.11"
-            airflow-version: "2.2.5"
           - python-version: "3.11"
             airflow-version: "2.3.4"
           - python-version: "3.11"
             airflow-version: "2.4.3"
           - python-version: "3.11"
             airflow-version: "2.5.3"
-          - python-version: "3.12"
-            airflow-version: "2.0.3"
-          - python-version: "3.12"
-            airflow-version: "2.1.4"
-          - python-version: "3.12"
-            airflow-version: "2.2.5"
           - python-version: "3.12"
             airflow-version: "2.3.4"
           - python-version: "3.12"
@@ -73,12 +55,6 @@ jobs:
             airflow-version: "2.7.3"
           - python-version: "3.12"
             airflow-version: "2.8.4"
-          - python-version: "3.13"
-            airflow-version: "2.0.3"
-          - python-version: "3.13"
-            airflow-version: "2.1.4"
-          - python-version: "3.13"
-            airflow-version: "2.2.5"
           - python-version: "3.13"
             airflow-version: "2.3.4"
           - python-version: "3.13"
@@ -100,23 +76,17 @@ jobs:
           - python-version: "3.13"
             airflow-version: "3.0.6"
           - python-version: "3.14"
-            airflow-version: "2.0.3"
-          - python-version: "3.14"
-            airflow-version: "2.1.4"
-          - python-version: "3.14"
-            airflow-version: "2.2.5"
-          - python-version: "3.14"
             airflow-version: "2.3.4"
           - python-version: "3.14"
             airflow-version: "2.4.3"
-          - python-version: "3.14"
-            airflow-version: "2.8.4"
           - python-version: "3.14"
             airflow-version: "2.5.3"
           - python-version: "3.14"
             airflow-version: "2.6.3"
           - python-version: "3.14"
             airflow-version: "2.7.3"
+          - python-version: "3.14"
+            airflow-version: "2.8.4"
           - python-version: "3.14"
             airflow-version: "2.9.3"
           - python-version: "3.14"
@@ -140,6 +110,13 @@ jobs:
             airflow-version: "2.3.4"
           - extras: "[common.sql,openlineage]"
             airflow-version: "2.4.3"
+          # common.sql constraint for these Airflow versions is <1.6.0
+          #   while openlineage requires common.sql>=1.6.0
+          #   => pip install will fail on this combination
+          - extras: "[common.sql,openlineage]"
+            airflow-version: "2.5.3"
+          - extras: "[common.sql,openlineage]"
+            airflow-version: "2.6.3"
     steps:
     - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
@@ -161,7 +138,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
-        airflow-version: ["2.0.3", "2.1.4", "2.2.5", "2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.3", "2.8.4", "2.9.3", "2.10.5", "2.11.2", "3.0.6", "3.1.8", "3.2.1"]
+        airflow-version: ["2.3.4", "2.4.3", "2.5.3", "2.6.3", "2.7.3", "2.8.4", "2.9.3", "2.10.5", "2.11.2", "3.0.6", "3.1.8", "3.2.1"]
         extras: ["", "[common.sql,openlineage]"]
         include:
           # if no extras installed => run only clickhouse-driver native tests
@@ -172,30 +149,12 @@ jobs:
             tests-pattern: ""
         exclude:
           # constraints files for these combinations are missing
-          - python-version: "3.10"
-            airflow-version: "2.0.3"
-          - python-version: "3.10"
-            airflow-version: "2.1.4"
-          - python-version: "3.10"
-            airflow-version: "2.2.5"
-          - python-version: "3.11"
-            airflow-version: "2.0.3"
-          - python-version: "3.11"
-            airflow-version: "2.1.4"
-          - python-version: "3.11"
-            airflow-version: "2.2.5"
           - python-version: "3.11"
             airflow-version: "2.3.4"
           - python-version: "3.11"
             airflow-version: "2.4.3"
           - python-version: "3.11"
             airflow-version: "2.5.3"
-          - python-version: "3.12"
-            airflow-version: "2.0.3"
-          - python-version: "3.12"
-            airflow-version: "2.1.4"
-          - python-version: "3.12"
-            airflow-version: "2.2.5"
           - python-version: "3.12"
             airflow-version: "2.3.4"
           - python-version: "3.12"
@@ -208,12 +167,6 @@ jobs:
             airflow-version: "2.7.3"
           - python-version: "3.12"
             airflow-version: "2.8.4"
-          - python-version: "3.13"
-            airflow-version: "2.0.3"
-          - python-version: "3.13"
-            airflow-version: "2.1.4"
-          - python-version: "3.13"
-            airflow-version: "2.2.5"
           - python-version: "3.13"
             airflow-version: "2.3.4"
           - python-version: "3.13"
@@ -234,12 +187,6 @@ jobs:
             airflow-version: "2.11.2"
           - python-version: "3.13"
             airflow-version: "3.0.6"
-          - python-version: "3.14"
-            airflow-version: "2.0.3"
-          - python-version: "3.14"
-            airflow-version: "2.1.4"
-          - python-version: "3.14"
-            airflow-version: "2.2.5"
           - python-version: "3.14"
             airflow-version: "2.3.4"
           - python-version: "3.14"
@@ -275,6 +222,13 @@ jobs:
             airflow-version: "2.3.4"
           - extras: "[common.sql,openlineage]"
             airflow-version: "2.4.3"
+          # common.sql constraint for these Airflow versions is <1.6.0
+          #   while openlineage requires common.sql>=1.6.0
+          #   => pip install will fail on this combination
+          - extras: "[common.sql,openlineage]"
+            airflow-version: "2.5.3"
+          - extras: "[common.sql,openlineage]"
+            airflow-version: "2.6.3"
     services:
       clickhouse:
         image: clickhouse/clickhouse-server
