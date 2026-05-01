@@ -132,7 +132,7 @@ jobs:
           --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-${{ matrix.airflow-version }}/constraints-${{ matrix.python-version }}.txt"
     - name: Run unit tests
       run: |
-        uv run -m unittest discover -t tests -s unit ${{ matrix.tests-pattern }}
+        uv run --system -m unittest discover -t tests -s unit ${{ matrix.tests-pattern }}
 
   integration-tests:
     runs-on: ubuntu-latest
@@ -254,4 +254,4 @@ jobs:
       env:
         AIRFLOW_CONN_CLICKHOUSE_DEFAULT: "clickhouse://localhost:${{ job.services.clickhouse.ports['9000'] }}"
       run: |
-        uv run -m unittest discover -t tests -s integration ${{ matrix.tests-pattern }}
+        uv run --system -m unittest discover -t tests -s integration ${{ matrix.tests-pattern }}
