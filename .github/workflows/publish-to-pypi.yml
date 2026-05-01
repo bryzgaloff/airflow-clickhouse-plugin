@@ -110,8 +110,9 @@ jobs:
       - name: Install airflow-clickhouse-plugin from TestPyPI
         run: |
           uv pip install --system \
-            --index-url https://test.pypi.org/simple \
-            --extra-index-url https://pypi.org/simple \
+            --index-strategy unsafe-best-match \
+            --index-url https://pypi.org/simple \
+            --extra-index-url https://test.pypi.org/simple \
             airflow-clickhouse-plugin[common.sql,openlineage]==1.7.0 \
             apache-airflow==3.2.1 \
             --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.2.1/constraints-3.12.txt"
