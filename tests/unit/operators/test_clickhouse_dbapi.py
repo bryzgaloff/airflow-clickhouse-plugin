@@ -1,5 +1,8 @@
 import unittest
+from datetime import datetime
 from unittest import mock
+
+from airflow import DAG
 
 from airflow_clickhouse_plugin.operators.clickhouse_dbapi import (
     ClickHouseBaseDbApiOperator,
@@ -161,6 +164,30 @@ class ClickHouseSQLIntervalCheckOperatorTestCase(unittest.TestCase):
             _, kwargs = mock_init.call_args
             for name, value in params.items():
                 self.assertEqual(kwargs[name], value)
+
+    def test_sql_queries(self):
+        with DAG('test_clickhouse', start_date=datetime(2021, 1, 1)):
+            task = ClickHouseSQLIntervalCheckOperator(
+                task_id='test-task-id',
+                conn_id=None,
+                database='mydb',
+                table='mytable',
+                date_filter_column='mycolumn',
+                ignore_zero=True,
+                metrics_thresholds={'col2': 2, 'col1': 1},
+            )
+            self.assertEqual(
+                task.sql1,
+                "SELECT col1, col2 "
+                "FROM mytable "
+                "WHERE mycolumn=parseDateTime64BestEffort('{{ ds }}', 6)",
+            )
+            self.assertEqual(
+                task.sql2,
+                "SELECT col1, col2 "
+                "FROM mytable "
+                "WHERE mycolumn=parseDateTime64BestEffort('{{ macros.ds_add(ds, -7) }}', 6)",
+            )
 
 
 class ClickHouseSQLThresholdCheckOperatorTestCase(unittest.TestCase):
