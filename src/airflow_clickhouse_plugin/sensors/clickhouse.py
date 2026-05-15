@@ -4,15 +4,7 @@ from airflow.exceptions import AirflowException
 try:
     from airflow.sdk import BaseSensorOperator
 except ImportError:
-    import warnings
-
     from airflow.sensors.base import BaseSensorOperator
-    warnings.warn(
-        "Importing 'BaseSensorOperator' from 'airflow.sensors.base' is deprecated from "
-        "Airflow 3.1 onwards. Modern Airflow versions will use 'airflow.sdk' instead. ",
-        DeprecationWarning,
-        stacklevel=2,
-    )
 from airflow_clickhouse_plugin.hooks.clickhouse import ExecuteReturnT
 from airflow_clickhouse_plugin.operators.clickhouse import \
     BaseClickHouseOperator
