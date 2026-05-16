@@ -90,6 +90,15 @@ class ClickHouseHook(BaseHook):
         return last_result
 
 
+def strtobool(str_value: str) -> bool:
+    str_value = str_value.lower()
+    if str_value == 'true':
+        return True
+    elif str_value == 'false':
+        return False
+    raise ValueError(f'unsupported string value: {str_value!r}')
+
+
 def conn_to_kwargs(conn: Connection, database: t.Optional[str]) -> t.Dict[str, t.Any]:
     """ Translate Airflow Connection to clickhouse-driver Connection kwargs. """
     connection_kwargs = conn.extra_dejson.copy()
@@ -105,6 +114,13 @@ def conn_to_kwargs(conn: Connection, database: t.Optional[str]) -> t.Dict[str, t
         connection_kwargs.update(database=database)
     elif conn.schema:
         connection_kwargs.update(database=conn.schema)
+    # converting types for flags
+    for key in ('secure', 'verify'):
+        if key in connection_kwargs:
+            current_value = connection_kwargs[key]
+            if isinstance(current_value, (bool, int)):
+                continue
+            connection_kwargs[key] = strtobool(current_value)
     return connection_kwargs
 
 
