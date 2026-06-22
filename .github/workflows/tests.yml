@@ -118,7 +118,7 @@ jobs:
           - extras: "[common.sql,openlineage]"
             airflow-version: "2.6.3"
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -238,7 +238,7 @@ jobs:
         options: >-
           --env CLICKHOUSE_SKIP_USER_SETUP=1
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
