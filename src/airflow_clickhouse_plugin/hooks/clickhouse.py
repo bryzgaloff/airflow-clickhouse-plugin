@@ -3,7 +3,11 @@ import typing as t
 from itertools import islice
 
 import clickhouse_driver
-from airflow.hooks.base import BaseHook
+try:
+    from airflow.sdk import BaseHook
+except ImportError:
+    from airflow.hooks.base import BaseHook
+
 from airflow.models import Connection
 
 # annotated according to clickhouse_driver.Client.execute comments
