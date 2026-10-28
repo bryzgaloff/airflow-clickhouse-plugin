@@ -1,8 +1,10 @@
 import typing as t
 
 from airflow.exceptions import AirflowException
-from airflow.sensors.base import BaseSensorOperator
-
+try:
+    from airflow.sdk import BaseSensorOperator
+except ImportError:
+    from airflow.sensors.base import BaseSensorOperator
 from airflow_clickhouse_plugin.hooks.clickhouse import ExecuteReturnT
 from airflow_clickhouse_plugin.operators.clickhouse import \
     BaseClickHouseOperator
