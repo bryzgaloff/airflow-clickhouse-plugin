@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "airflow-clickhouse-plugin"
-version = "1.8.0"
+version = "1.9.0"
 description = "airflow-clickhouse-plugin — Airflow plugin to execute ClickHouse commands and queries"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -29,8 +29,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
 ]
 dependencies = [
-    "apache-airflow>=2.0.0,<3.4.0",
-    "clickhouse-driver~=0.2.9",
+    "apache-airflow>=2.0.0,<3.6.0",
+    "clickhouse-driver~=0.2.10",
 ]
 
 [project.urls]
