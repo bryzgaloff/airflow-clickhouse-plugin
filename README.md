@@ -65,10 +65,11 @@ Add `common.sql` extra when installing the plugin: `pip install -U airflow-click
 
 ## Python and Airflow versions support
 
-Different versions of the plugin support different combinations of Python and Airflow versions. We _primarily_ support **Airflow 2.0+ and Python 3.10+**. If you need to use the plugin with older Python-Airflow combinations, pick a suitable plugin version:
+Different versions of the plugin support different combinations of Python and Airflow versions. We _primarily_ support **Airflow 2.0+ and Python 3.11+**. If you need to use the plugin with older Python-Airflow combinations, pick a suitable plugin version:
 
 | airflow-clickhouse-plugin version | Airflow version         | Python version     |
 |-----------------------------------|-------------------------|--------------------|
+| 1.9.0                             | \>=2.3.0,<3.5.0         | ~=3.11             |
 | 1.8.0                             | \>=2.3.0,<3.4.0         | ~=3.10             |
 | 1.7.0                             | \>=2.3.0,<3.3.0         | ~=3.10             |
 | 1.6.0                             | \>=2.3.0,<3.2.0         | ~=3.10             |
